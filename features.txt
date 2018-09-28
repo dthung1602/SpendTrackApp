@@ -1,0 +1,65 @@
+FEATURES
+
+- Input
+	- Income
+		- Auto: every month/week/year
+			add, change, delete an entry
+		- Manually
+
+	- Spending
+		- Auto: housing, water, etc every month/week/year
+			add, change, delete an entry
+			send reminder
+		- Manually
+
+	- Type
+		- Each income/spending item has type/subtype
+		- Add/delete type/subtype
+		- Type form a tree -> each item Belong to only one type
+		- Item A belongs to type X -> A belongs to all of X ancestors
+
+	- Can act as calculator
+
+- View
+	- Current balance
+		try to predict % plan => use 2 bars
+
+	- Summarize
+		- automatic send summarize
+		- time
+			- every: month/week/year
+			- custom time frame
+		- type: pie chart
+
+	- Compare
+		- with:
+			last week/month/year,
+			average of last 3 week/month/year,
+			custom
+			plan
+		- what:
+			- total of each type -> bar chart
+			- percent of each type -> line graph
+
+- plan
+	- Set/unset each week/month/year
+	- Spending each week/month/year
+		of each type
+		total
+	- Aim for some expensive items
+	- Archive?
+
+- Setting
+	- Set at beginning
+		- Currency
+		- Init balance -> can be in debt
+	- Switch to another currency
+		user has to input exchange ratio
+
+- Other
+    - Always requires login
+	- Ask about cookie
+	- CSRF
+	- SQL injection
+	- XSS
+

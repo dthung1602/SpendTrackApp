@@ -1,0 +1,37 @@
+DESIGN
+
+-----------------------
+
+backend     Django
+database    PostgresSQL
+css         Skeleton
+js          jQuery
+chart
+
+-----------------------
+
+URL
+
+/                                           --> current balance, plan, add
+
+    admin                                   --> django admin app
+    auth                                    --> django auth app
+
+    summarize
+        <year>                              --> summarize year, compare with ...
+        <year>/<jan,feb,...:month>          --> summarize month, compare with ...
+        <year>/week-<int:week>              --> summarize week, compare with ...
+        <start_date>/<end_date>             --> summarize custom time frame, compare with ...
+        this-year                           --> redirect to the right page
+        this-month                          --> redirect to the right page
+        this-week                           --> redirect to the right page
+
+    plan                                    --> view all plans
+        <add,del,edit:action>/<id>?params=  --> add/del/edit plan
+
+    setting                                 --> set currency, change currency,
+                                                add/del/edit weekly/monthly/yearly income/spending
+------------------------
+
+
+
