@@ -1,0 +1,426 @@
+[
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 1,
+    "fields": {
+      "entry": 1,
+      "category": 1
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 2,
+    "fields": {
+      "entry": 1,
+      "category": 2
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 3,
+    "fields": {
+      "entry": 1,
+      "category": 4
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 4,
+    "fields": {
+      "entry": 2,
+      "category": 1
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 5,
+    "fields": {
+      "entry": 2,
+      "category": 2
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 6,
+    "fields": {
+      "entry": 2,
+      "category": 4
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 7,
+    "fields": {
+      "entry": 3,
+      "category": 1
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 8,
+    "fields": {
+      "entry": 3,
+      "category": 5
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 9,
+    "fields": {
+      "entry": 3,
+      "category": 7
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 10,
+    "fields": {
+      "entry": 4,
+      "category": 1
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 11,
+    "fields": {
+      "entry": 4,
+      "category": 5
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 12,
+    "fields": {
+      "entry": 4,
+      "category": 7
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 13,
+    "fields": {
+      "entry": 5,
+      "category": 1
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 14,
+    "fields": {
+      "entry": 5,
+      "category": 5
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 15,
+    "fields": {
+      "entry": 5,
+      "category": 7
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 16,
+    "fields": {
+      "entry": 6,
+      "category": 8
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 17,
+    "fields": {
+      "entry": 6,
+      "category": 1
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 18,
+    "fields": {
+      "entry": 6,
+      "category": 5
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 19,
+    "fields": {
+      "entry": 7,
+      "category": 8
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 20,
+    "fields": {
+      "entry": 7,
+      "category": 1
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 21,
+    "fields": {
+      "entry": 7,
+      "category": 5
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 22,
+    "fields": {
+      "entry": 8,
+      "category": 9
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 23,
+    "fields": {
+      "entry": 8,
+      "category": 5
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 24,
+    "fields": {
+      "entry": 8,
+      "category": 1
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 25,
+    "fields": {
+      "entry": 9,
+      "category": 10
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 26,
+    "fields": {
+      "entry": 9,
+      "category": 11
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 27,
+    "fields": {
+      "entry": 10,
+      "category": 10
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 28,
+    "fields": {
+      "entry": 10,
+      "category": 11
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 29,
+    "fields": {
+      "entry": 11,
+      "category": 12
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 30,
+    "fields": {
+      "entry": 12,
+      "category": 12
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 31,
+    "fields": {
+      "entry": 13,
+      "category": 12
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 32,
+    "fields": {
+      "entry": 14,
+      "category": 1
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 33,
+    "fields": {
+      "entry": 14,
+      "category": 2
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 34,
+    "fields": {
+      "entry": 14,
+      "category": 4
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 35,
+    "fields": {
+      "entry": 15,
+      "category": 8
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 36,
+    "fields": {
+      "entry": 15,
+      "category": 1
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 37,
+    "fields": {
+      "entry": 15,
+      "category": 5
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 38,
+    "fields": {
+      "entry": 16,
+      "category": 8
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 39,
+    "fields": {
+      "entry": 16,
+      "category": 1
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 40,
+    "fields": {
+      "entry": 16,
+      "category": 5
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 41,
+    "fields": {
+      "entry": 17,
+      "category": 10
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 42,
+    "fields": {
+      "entry": 17,
+      "category": 14
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 43,
+    "fields": {
+      "entry": 18,
+      "category": 10
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 44,
+    "fields": {
+      "entry": 18,
+      "category": 14
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 45,
+    "fields": {
+      "entry": 19,
+      "category": 10
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 46,
+    "fields": {
+      "entry": 19,
+      "category": 11
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 47,
+    "fields": {
+      "entry": 20,
+      "category": 12
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 48,
+    "fields": {
+      "entry": 21,
+      "category": 12
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 49,
+    "fields": {
+      "entry": 22,
+      "category": 12
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 50,
+    "fields": {
+      "entry": 23,
+      "category": 12
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 51,
+    "fields": {
+      "entry": 24,
+      "category": 12
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 52,
+    "fields": {
+      "entry": 25,
+      "category": 12
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 53,
+    "fields": {
+      "entry": 26,
+      "category": 12
+    }
+  }
+]

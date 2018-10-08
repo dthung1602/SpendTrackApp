@@ -1,0 +1,341 @@
+[
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 1,
+    "fields": {
+      "date": "2017-08-10T19:06:46.594Z",
+      "content": "entry1",
+      "value": "50.00",
+      "categories": [
+        1,
+        2,
+        4
+      ]
+    }
+  },
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 2,
+    "fields": {
+      "date": "2017-07-01T18:23:41.171Z",
+      "content": "entry2",
+      "value": "-3.00",
+      "categories": [
+        1,
+        2,
+        4
+      ]
+    }
+  },
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 3,
+    "fields": {
+      "date": "2016-07-06T19:14:52.791Z",
+      "content": "entry3",
+      "value": "-2.00",
+      "categories": [
+        1,
+        5,
+        7
+      ]
+    }
+  },
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 4,
+    "fields": {
+      "date": "2016-01-31T18:32:38.379Z",
+      "content": "entry4",
+      "value": "-1.50",
+      "categories": [
+        1,
+        5,
+        7
+      ]
+    }
+  },
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 5,
+    "fields": {
+      "date": "2015-11-07T19:02:13.924Z",
+      "content": "entry5",
+      "value": "-8.50",
+      "categories": [
+        1,
+        5,
+        7
+      ]
+    }
+  },
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 6,
+    "fields": {
+      "date": "2016-08-25T18:49:06.922Z",
+      "content": "entry6",
+      "value": "9.00",
+      "categories": [
+        1,
+        5,
+        8
+      ]
+    }
+  },
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 7,
+    "fields": {
+      "date": "2014-12-22T19:34:50.477Z",
+      "content": "entry7",
+      "value": "1.50",
+      "categories": [
+        1,
+        5,
+        8
+      ]
+    }
+  },
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 8,
+    "fields": {
+      "date": "2019-01-05T19:59:45.153Z",
+      "content": "entry8",
+      "value": "-5.00",
+      "categories": [
+        1,
+        5,
+        9
+      ]
+    }
+  },
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 9,
+    "fields": {
+      "date": "2017-03-10T19:11:22.742Z",
+      "content": "entry9",
+      "value": "-15.00",
+      "categories": [
+        10,
+        11
+      ]
+    }
+  },
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 10,
+    "fields": {
+      "date": "2017-12-24T19:42:35.340Z",
+      "content": "entry10",
+      "value": "20.50",
+      "categories": [
+        10,
+        11
+      ]
+    }
+  },
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 11,
+    "fields": {
+      "date": "2016-01-13T19:47:23.973Z",
+      "content": "entry11",
+      "value": "-8.50",
+      "categories": [
+        12
+      ]
+    }
+  },
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 12,
+    "fields": {
+      "date": "2017-06-17T18:18:55.549Z",
+      "content": "entry12",
+      "value": "-9.00",
+      "categories": [
+        12
+      ]
+    }
+  },
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 13,
+    "fields": {
+      "date": "2019-02-27T19:03:11.160Z",
+      "content": "entry13",
+      "value": "50.00",
+      "categories": [
+        12
+      ]
+    }
+  },
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 14,
+    "fields": {
+      "date": "2015-10-11T18:52:16.759Z",
+      "content": "entry14",
+      "value": "-0.50",
+      "categories": [
+        1,
+        2,
+        4
+      ]
+    }
+  },
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 15,
+    "fields": {
+      "date": "2016-03-23T18:40:39.347Z",
+      "content": "entry15",
+      "value": "-25.50",
+      "categories": [
+        1,
+        5,
+        8
+      ]
+    }
+  },
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 16,
+    "fields": {
+      "date": "2015-11-05T18:17:45.946Z",
+      "content": "entry16",
+      "value": "100.00",
+      "categories": [
+        1,
+        5,
+        8
+      ]
+    }
+  },
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 17,
+    "fields": {
+      "date": "2017-02-06T18:37:38.589Z",
+      "content": "entry17",
+      "value": "-35.50",
+      "categories": [
+        10,
+        14
+      ]
+    }
+  },
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 18,
+    "fields": {
+      "date": "2017-10-12T19:07:04.167Z",
+      "content": "entry18",
+      "value": "-2.50",
+      "categories": [
+        10,
+        14
+      ]
+    }
+  },
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 19,
+    "fields": {
+      "date": "2014-12-20T18:39:51.765Z",
+      "content": "entry19",
+      "value": "75",
+      "categories": [
+        10,
+        11
+      ]
+    }
+  },
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 20,
+    "fields": {
+      "date": "2017-10-02T19:01:55.320Z",
+      "content": "entry20",
+      "value": "-12.50",
+      "categories": [
+        12
+      ]
+    }
+  },
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 21,
+    "fields": {
+      "date": "2015-11-07T20:02:13.924Z",
+      "content": "entry21",
+      "value": "-2.50",
+      "categories": [
+        12
+      ]
+    }
+  },
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 22,
+    "fields": {
+      "date": "2017-01-01T16:02:13.924Z",
+      "content": "entry22",
+      "value": "-1.50",
+      "categories": [
+        12
+      ]
+    }
+  },
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 23,
+    "fields": {
+      "date": "2017-01-03T16:02:13.924Z",
+      "content": "entry23",
+      "value": "-1.50",
+      "categories": [
+        12
+      ]
+    }
+  },
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 24,
+    "fields": {
+      "date": "2017-01-03T19:02:13.924Z",
+      "content": "entry24",
+      "value": "25",
+      "categories": [
+        12
+      ]
+    }
+  },
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 25,
+    "fields": {
+      "date": "2017-01-05T19:02:13.924Z",
+      "content": "entry25",
+      "value": "-2.5",
+      "categories": [
+        12
+      ]
+    }
+  },
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 26,
+    "fields": {
+      "date": "2019-12-31T03:02:13.924Z",
+      "content": "entry26",
+      "value": "-5",
+      "categories": [
+        12
+      ]
+    }
+  }
+]

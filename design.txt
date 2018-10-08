@@ -33,5 +33,25 @@ URL
                                                 add/del/edit weekly/monthly/yearly income/spending
 ------------------------
 
+MODELS
+
+Entry
+    - id
+    - date
+    - content
+    - categories
+    - value
+
+plan
+    - id
+    - name
+    - time_period
+    - type
+    - value
+
+Category
+    - id
+    - pid
+    - name
 
 

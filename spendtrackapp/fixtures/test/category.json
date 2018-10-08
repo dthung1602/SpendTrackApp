@@ -1,0 +1,114 @@
+[
+  {
+    "model": "spendtrackapp.category",
+    "pk": 1,
+    "fields": {
+      "name": "cat 1",
+      "parent": null
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 2,
+    "fields": {
+      "name": "cat 2",
+      "parent": 1
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 3,
+    "fields": {
+      "name": "cat 3",
+      "parent": 1
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 4,
+    "fields": {
+      "name": "cat 4",
+      "parent": 2
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 5,
+    "fields": {
+      "name": "Cat 5",
+      "parent": 2
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 6,
+    "fields": {
+      "name": "dgef 6",
+      "parent": 3
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 7,
+    "fields": {
+      "name": "dgef 7",
+      "parent": 5
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 8,
+    "fields": {
+      "name": "dgef 8",
+      "parent": 5
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 9,
+    "fields": {
+      "name": "dgef 9",
+      "parent": 5
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 10,
+    "fields": {
+      "name": "dgef 10",
+      "parent": null
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 11,
+    "fields": {
+      "name": "dgef 11",
+      "parent": 10
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 12,
+    "fields": {
+      "name": "dgef 12",
+      "parent": null
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 13,
+    "fields": {
+      "name": "dgef 13",
+      "parent": 3
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 14,
+    "fields": {
+      "name": "dgef 14",
+      "parent": 10
+    }
+  }
+]
