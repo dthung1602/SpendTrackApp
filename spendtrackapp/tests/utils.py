@@ -22,7 +22,7 @@ def data_provider(data_provider_function):
             print("\nTest function: " + test_function.__name__)
             for data_set in data_provider_function():
                 try:
-                    print("    testcase #" + str(i) + ": ", end='')
+                    print("    #" + str(i) + ": ", end='')
                     test_function(self, *data_set)
                     i += 1
                 except AssertionError:
@@ -31,6 +31,7 @@ def data_provider(data_provider_function):
                     raise
                 else:
                     print("passed")
+            print("----------------------------\n")
 
         return new_test_function
 

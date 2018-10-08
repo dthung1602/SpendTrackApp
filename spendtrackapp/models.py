@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.db import models
+from django.db.models import Sum
 from django.db.models.functions import Extract
 
 
@@ -50,46 +51,72 @@ class Entry(models.Model):
     def __str__(self):
         return self.date.strftime("[%Y-%m-%d] ") + self.content[:20].ljust(20) + " " + str(self.value)
 
-    def change_category(self, id):
-        category = Category.objects.get(pk=id)
-        to_add_category_ids = [id] + category.get_ancestor_ids()
+    def change_category(self, category_id):
+        category = Category.objects.get(pk=category_id)
+        to_add_category_ids = [category_id] + category.get_ancestor_ids()
         self.categories.clear()
         self.categories.add(*to_add_category_ids)
 
-    @staticmethod
-    def find_by_date_range(start_date=None, end_date=None):
-        start_date = Entry.mod_start_date(start_date)
-        end_date = Entry.mod_end_date(end_date)
-        return Entry.objects.filter(date__range=(start_date, end_date)).order_by('date')
+    @classmethod
+    def find_by_date_range(cls, start_date=None, end_date=None):
+        start_date = cls.__modify_start_date(start_date)
+        end_date = cls.__modify_end_date(end_date)
+        return cls.objects.filter(date__range=(start_date, end_date)).order_by('date')
+
+    @classmethod
+    def find_by_year(cls, year):
+        return cls.objects.filter(date__year=year).annotate(sum=Sum('value')).order_by('date')
+
+    @classmethod
+    def find_by_month(cls, year, month):
+        return cls.objects.filter(date__year=year, date__month=month).order_by('date')
+
+    @classmethod
+    def find_by_week(cls, isoyear, week):
+        return cls.objects.filter(date__isoyear=isoyear, date__week=week).order_by('date')
+
+    @classmethod
+    def total_by_date_range(cls, start_date=None, end_date=None):
+        start_date = cls.__modify_start_date(start_date)
+        end_date = cls.__modify_end_date(end_date)
+        result = cls.objects.filter(date__range=(start_date, end_date)) \
+            .aggregate(total=Sum('value'))['total']
+        return result if result is not None else 0
+
+    @classmethod
+    def total_by_year(cls, year):
+        result = cls.objects.filter(date__year=year).annotate(sum=Sum('value')) \
+            .aggregate(total=Sum('value'))['total']
+        return result if result is not None else 0
+
+    @classmethod
+    def total_by_month(cls, year, month):
+        result = cls.objects.filter(date__year=year, date__month=month) \
+            .aggregate(total=Sum('value'))['total']
+        return result if result is not None else 0
+
+    @classmethod
+    def total_by_week(cls, isoyear, week):
+        result = cls.objects.filter(date__isoyear=isoyear, date__week=week) \
+            .aggregate(total=Sum('value'))['total']
+        return result if result is not None else 0
 
     @staticmethod
-    def find_by_year(year):
-        return Entry.objects.filter(date__year=year).order_by('date')
-
-    @staticmethod
-    def find_by_month(year, month):
-        return Entry.objects.filter(date__year=year, date__month=month).order_by('date')
-
-    @staticmethod
-    def find_by_week(isoyear, week):
-        return Entry.objects.filter(date__isoyear=isoyear, date__week=week).order_by('date')
-
-    @staticmethod
-    def mod_start_date(start_date):
+    def __modify_start_date(start_date):
         if start_date is None:
             return '1000-1-1'
         if isinstance(start_date, datetime):
             return start_date.replace(hour=0, minute=0, second=0)
         if isinstance(start_date, str):
             return start_date + ' 0:0:0'
-        raise ValueError('Invalid datetime')
+        raise TypeError('Invalid datetime')
 
     @staticmethod
-    def mod_end_date(end_date):
+    def __modify_end_date(end_date):
         if end_date is None:
             return '9999-12-31'
         if isinstance(end_date, datetime):
             return end_date.replace(hour=23, minute=59, second=59)
         if isinstance(end_date, str):
             return end_date + ' 23:59:59'
-        raise ValueError('Invalid datetime')
+        raise TypeError('Invalid datetime')
