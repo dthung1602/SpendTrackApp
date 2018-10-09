@@ -1,0 +1,92 @@
+[
+  {
+    "model": "spendtrackapp.info",
+    "pk": 14,
+    "fields": {
+      "name": "a string",
+      "value": "a long long long string",
+      "value_type": "s"
+    }
+  },
+  {
+    "model": "spendtrackapp.info",
+    "pk": 15,
+    "fields": {
+      "name": "an int1",
+      "value": "58",
+      "value_type": "i"
+    }
+  },
+  {
+    "model": "spendtrackapp.info",
+    "pk": 16,
+    "fields": {
+      "name": "an int2",
+      "value": "-58",
+      "value_type": "i"
+    }
+  },
+  {
+    "model": "spendtrackapp.info",
+    "pk": 17,
+    "fields": {
+      "name": "a float1",
+      "value": "58.1515",
+      "value_type": "f"
+    }
+  },
+  {
+    "model": "spendtrackapp.info",
+    "pk": 18,
+    "fields": {
+      "name": "a float2",
+      "value": "-58.1515",
+      "value_type": "f"
+    }
+  },
+  {
+    "model": "spendtrackapp.info",
+    "pk": 19,
+    "fields": {
+      "name": "a float3",
+      "value": "58.1515e3",
+      "value_type": "f"
+    }
+  },
+  {
+    "model": "spendtrackapp.info",
+    "pk": 20,
+    "fields": {
+      "name": "a bool1",
+      "value": "True",
+      "value_type": "b"
+    }
+  },
+  {
+    "model": "spendtrackapp.info",
+    "pk": 21,
+    "fields": {
+      "name": "a bool2",
+      "value": "1",
+      "value_type": "b"
+    }
+  },
+  {
+    "model": "spendtrackapp.info",
+    "pk": 22,
+    "fields": {
+      "name": "a bool3",
+      "value": "False",
+      "value_type": "b"
+    }
+  },
+  {
+    "model": "spendtrackapp.info",
+    "pk": 23,
+    "fields": {
+      "name": "a bool4",
+      "value": "0",
+      "value_type": "b"
+    }
+  }
+]

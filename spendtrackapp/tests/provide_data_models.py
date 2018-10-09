@@ -291,3 +291,28 @@ def entry_find_by_week_with_category():
         [1000, 1, 'cat1', []],
         [9999, 52, 'cat1', []],
     ]
+
+
+def info_get():
+    return [
+        ('a string', 'a long long long string', str),
+        ('an int1', 58, int),
+        ('an int2', -58, int),
+        ('a float1', 58.1515, float),
+        ('a float2', -58.1515, float),
+        ('a float3', 58.1515e3, float),
+        ('a bool1', True, bool),
+        ('a bool2', True, bool),
+        ('a bool3', False, bool),
+        ('a bool4', False, bool)
+    ]
+
+
+def info_set():
+    return [
+        ('a string', 'a new string'),
+        ('an int1', 65),
+        ('a float1', -1235.568),
+        ('a bool1', True),
+        ('a bool2', False),
+    ]

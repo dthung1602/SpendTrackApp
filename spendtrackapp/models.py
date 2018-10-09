@@ -47,6 +47,11 @@ class Category(models.Model):
         """Return True/False whether a category has no children"""
         return Category.objects.filter(parent=self).count() == 0
 
+    @classmethod
+    # TODO implement this
+    def get_tree(cls):
+        pass
+
 
 class Entry(models.Model):
     """A class represents all changes in the balance"""
@@ -242,3 +247,49 @@ class Entry(models.Model):
         if isinstance(end_date, str):
             return end_date + ' 23:59:59'
         raise TypeError('Invalid datetime')
+
+
+class Info(models.Model):
+    """
+    A class used to stores information
+        - name: name of the info
+        - value: string represent the info
+        - value_type: type of the info (integer, float, string or boolean)
+    """
+
+    name = models.CharField(
+        max_length=100,
+        unique=True
+    )
+
+    value = models.CharField(
+        max_length=500
+    )
+
+    value_type = models.CharField(
+        max_length=1,
+        choices=(('i', 'integer'), ('f', 'float'), ('s', 'string'), ('b', 'boolean'))
+    )
+
+    __converter = {
+        'i': int,
+        'f': float,
+        's': str,
+        'b': lambda value: value[0] in ['t', 'T', '1'] if isinstance(value, str) else value
+    }
+
+    def get_actual_value(self):
+        """Get the actual info in the correct type, NOT as a string as in database"""
+        return self.__converter[self.value_type](self.value)
+
+    @classmethod
+    def get(cls, name):
+        """Get the actual info with the given name in the correct type"""
+        return cls.objects.get(name=name).get_actual_value()
+
+    @classmethod
+    def set(cls, name, value):
+        """Set value of the info with given name and save to database"""
+        info = cls.objects.get(name=name)
+        info.value = str(cls.__converter[info.value_type](value))
+        info.save()

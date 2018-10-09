@@ -112,3 +112,18 @@ class TestEntry(TestCase):
         entries = Entry.find_by_week(year, week, category_name)
         entry_ids = list(entry.id for entry in entries)
         self.assertSequenceEqual(expected_ids, entry_ids)
+
+
+class TestInfo(TestCase):
+    fixtures = ['test/info.json']
+
+    @data_provider(info_get)
+    def test_get(self, name, expected_value, expected_value_type):
+        value = Info.get(name)
+        self.assertEqual(expected_value_type, type(value))
+        self.assertEqual(expected_value, value)
+
+    @data_provider(info_set)
+    def test_set(self, name, value):
+        Info.set(name, value)
+        self.assertEqual(value, Info.get(name))
