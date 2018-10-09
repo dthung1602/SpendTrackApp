@@ -58,47 +58,57 @@ class Entry(models.Model):
         self.categories.add(*to_add_category_ids)
 
     @classmethod
-    def find_by_date_range(cls, start_date=None, end_date=None):
+    def find_by_date_range(cls, start_date=None, end_date=None, category_name=None):
         start_date = cls.__modify_start_date(start_date)
         end_date = cls.__modify_end_date(end_date)
-        return cls.objects.filter(date__range=(start_date, end_date)).order_by('date')
+        result = cls.objects.filter(date__range=(start_date, end_date)).order_by('date')
+        if category_name is not None:
+            result = result.filter(categories__name=category_name)
+        return result
 
     @classmethod
-    def find_by_year(cls, year):
-        return cls.objects.filter(date__year=year).annotate(sum=Sum('value')).order_by('date')
+    def find_by_year(cls, year, category_name=None):
+        result = cls.objects.filter(date__year=year).order_by('date')
+        if category_name is not None:
+            result = result.filter(categories__name=category_name)
+        return result
 
     @classmethod
-    def find_by_month(cls, year, month):
-        return cls.objects.filter(date__year=year, date__month=month).order_by('date')
+    def find_by_month(cls, year, month, category_name=None):
+        result = cls.objects.filter(date__year=year, date__month=month).order_by('date')
+        if category_name is not None:
+            result = result.filter(categories__name=category_name)
+        return result
 
     @classmethod
-    def find_by_week(cls, isoyear, week):
-        return cls.objects.filter(date__isoyear=isoyear, date__week=week).order_by('date')
+    def find_by_week(cls, isoyear, week, category_name=None):
+        result = cls.objects.filter(date__isoyear=isoyear, date__week=week).order_by('date')
+        if category_name is not None:
+            result = result.filter(categories__name=category_name)
+        return result
 
     @classmethod
-    def total_by_date_range(cls, start_date=None, end_date=None):
-        start_date = cls.__modify_start_date(start_date)
-        end_date = cls.__modify_end_date(end_date)
-        result = cls.objects.filter(date__range=(start_date, end_date)) \
-            .aggregate(total=Sum('value'))['total']
+    def total_by_date_range(cls, start_date=None, end_date=None, category_name=None):
+        result = cls.find_by_date_range(start_date, end_date, category_name).order_by()
+        result = result.aggregate(total=Sum('value'))['total']
         return result if result is not None else 0
 
     @classmethod
-    def total_by_year(cls, year):
-        result = cls.objects.filter(date__year=year).annotate(sum=Sum('value')) \
-            .aggregate(total=Sum('value'))['total']
+    def total_by_year(cls, year, category_name=None):
+        result = cls.find_by_year(year, category_name).order_by()
+        result = result.aggregate(total=Sum('value'))['total']
         return result if result is not None else 0
 
     @classmethod
-    def total_by_month(cls, year, month):
-        result = cls.objects.filter(date__year=year, date__month=month) \
-            .aggregate(total=Sum('value'))['total']
+    def total_by_month(cls, year, month, category_name=None):
+        result = cls.find_by_month(year, month, category_name).order_by()
+        result = result.aggregate(total=Sum('value'))['total']
         return result if result is not None else 0
 
     @classmethod
-    def total_by_week(cls, isoyear, week):
-        result = cls.objects.filter(date__isoyear=isoyear, date__week=week) \
-            .aggregate(total=Sum('value'))['total']
+    def total_by_week(cls, isoyear, week, category_name=None):
+        result = cls.find_by_week(isoyear, week, category_name).order_by()
+        result = result.aggregate(total=Sum('value'))['total']
         return result if result is not None else 0
 
     @staticmethod

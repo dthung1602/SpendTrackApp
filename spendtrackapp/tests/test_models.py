@@ -76,3 +76,27 @@ class TestEntry(TestCase):
     def test_total_by_week(self, year, week, expected_total):
         total = Entry.total_by_week(year, week)
         self.assertAlmostEqual(expected_total, total, 2)
+
+    @data_provider(entry_find_by_date_range_with_category)
+    def test_find_by_date_range_with_category(self, start_date, end_date, category_name, expected_ids):
+        entries = Entry.find_by_date_range(start_date, end_date, category_name)
+        entry_ids = list(entry.id for entry in entries)
+        self.assertSequenceEqual(expected_ids, entry_ids)
+
+    @data_provider(entry_find_by_year_with_category)
+    def test_find_by_year_with_category(self, year, category_name, expected_ids):
+        entries = Entry.find_by_year(year, category_name)
+        entry_ids = list(entry.id for entry in entries)
+        self.assertSequenceEqual(expected_ids, entry_ids)
+
+    @data_provider(entry_find_by_month_with_category)
+    def test_find_by_month_with_category(self, year, month, category_name, expected_ids):
+        entries = Entry.find_by_month(year, month, category_name)
+        entry_ids = list(entry.id for entry in entries)
+        self.assertSequenceEqual(expected_ids, entry_ids)
+
+    @data_provider(entry_find_by_week_with_category)
+    def test_find_by_week_with_category(self, year, week, category_name, expected_ids):
+        entries = Entry.find_by_week(year, week, category_name)
+        entry_ids = list(entry.id for entry in entries)
+        self.assertSequenceEqual(expected_ids, entry_ids)
