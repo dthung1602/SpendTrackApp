@@ -7,14 +7,23 @@ from django.db.models.functions import Extract
 
 @models.DateTimeField.register_lookup
 class ExtractISOYear(Extract):
+    """Enable isoyear filter"""
     lookup_name = 'isoyear'
 
 
 class Category(models.Model):
+    """
+    A class represents spending category
+    Categories are organized to a forest:
+        - Each Entry belongs only to one leaf category and its ancestors
+        - Each Entry belongs only to one tree
+    """
+
     name = models.CharField(
         max_length=25,
         unique=True
     )
+
     parent = models.ForeignKey(
         'self',
         null=True,
@@ -23,9 +32,10 @@ class Category(models.Model):
     )
 
     def __str__(self):
-        return "id = " + str(self.id) + " " + self.name
+        return self.name
 
     def get_ancestor_ids(self):
+        """Return a list of ids of a category's ancestors (do not itself id)"""
         ancestor_ids = []
         category = self
         while category.parent is not None:
@@ -34,31 +44,59 @@ class Category(models.Model):
         return ancestor_ids
 
     def is_leaf(self):
+        """Return True/False whether a category has no children"""
         return Category.objects.filter(parent=self).count() == 0
 
 
 class Entry(models.Model):
+    """A class represents all changes in the balance"""
+
     date = models.DateTimeField()
+
     content = models.CharField(
         max_length=250
     )
+
     value = models.DecimalField(
         max_digits=12,
         decimal_places=2
     )
+
     categories = models.ManyToManyField(Category)
 
     def __str__(self):
         return self.date.strftime("[%Y-%m-%d] ") + self.content[:20].ljust(20) + " " + str(self.value)
 
     def change_category(self, category_id):
+        """
+        Clear all old categories and add category_id + its ancestors' ids
+        The given category must be a leaf, otherwise ValueError will be raised
+        """
         category = Category.objects.get(pk=category_id)
+        if not category.is_leaf():
+            raise ValueError("Category " + str(category_id) + " is not leaf")
         to_add_category_ids = [category_id] + category.get_ancestor_ids()
         self.categories.clear()
         self.categories.add(*to_add_category_ids)
 
+    ##############################################################
+    #                       FIND METHODS                         #
+    ##############################################################
+
     @classmethod
     def find_by_date_range(cls, start_date=None, end_date=None, category_name=None):
+        """
+        Find entries between start_date and end_date (inclusive) which belong to the given category name
+        :param start_date:
+        :param end_date:
+            - can be None, datetime objects or a string 'YYYY-mm-dd'
+            - time info will be discarded and replaced with 23:59:59 for end_date and 00:00:00 for start_date
+            - if start_date (or end_date) is None, it will select from the beginning (or till the ending)
+        :param category_name:
+            - name of the category
+            - if it is not given, all categories are selected
+        :return QuerySet
+        """
         start_date = cls.__modify_start_date(start_date)
         end_date = cls.__modify_end_date(end_date)
         result = cls.objects.filter(date__range=(start_date, end_date)).order_by('date')
@@ -68,6 +106,14 @@ class Entry(models.Model):
 
     @classmethod
     def find_by_year(cls, year, category_name=None):
+        """
+        Find entries in the given year
+        :param year: four-digits year
+        :param category_name:
+                - name of the category
+                - if it is not given, all categories are selected
+        :return: QuerySet
+        """
         result = cls.objects.filter(date__year=year).order_by('date')
         if category_name is not None:
             result = result.filter(categories__name=category_name)
@@ -75,6 +121,15 @@ class Entry(models.Model):
 
     @classmethod
     def find_by_month(cls, year, month, category_name=None):
+        """
+        Find entries in the given month in year
+        :param year: four-digits year
+        :param month: jan=1, feb=2, ...
+        :param category_name:
+                - name of the category
+                - if it is not given, all categories are selected
+        :return: QuerySet
+        """
         result = cls.objects.filter(date__year=year, date__month=month).order_by('date')
         if category_name is not None:
             result = result.filter(categories__name=category_name)
@@ -82,37 +137,93 @@ class Entry(models.Model):
 
     @classmethod
     def find_by_week(cls, isoyear, week, category_name=None):
+        """
+        Find entries in the given week in year
+        :param isoyear: four-digits ISO8601 year of the actual datetime object
+        :param week: ISO8601 week in year
+        :param category_name:
+                - name of the category
+                - if it is not given, all categories are selected
+        :return: QuerySet
+        """
         result = cls.objects.filter(date__isoyear=isoyear, date__week=week).order_by('date')
         if category_name is not None:
             result = result.filter(categories__name=category_name)
         return result
 
+    ##############################################################
+    #                 CALCULATE TOTAL METHODS                    #
+    ##############################################################
+
     @classmethod
     def total_by_date_range(cls, start_date=None, end_date=None, category_name=None):
+        """
+        Find total value of entries between start_date and end_date (inclusive) which belong to the given category name
+        :param start_date:
+        :param end_date:
+            - can be None, datetime objects or a string 'YYYY-mm-dd'
+            - time info will be discarded and replaced with 23:59:59 for end_date and 00:00:00 for start_date
+            - if start_date (or end_date) is None, it will select from the beginning (or till the ending)
+        :param category_name:
+            - name of the category
+            - if it is not given, all categories are selected
+        :return float
+         """
         result = cls.find_by_date_range(start_date, end_date, category_name).order_by()
         result = result.aggregate(total=Sum('value'))['total']
         return result if result is not None else 0
 
     @classmethod
     def total_by_year(cls, year, category_name=None):
+        """
+        Find total value of entries in the given year
+        :param year: four-digits year
+        :param category_name:
+                - name of the category
+                - if it is not given, all categories are selected
+        :return: float
+        """
         result = cls.find_by_year(year, category_name).order_by()
         result = result.aggregate(total=Sum('value'))['total']
         return result if result is not None else 0
 
     @classmethod
     def total_by_month(cls, year, month, category_name=None):
+        """
+        Find total value of entries in the given month in year
+        :param year: four-digits year
+        :param month: jan=1, feb=2, ...
+        :param category_name:
+                - name of the category
+                - if it is not given, all categories are selected
+        :return: float
+        """
         result = cls.find_by_month(year, month, category_name).order_by()
         result = result.aggregate(total=Sum('value'))['total']
         return result if result is not None else 0
 
     @classmethod
     def total_by_week(cls, isoyear, week, category_name=None):
+        """
+        Find total value of entries in the given week in year
+        :param isoyear: four-digits ISO8601 year of the actual datetime object
+        :param week: ISO8601 week in year
+        :param category_name:
+                - name of the category
+                - if it is not given, all categories are selected
+        :return: float
+        """
         result = cls.find_by_week(isoyear, week, category_name).order_by()
         result = result.aggregate(total=Sum('value'))['total']
         return result if result is not None else 0
 
+    ##############################################################
+    #                      HELPER METHODS                        #
+    ##############################################################
+
     @staticmethod
     def __modify_start_date(start_date):
+        """Helper method to modify start date"""
         if start_date is None:
             return '1000-1-1'
         if isinstance(start_date, datetime):
@@ -123,6 +234,7 @@ class Entry(models.Model):
 
     @staticmethod
     def __modify_end_date(end_date):
+        """Helper method to modify end_date"""
         if end_date is None:
             return '9999-12-31'
         if isinstance(end_date, datetime):
