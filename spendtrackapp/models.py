@@ -31,26 +31,45 @@ class Category(models.Model):
         on_delete=models.SET_NULL
     )
 
+    __children = None
+
+    __ancestors = None
+
+    __ancestors_ids = None
+
+    @property
+    def children(self):
+        if self.__children is None:
+            self.__children = Category.objects.filter(parent=self).order_by("name")
+        return self.__children
+
+    @property
+    def ancestors(self):
+        if self.__ancestors is None:
+            self.__ancestors = []
+            category = self
+            while category.parent is not None:
+                self.__ancestors.append(category.parent)
+                category = category.parent
+        return self.__ancestors
+
+    @property
+    def ancestors_ids(self):
+        if self.__ancestors_ids is None:
+            self.__ancestors_ids = [cat.id for cat in self.ancestors]
+        return self.__ancestors_ids
+
+    @property
+    def is_leaf(self):
+        """Whether a category has no children"""
+        return len(self.children) == 0
+
     def __str__(self):
         return self.name
 
-    def get_ancestor_ids(self):
-        """Return a list of ids of a category's ancestors (do not itself id)"""
-        ancestor_ids = []
-        category = self
-        while category.parent is not None:
-            ancestor_ids.append(category.parent.id)
-            category = category.parent
-        return ancestor_ids
-
-    def is_leaf(self):
-        """Return True/False whether a category has no children"""
-        return Category.objects.filter(parent=self).count() == 0
-
     @classmethod
-    # TODO implement this
-    def get_tree(cls):
-        pass
+    def get_root_categories(cls):
+        return cls.objects.filter(parent__isnull=True).order_by("name")
 
 
 class Entry(models.Model):
@@ -78,9 +97,9 @@ class Entry(models.Model):
         The given category must be a leaf, otherwise ValueError will be raised
         """
         category = Category.objects.get(pk=category_id)
-        if not category.is_leaf():
+        if not category.is_leaf:
             raise ValueError("Category " + str(category_id) + " is not leaf")
-        to_add_category_ids = [category_id] + category.get_ancestor_ids()
+        to_add_category_ids = [category_id] + category.ancestors_ids
         self.categories.clear()
         self.categories.add(*to_add_category_ids)
 

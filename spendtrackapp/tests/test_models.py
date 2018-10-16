@@ -11,13 +11,13 @@ class TestCategory(TestCase):
     @data_provider(category_get_ancestors)
     def test_get_ancestors(self, id, expected_ancestor_ids):
         category = Category.objects.get(pk=id)
-        ancestor_ids = category.get_ancestor_ids()
+        ancestor_ids = category.ancestors_ids
         self.assertCountEqual(expected_ancestor_ids, ancestor_ids)
 
     @data_provider(category_is_leaf)
     def test_is_leaf(self, id, expected_result):
         category = Category.objects.get(id=id)
-        self.assertEqual(expected_result, category.is_leaf())
+        self.assertEqual(expected_result, category.is_leaf)
 
 
 class TestEntry(TestCase):

@@ -41,7 +41,7 @@ def category_is_leaf():
 
 def entry_change_category():
     return [
-        [1, 3, [1, 3]],
+        [1, 11, [11, 10]],
         [1, 13, [1, 3, 13]],
         [2, 8, [1, 2, 5, 8]],
         [2, 8, [1, 2, 5, 8]],
