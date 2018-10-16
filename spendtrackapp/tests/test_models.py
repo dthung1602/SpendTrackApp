@@ -8,16 +8,34 @@ from .utils import data_provider
 class TestCategory(TestCase):
     fixtures = ['test/category.json']
 
-    @data_provider(category_get_ancestors)
-    def test_get_ancestors(self, id, expected_ancestor_ids):
-        category = Category.objects.get(pk=id)
+    @data_provider(category_ancestors)
+    def test_ancestors(self, cat_id, expected_ancestor_ids):
+        category = Category.objects.get(pk=cat_id)
         ancestor_ids = category.ancestors_ids
         self.assertCountEqual(expected_ancestor_ids, ancestor_ids)
 
+    @data_provider(category_children)
+    def test_children(self, cat_id, expected_children_ids):
+        category = Category.objects.get(pk=cat_id)
+        children_id = [child.id for child in category.children]
+        self.assertCountEqual(expected_children_ids, children_id)
+
     @data_provider(category_is_leaf)
-    def test_is_leaf(self, id, expected_result):
-        category = Category.objects.get(id=id)
+    def test_is_leaf(self, cat_id, expected_result):
+        category = Category.objects.get(id=cat_id)
         self.assertEqual(expected_result, category.is_leaf)
+
+    @data_provider(category_get_leaf_category)
+    def test_get_leaf_category(self, cat_id, expected_result):
+        category = Category.get_leaf_category(cat_id)
+        result = category is not None
+        self.assertEqual(expected_result, result)
+
+    @data_provider(category_get_root_categories)
+    def test_get_root_categories(self, expected_root_categories_id):
+        categories = Category.get_root_categories()
+        root_category_ids = [cat.id for cat in categories]
+        self.assertEqual(expected_root_categories_id, root_category_ids)
 
 
 class TestEntry(TestCase):
@@ -26,7 +44,8 @@ class TestEntry(TestCase):
     @data_provider(entry_change_category)
     def test_change_category(self, entry_id, category_id, expected_ids):
         entry = Entry.objects.get(pk=entry_id)
-        entry.change_category(category_id)
+        category = Category.objects.get(pk=category_id)
+        entry.change_category(category)
         category_ids = [cat.id for cat in entry.categories.all()]
         self.assertCountEqual(expected_ids, category_ids)
         entry.save()

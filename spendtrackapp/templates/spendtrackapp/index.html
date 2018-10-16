@@ -1,3 +1,10 @@
 <p>{{ current_balance }}</p>
 <p>{{ now }}</p>
 <p>{{ total_in_week }}</p>
+<form method="post" action="{% url 'add' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <p><label for="category_id">Category ID</label><input type="number" name="category_id" id="category_id"></p>
+    {#    <input>#}
+    <input type="submit">
+</form>

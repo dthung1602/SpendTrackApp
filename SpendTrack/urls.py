@@ -21,8 +21,11 @@ from spendtrackapp.views import index
 
 urlpatterns = [
     path('', index.index, name='index'),
+    path('add/', index.add, name='add'),
+
     path('admin/', admin.site.urls),
     path('auth/', include('django.contrib.auth.urls')),
+
     path('summarize/', include('spendtrackapp.urls.summarize')),
     path('plan/', include('spendtrackapp.urls.plan')),
     path('settings/', include('spendtrackapp.urls.settings')),

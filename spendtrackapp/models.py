@@ -68,6 +68,16 @@ class Category(models.Model):
         return self.name
 
     @classmethod
+    def get_leaf_category(cls, category_id):
+        try:
+            category = Category.objects.get(pk=category_id)
+            if not category.is_leaf:
+                raise ValueError
+            return category
+        except (ValueError, Category.DoesNotExist):
+            return None
+
+    @classmethod
     def get_root_categories(cls):
         return cls.objects.filter(parent__isnull=True).order_by("name")
 
@@ -91,15 +101,12 @@ class Entry(models.Model):
     def __str__(self):
         return self.date.strftime("[%Y-%m-%d] ") + self.content[:20].ljust(20) + " " + str(self.value)
 
-    def change_category(self, category_id):
+    def change_category(self, category):
         """
         Clear all old categories and add category_id + its ancestors' ids
         The given category must be a leaf, otherwise ValueError will be raised
         """
-        category = Category.objects.get(pk=category_id)
-        if not category.is_leaf:
-            raise ValueError("Category " + str(category_id) + " is not leaf")
-        to_add_category_ids = [category_id] + category.ancestors_ids
+        to_add_category_ids = [category.id] + category.ancestors_ids
         self.categories.clear()
         self.categories.add(*to_add_category_ids)
 
