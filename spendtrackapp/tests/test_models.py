@@ -9,25 +9,25 @@ class TestCategory(TestCase):
     fixtures = ['test/category.json']
 
     @data_provider(category_ancestors)
-    def test_ancestors(self, cat_id, expected_ancestor_ids):
-        category = Category.objects.get(pk=cat_id)
+    def test_ancestors(self, category_id, expected_ancestor_ids):
+        category = Category.objects.get(pk=category_id)
         ancestor_ids = category.ancestors_ids
         self.assertCountEqual(expected_ancestor_ids, ancestor_ids)
 
     @data_provider(category_children)
-    def test_children(self, cat_id, expected_children_ids):
-        category = Category.objects.get(pk=cat_id)
+    def test_children(self, category_id, expected_children_ids):
+        category = Category.objects.get(pk=category_id)
         children_id = [child.id for child in category.children]
         self.assertCountEqual(expected_children_ids, children_id)
 
     @data_provider(category_is_leaf)
-    def test_is_leaf(self, cat_id, expected_result):
-        category = Category.objects.get(id=cat_id)
+    def test_is_leaf(self, category_id, expected_result):
+        category = Category.objects.get(id=category_id)
         self.assertEqual(expected_result, category.is_leaf)
 
     @data_provider(category_get_leaf_category)
-    def test_get_leaf_category(self, cat_id, expected_result):
-        category = Category.get_leaf_category(cat_id)
+    def test_get_leaf_category(self, category_id, expected_result):
+        category = Category.get_leaf_category(category_id)
         result = category is not None
         self.assertEqual(expected_result, result)
 
@@ -41,8 +41,8 @@ class TestCategory(TestCase):
 class TestEntry(TestCase):
     fixtures = ['test/entry_categories.json', 'test/category.json', 'test/entry.json', ]
 
-    @data_provider(entry_change_category)
-    def test_change_category(self, entry_id, category_id, expected_ids):
+    @data_provider(entry_change_category_success)
+    def test_change_category_success(self, entry_id, category_id, expected_ids):
         entry = Entry.objects.get(pk=entry_id)
         category = Category.objects.get(pk=category_id)
         entry.change_category(category)
@@ -51,6 +51,13 @@ class TestEntry(TestCase):
         entry.save()
         category_ids = [cat.id for cat in entry.categories.all()]
         self.assertCountEqual(expected_ids, category_ids)
+
+    @data_provider(entry_change_category_fail)
+    def test_change_category_fail(self, entry_id, category_id):
+        with self.assertRaises(ValueError):
+            entry = Entry.objects.get(pk=entry_id)
+            category = Category.objects.get(pk=category_id)
+            entry.change_category(category)
 
     ##############################################################
     #                       FIND METHODS                         #
@@ -136,13 +143,23 @@ class TestEntry(TestCase):
 class TestInfo(TestCase):
     fixtures = ['test/info.json']
 
-    @data_provider(info_get)
-    def test_get(self, name, expected_value, expected_value_type):
+    @data_provider(info_get_success)
+    def test_get_success(self, name, expected_value, expected_value_type):
         value = Info.get(name)
         self.assertEqual(expected_value_type, type(value))
         self.assertEqual(expected_value, value)
 
-    @data_provider(info_set)
-    def test_set(self, name, value):
+    @data_provider(info_get_fail)
+    def test_get_fail(self, name, exception):
+        with self.assertRaises(exception):
+            Info.get(name)
+
+    @data_provider(info_set_success)
+    def test_set_success(self, name, value):
         Info.set(name, value)
         self.assertEqual(value, Info.get(name))
+
+    @data_provider(info_set_fail)
+    def test_set_fail(self, name, value, exception):
+        with self.assertRaises(exception):
+            Info.set(name, value)

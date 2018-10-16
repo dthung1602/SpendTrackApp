@@ -104,8 +104,10 @@ class Entry(models.Model):
     def change_category(self, category):
         """
         Clear all old categories and add category_id + its ancestors' ids
-        The given category must be a leaf, otherwise ValueError will be raised
+        :raise ValueError when category is not leaf
         """
+        if not category.is_leaf:
+            raise ValueError('Category is not leaf')
         to_add_category_ids = [category.id] + category.ancestors_ids
         self.categories.clear()
         self.categories.add(*to_add_category_ids)
@@ -254,7 +256,11 @@ class Entry(models.Model):
 
     @staticmethod
     def __modify_start_date(start_date):
-        """Helper method to modify start date"""
+        """
+        Helper method to modify start date
+        :raise TypeError when start_date is not string or datetime object
+        :raise ValueError when start_date is a string but does not match "%Y-%m-%d"
+        """
         if start_date is None:
             return '1000-1-1'
         if isinstance(start_date, datetime):
@@ -265,7 +271,11 @@ class Entry(models.Model):
 
     @staticmethod
     def __modify_end_date(end_date):
-        """Helper method to modify end_date"""
+        """
+        Helper method to modify end_date
+        :raise TypeError when start_date is not string or datetime object
+        :raise ValueError when start_date is a string but does not match "%Y-%m-%d"
+        """
         if end_date is None:
             return '9999-12-31'
         if isinstance(end_date, datetime):
@@ -315,7 +325,13 @@ class Info(models.Model):
 
     @classmethod
     def set(cls, name, value):
-        """Set value of the info with given name and save to database"""
+        """
+        Set value of the info with given name and save to database
+        :raise ValueError iF value is invalid
+        """
         info = cls.objects.get(name=name)
-        info.value = str(cls.__converter[info.value_type](value))
+        str_value = str(value)
+        if value != cls.__converter[info.value_type](str_value):
+            raise ValueError()
+        info.value = str_value
         info.save()

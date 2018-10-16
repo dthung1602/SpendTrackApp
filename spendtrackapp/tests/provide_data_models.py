@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from spendtrackapp.models import Info
+
 
 def category_ancestors():
     return [
@@ -73,7 +75,12 @@ def category_get_leaf_category():
         [11, True],
         [12, True],
         [13, True],
-        [14, True]
+        [14, True],
+
+        [0, False],
+        [99, False],
+        [1.158, False],
+        ['abc', False]
     ]
 
 
@@ -83,13 +90,23 @@ def category_get_root_categories():
     ]
 
 
-def entry_change_category():
+def entry_change_category_success():
     return [
         [1, 11, [11, 10]],
         [1, 13, [1, 3, 13]],
         [2, 8, [1, 2, 5, 8]],
         [2, 8, [1, 2, 5, 8]],
         [3, 12, [12]],
+    ]
+
+
+def entry_change_category_fail():
+    return [
+        [1, 1],
+        [1, 2],
+        [1, 3],
+        [1, 5],
+        [1, 10],
     ]
 
 
@@ -337,7 +354,7 @@ def entry_find_by_week_with_category():
     ]
 
 
-def info_get():
+def info_get_success():
     return [
         ('a string', 'a long long long string', str),
         ('an int1', 58, int),
@@ -352,11 +369,34 @@ def info_get():
     ]
 
 
-def info_set():
+def info_get_fail():
+    return [
+        ['does not exist', Info.DoesNotExist],
+        [2, Info.DoesNotExist],
+        [5.99, Info.DoesNotExist],
+
+        ['fail int', ValueError],
+        ['fail float', ValueError],
+    ]
+
+
+def info_set_success():
     return [
         ('a string', 'a new string'),
         ('an int1', 65),
         ('a float1', -1235.568),
         ('a bool1', True),
         ('a bool2', False),
+    ]
+
+
+def info_set_fail():
+    return [
+        ['does not exist', '', Info.DoesNotExist],
+        [2, '', Info.DoesNotExist],
+        [2.99, '', Info.DoesNotExist],
+
+        ['an int1', 'abc', ValueError],
+        ['an int1', 1.5, ValueError],
+        ['a float1', 'abc', ValueError]
     ]

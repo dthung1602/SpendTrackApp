@@ -88,5 +88,23 @@
       "value": "0",
       "value_type": "b"
     }
+  },
+  {
+    "model": "spendtrackapp.info",
+    "pk": 24,
+    "fields": {
+      "name": "fail int",
+      "value": "abc",
+      "value_type": "i"
+    }
+  },
+  {
+    "model": "spendtrackapp.info",
+    "pk": 25,
+    "fields": {
+      "name": "fail float",
+      "value": "abc",
+      "value_type": "f"
+    }
   }
 ]
