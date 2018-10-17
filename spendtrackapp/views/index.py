@@ -1,11 +1,13 @@
+from django.contrib.auth.decorators import login_required
 from django.http.response import JsonResponse
 from django.shortcuts import render
 
 from spendtrackapp.forms import *
 from spendtrackapp.models import *
+from spendtrackapp.models import Category
 
 
-# @login_required
+@login_required
 def index(request):
     current_balance = Info.get('CURRENT_BALANCE')
     root_categories = Category.get_root_categories()
@@ -26,17 +28,18 @@ def index(request):
     return render(request, 'spendtrackapp/index.html', context)
 
 
-# @login_required
+@login_required
 def add(request):
     errors = {}
 
     # validate category_id
     if 'category_id' not in request.POST:
         errors.update({'category_id': ['Missing category']})
-    category_id = request.POST['category_id']
-    category = Category.get_leaf_category(category_id)
-    if category is None:
-        errors.update({'category_id': ['Invalid category']})
+    else:
+        category_id = request.POST['category_id']
+        category = Category.get_leaf_category(category_id)
+        if category is None:
+            errors.update({'category_id': ['Invalid category']})
 
     # validate other fields
     form = EntryForm(request.POST)

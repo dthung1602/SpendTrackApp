@@ -106,5 +106,23 @@
       "value": "abc",
       "value_type": "f"
     }
+  },
+  {
+    "model": "spendtrackapp.info",
+    "pk": 26,
+    "fields": {
+      "name": "CURRENT_BALANCE",
+      "value": "152",
+      "value_type": "f"
+    }
+  },
+  {
+    "model": "spendtrackapp.info",
+    "pk": 27,
+    "fields": {
+      "name": "INIT_BALANCE",
+      "value": "0",
+      "value_type": "f"
+    }
   }
 ]

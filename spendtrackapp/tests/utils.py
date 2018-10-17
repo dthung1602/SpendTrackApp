@@ -13,25 +13,30 @@ class NoDbTestRunner(DiscoverRunner):
         pass
 
 
-def data_provider(data_provider_function):
+def data_provider(data_provider_function, verbose=True):
     """PHPUnit style data provider decorator"""
 
     def test_decorator(test_function):
         def new_test_function(self, *args):
             i = 0
-            print("\nTest function: " + test_function.__name__)
+            if verbose:
+                print("\nTest function: " + test_function.__name__)
             for data_set in data_provider_function():
                 try:
-                    print("    #" + str(i) + ": ", end='')
+                    if verbose:
+                        print("    #" + str(i).rjust(2, '0') + ": ", end='')
                     test_function(self, *data_set)
                     i += 1
                 except AssertionError:
-                    print("failed with dataset:")
-                    print(data_set)
+                    if verbose:
+                        print("failed with dataset:")
+                        print(data_set)
                     raise
                 else:
-                    print("passed")
-            print("----------------------------\n")
+                    if verbose:
+                        print("passed")
+            if verbose:
+                print("----------------------------\n")
 
         return new_test_function
 

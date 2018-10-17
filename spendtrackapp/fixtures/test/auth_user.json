@@ -1,0 +1,20 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$120000$wJfN3Zq6IR0w$7YuMx7vfwLPwLR4Ibcbyyq+lFdhyHu77HqW1dP2bs+g=",
+      "last_login": "2018-10-16T13:00:35Z",
+      "is_superuser": true,
+      "username": "dtrump",
+      "first_name": "Donald",
+      "last_name": "Trump",
+      "email": "trump@white-house.gov",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2018-10-16T13:00:23Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  }
+]
