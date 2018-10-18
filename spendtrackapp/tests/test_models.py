@@ -59,6 +59,11 @@ class TestEntry(TestCase):
             category = Category.objects.get(pk=category_id)
             entry.change_category(category)
 
+    @data_provider(entry_modify_date)
+    def test_modify_date(self, func, date, expected_exception):
+        with self.assertRaises(expected_exception):
+            func(date)
+
     ##############################################################
     #                       FIND METHODS                         #
     ##############################################################

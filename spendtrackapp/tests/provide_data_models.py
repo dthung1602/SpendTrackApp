@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from spendtrackapp.models import Info
+from spendtrackapp.models import Info, Entry
 
 
 def category_ancestors():
@@ -107,6 +107,30 @@ def entry_change_category_fail():
         [1, 3],
         [1, 5],
         [1, 10],
+    ]
+
+
+def entry_modify_date():
+    return [
+        [Entry._Entry__modify_start_date, 125, TypeError],
+        [Entry._Entry__modify_start_date, 12.5, TypeError],
+        [Entry._Entry__modify_start_date, True, TypeError],
+        [Entry._Entry__modify_start_date, [], TypeError],
+        [Entry._Entry__modify_start_date, '', ValueError],
+        [Entry._Entry__modify_start_date, '2018 05 15', ValueError],
+        [Entry._Entry__modify_start_date, '2018-05-15 15:15:15', ValueError],
+        [Entry._Entry__modify_start_date, '2018-55-15', ValueError],
+        [Entry._Entry__modify_start_date, '2018-05-99', ValueError],
+
+        [Entry._Entry__modify_end_date, 125, TypeError],
+        [Entry._Entry__modify_end_date, 12.5, TypeError],
+        [Entry._Entry__modify_end_date, True, TypeError],
+        [Entry._Entry__modify_end_date, [], TypeError],
+        [Entry._Entry__modify_end_date, '', ValueError],
+        [Entry._Entry__modify_end_date, '2018 05 15', ValueError],
+        [Entry._Entry__modify_end_date, '2018-05-15 15:15:15', ValueError],
+        [Entry._Entry__modify_end_date, '2018-55-15', ValueError],
+        [Entry._Entry__modify_end_date, '2018-05-99', ValueError],
     ]
 
 

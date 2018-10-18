@@ -9,6 +9,8 @@ from spendtrackapp.models import Category
 
 @login_required
 def index(request):
+    """Handle home page get request"""
+
     current_balance = Info.get('CURRENT_BALANCE')
     root_categories = Category.get_root_categories()
     now = datetime.now()
@@ -30,6 +32,13 @@ def index(request):
 
 @login_required
 def add(request):
+    """
+    Handle add new entries request
+    :return on success: an empty JSON object
+            on failure: an JSON object whose properties' names are invalid fields
+                        and whose values are list of errors in those fields
+    """
+
     errors = {}
 
     # validate category_id
@@ -46,6 +55,7 @@ def add(request):
     if not form.is_valid():
         errors.update(form.errors)
 
+    # return errors, if any
     if errors:
         return JsonResponse(errors, status=400)
 

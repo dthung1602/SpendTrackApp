@@ -12,7 +12,8 @@ chart
 
 URL
 
-/                                           --> current balance, plan, add
+/                                           --> current balance, plan
+    add                                     --> add new entry
 
     admin                                   --> django admin app
     auth                                    --> django auth app
