@@ -8,12 +8,12 @@ class TwoDigitWeekConverter:
 
     def to_python(self, value):
         value = int(value)
-        if not (0 < value < 53):
+        if not (0 < value < 54):
             raise ValueError
         return value
 
     def to_url(self, value):
-        return '%02d' % value
+        return '%02d' % int(value)
 
 
 class ThreeCharMonthConverter:
@@ -27,7 +27,7 @@ class ThreeCharMonthConverter:
         return pos + 1
 
     def to_url(self, value):
-        return self.months[value - 1]
+        return self.months[int(value) - 1]
 
 
 class FourDigitYearConverter:
@@ -37,7 +37,7 @@ class FourDigitYearConverter:
         return int(value)
 
     def to_url(self, value):
-        return '%04d' % value
+        return '%04d' % int(value)
 
 
 class DateConverter:
@@ -47,7 +47,12 @@ class DateConverter:
         return datetime.strptime(value, '%Y-%m-%d')
 
     def to_url(self, value):
-        return value.strftime('%Y-%m-%d')
+        if isinstance(value, datetime):
+            return value.strftime('%Y-%m-%d')
+        elif isinstance(value, str):
+            return value
+        else:
+            raise TypeError
 
 
 register_converter(TwoDigitWeekConverter, 'ww')

@@ -125,3 +125,15 @@ STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = '/'
 
 LOGIN_URL = 'login'
+
+######################################
+#             APP CONFIG             #
+######################################
+
+VIEW_SUMMARIZE_DATE_RANGE_DEFAULT_PAGE_SIZE = 30
+
+VIEW_SUMMARIZE_YEAR_DEFAULT_PAGE_SIZE = 30
+
+VIEW_SUMMARIZE_MONTH_DEFAULT_PAGE_SIZE = 30
+
+VIEW_SUMMARIZE_WEEK_DEFAULT_PAGE_SIZE = float('inf')

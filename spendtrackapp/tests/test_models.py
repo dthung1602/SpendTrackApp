@@ -144,6 +144,34 @@ class TestEntry(TestCase):
         entry_ids = list(entry.id for entry in entries)
         self.assertSequenceEqual(expected_ids, entry_ids)
 
+    ##############################################################
+    #                 FIND METHODS WITH LIMIT                    #
+    ##############################################################
+    
+    @data_provider(entry_find_by_date_range_with_limit)
+    def test_find_by_date_range_with_limit(self, start_date, end_date, limit, expected_ids):
+        entries = Entry.find_by_date_range(start_date, end_date, limit=limit)
+        entry_ids = list(entry.id for entry in entries)
+        self.assertSequenceEqual(expected_ids, entry_ids)
+
+    @data_provider(entry_find_by_year_with_limit)
+    def test_find_by_year_with_limit(self, year, limit, expected_ids):
+        entries = Entry.find_by_year(year, limit=limit)
+        entry_ids = list(entry.id for entry in entries)
+        self.assertSequenceEqual(expected_ids, entry_ids)
+
+    @data_provider(entry_find_by_month_with_limit)
+    def test_find_by_month_with_limit(self, year, month, limit, expected_ids):
+        entries = Entry.find_by_month(year, month, limit=limit)
+        entry_ids = list(entry.id for entry in entries)
+        self.assertSequenceEqual(expected_ids, entry_ids)
+
+    @data_provider(entry_find_by_week_with_limit)
+    def test_find_by_week_with_limit(self, year, week, limit, expected_ids):
+        entries = Entry.find_by_week(year, week, limit=limit)
+        entry_ids = list(entry.id for entry in entries)
+        self.assertSequenceEqual(expected_ids, entry_ids)
+
 
 class TestInfo(TestCase):
     fixtures = ['test/info.json']

@@ -1,5 +1,7 @@
 from datetime import datetime
+from math import inf as INF
 
+from django.conf import settings
 from django.db import models
 from django.db.models import Sum
 from django.db.models.functions import Extract
@@ -134,7 +136,8 @@ class Entry(models.Model):
     ##############################################################
 
     @classmethod
-    def find_by_date_range(cls, start_date=None, end_date=None, category_name=None):
+    def find_by_date_range(cls, start_date=None, end_date=None, category_name=None,
+                           limit=settings.VIEW_SUMMARIZE_DATE_RANGE_DEFAULT_PAGE_SIZE):
         """
         Find entries between start_date and end_date (inclusive) which belong to the given category name
         :param start_date:
@@ -145,6 +148,7 @@ class Entry(models.Model):
         :param category_name:
             - name of the category
             - if it is not given, all categories are selected
+        :param limit: maximum number of entries to return
         :return QuerySet
         """
         start_date = cls.__modify_start_date(start_date)
@@ -152,25 +156,26 @@ class Entry(models.Model):
         result = cls.objects.filter(date__range=(start_date, end_date)).order_by('date')
         if category_name is not None:
             result = result.filter(categories__name=category_name)
-        return result
+        return result[:limit] if limit < INF else result
 
     @classmethod
-    def find_by_year(cls, year, category_name=None):
+    def find_by_year(cls, year, category_name=None, limit=settings.VIEW_SUMMARIZE_YEAR_DEFAULT_PAGE_SIZE):
         """
         Find entries in the given year
         :param year: four-digits year
         :param category_name:
                 - name of the category
                 - if it is not given, all categories are selected
+        :param limit: maximum number of entries to return
         :return: QuerySet
         """
         result = cls.objects.filter(date__year=year).order_by('date')
         if category_name is not None:
             result = result.filter(categories__name=category_name)
-        return result
+        return result[:limit] if limit < INF else result
 
     @classmethod
-    def find_by_month(cls, year, month, category_name=None):
+    def find_by_month(cls, year, month, category_name=None, limit=settings.VIEW_SUMMARIZE_MONTH_DEFAULT_PAGE_SIZE):
         """
         Find entries in the given month in year
         :param year: four-digits year
@@ -178,15 +183,16 @@ class Entry(models.Model):
         :param category_name:
                 - name of the category
                 - if it is not given, all categories are selected
+        :param limit: maximum number of entries to return
         :return: QuerySet
         """
         result = cls.objects.filter(date__year=year, date__month=month).order_by('date')
         if category_name is not None:
             result = result.filter(categories__name=category_name)
-        return result
+        return result[:limit] if limit < INF else result
 
     @classmethod
-    def find_by_week(cls, isoyear, week, category_name=None):
+    def find_by_week(cls, isoyear, week, category_name=None, limit=settings.VIEW_SUMMARIZE_WEEK_DEFAULT_PAGE_SIZE):
         """
         Find entries in the given week in year
         :param isoyear: four-digits ISO8601 year of the actual datetime object
@@ -194,12 +200,13 @@ class Entry(models.Model):
         :param category_name:
                 - name of the category
                 - if it is not given, all categories are selected
+        :param limit: maximum number of entries to return
         :return: QuerySet
         """
         result = cls.objects.filter(date__isoyear=isoyear, date__week=week).order_by('date')
         if category_name is not None:
             result = result.filter(categories__name=category_name)
-        return result
+        return result[:limit] if limit < INF else result
 
     ##############################################################
     #                 CALCULATE TOTAL METHODS                    #
@@ -219,7 +226,7 @@ class Entry(models.Model):
             - if it is not given, all categories are selected
         :return float
          """
-        result = cls.find_by_date_range(start_date, end_date, category_name).order_by()
+        result = cls.find_by_date_range(start_date, end_date, category_name, INF).order_by()
         result = result.aggregate(total=Sum('value'))['total']
         return result if result is not None else 0
 
@@ -233,7 +240,7 @@ class Entry(models.Model):
                 - if it is not given, all categories are selected
         :return: float
         """
-        result = cls.find_by_year(year, category_name).order_by()
+        result = cls.find_by_year(year, category_name, INF).order_by()
         result = result.aggregate(total=Sum('value'))['total']
         return result if result is not None else 0
 
@@ -248,7 +255,7 @@ class Entry(models.Model):
                 - if it is not given, all categories are selected
         :return: float
         """
-        result = cls.find_by_month(year, month, category_name).order_by()
+        result = cls.find_by_month(year, month, category_name, INF).order_by()
         result = result.aggregate(total=Sum('value'))['total']
         return result if result is not None else 0
 
@@ -263,7 +270,7 @@ class Entry(models.Model):
                 - if it is not given, all categories are selected
         :return: float
         """
-        result = cls.find_by_week(isoyear, week, category_name).order_by()
+        result = cls.find_by_week(isoyear, week, category_name, INF).order_by()
         result = result.aggregate(total=Sum('value'))['total']
         return result if result is not None else 0
 
