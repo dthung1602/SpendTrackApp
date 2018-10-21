@@ -1,3 +1,5 @@
+import sys
+
 from django.test.runner import DiscoverRunner
 
 
@@ -29,8 +31,9 @@ def data_provider(data_provider_function, verbose=True):
                     i += 1
                 except AssertionError:
                     if verbose:
-                        print("failed with dataset:")
-                        print(data_set)
+                        print("Failed with data set #%d: " % i, end='', file=sys.stderr)
+                        print(data_set, file=sys.stderr)
+                        sys.stderr.flush()
                     raise
                 else:
                     if verbose:

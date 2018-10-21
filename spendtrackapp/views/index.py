@@ -8,7 +8,7 @@ from spendtrackapp.models import Category
 
 
 @login_required
-def index(request):
+def index_handler(request):
     """Handle home page get request"""
 
     current_balance = Info.get('CURRENT_BALANCE')
@@ -31,7 +31,7 @@ def index(request):
 
 
 @login_required
-def add(request):
+def add_handler(request):
     """
     Handle add new entries request
     :return on success: an empty JSON object

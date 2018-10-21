@@ -5,8 +5,8 @@ from spendtrackapp.views.summarize import *
 from . import converters
 
 urlpatterns = [
-    path('<yyyy:year>', year, name='summarize_year'),
-    path('<yyyy:year>/<mmm:month>', month, name='summarize_month'),
-    path('<yyyy:year>/<ww:week>', week, name='summarize_week'),
-    path('<date:start_date>/<date:end_date>', date_range, name='summarize_date_range'),
+    path('<yyyy:year>', year_handler, name='summarize_year'),
+    path('<yyyy:year>/<mmm:month>', month_handler, name='summarize_month'),
+    path('<yyyy:year>/<ww:week>', week_handler, name='summarize_week'),
+    path('<date:start_date>/<date:end_date>', date_range_handler, name='summarize_date_range'),
 ]

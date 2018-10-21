@@ -1,10 +1,15 @@
+from __future__ import annotations
+
 from datetime import datetime
-from math import inf as INF
+from typing import List, Optional, Union, TypeVar
 
 from django.conf import settings
 from django.db import models
+from django.db.models import QuerySet
 from django.db.models import Sum
 from django.db.models.functions import Extract
+
+NullableDate = TypeVar('NullableDate', Union[str, None], datetime)
 
 
 @models.DateTimeField.register_lookup
@@ -42,14 +47,14 @@ class Category(models.Model):
     __ancestors_ids = None
 
     @property
-    def children(self):
+    def children(self) -> QuerySet:
         """List of children of the category, order by name"""
         if self.__children is None:
             self.__children = Category.objects.filter(parent=self).order_by("name")
         return self.__children
 
     @property
-    def ancestors(self):
+    def ancestors(self) -> List[Category]:
         """List of all ancestors of the category, order by increasing distance to this category"""
         if self.__ancestors is None:
             self.__ancestors = []
@@ -60,14 +65,14 @@ class Category(models.Model):
         return self.__ancestors
 
     @property
-    def ancestors_ids(self):
+    def ancestors_ids(self) -> List[int]:
         """List of all ancestors' ids"""
         if self.__ancestors_ids is None:
             self.__ancestors_ids = [cat.id for cat in self.ancestors]
         return self.__ancestors_ids
 
     @property
-    def is_leaf(self):
+    def is_leaf(self) -> bool:
         """Whether a category has no children"""
         return len(self.children) == 0
 
@@ -75,7 +80,7 @@ class Category(models.Model):
         return self.name
 
     @classmethod
-    def get_leaf_category(cls, category_id):
+    def get_leaf_category(cls, category_id: int) -> Optional[Category]:
         """
         Return None if category_id is invalid or the category is not leaf
         Otherwise return the category with matching id
@@ -89,7 +94,7 @@ class Category(models.Model):
             return None
 
     @classmethod
-    def get_root_categories(cls):
+    def get_root_categories(cls) -> QuerySet:
         """Return a list of all root categories in database, order by name"""
         return cls.objects.filter(parent__isnull=True).order_by("name")
 
@@ -120,9 +125,10 @@ class Entry(models.Model):
     def __str__(self):
         return self.date.strftime("[%Y-%m-%d] ") + self.content[:20].ljust(20) + " " + str(self.value)
 
-    def change_category(self, category):
+    def change_category(self, category: Category) -> None:
         """
         Clear all old categories and add category_id + its ancestors' ids
+        
         :raise ValueError when category is not leaf
         """
         if not category.is_leaf:
@@ -136,141 +142,156 @@ class Entry(models.Model):
     ##############################################################
 
     @classmethod
-    def find_by_date_range(cls, start_date=None, end_date=None, category_name=None,
-                           limit=settings.VIEW_SUMMARIZE_DATE_RANGE_DEFAULT_PAGE_SIZE):
+    def find_by_date_range(cls,
+                           start_date: NullableDate = None,
+                           end_date: NullableDate = None,
+                           category_name: Optional[str] = None,
+                           limit: int = settings.VIEW_SUMMARIZE_DATE_RANGE_DEFAULT_PAGE_SIZE) -> QuerySet:
         """
         Find entries between start_date and end_date (inclusive) which belong to the given category name
+
         :param start_date:
         :param end_date:
             - can be None, datetime objects or a string 'YYYY-mm-dd'
             - time info will be discarded and replaced with 23:59:59 for end_date and 00:00:00 for start_date
             - if start_date (or end_date) is None, it will select from the beginning (or till the ending)
-        :param category_name:
-            - name of the category
-            - if it is not given, all categories are selected
-        :param limit: maximum number of entries to return
-        :return QuerySet
+        :param category_name: name of the category. If not given, all categories are selected
+        :param limit: maximum number of entries to return. No limit is set if -1 is given
         """
         start_date = cls.__modify_start_date(start_date)
         end_date = cls.__modify_end_date(end_date)
         result = cls.objects.filter(date__range=(start_date, end_date)).order_by('date')
         if category_name is not None:
             result = result.filter(categories__name=category_name)
-        return result[:limit] if limit < INF else result
+        return result[:limit] if limit >= 0 else result
 
     @classmethod
-    def find_by_year(cls, year, category_name=None, limit=settings.VIEW_SUMMARIZE_YEAR_DEFAULT_PAGE_SIZE):
+    def find_by_year(cls,
+                     year: int,
+                     category_name: Optional[str] = None,
+                     limit: int = settings.VIEW_SUMMARIZE_YEAR_DEFAULT_PAGE_SIZE) -> QuerySet:
         """
         Find entries in the given year
+
         :param year: four-digits year
-        :param category_name:
-                - name of the category
-                - if it is not given, all categories are selected
-        :param limit: maximum number of entries to return
-        :return: QuerySet
+        :param category_name: name of the category. If not given, all categories are selected
+        :param limit: maximum number of entries to return. No limit is set if -1 is given
         """
         result = cls.objects.filter(date__year=year).order_by('date')
         if category_name is not None:
             result = result.filter(categories__name=category_name)
-        return result[:limit] if limit < INF else result
+        return result[:limit] if limit >= 0 else result
 
     @classmethod
-    def find_by_month(cls, year, month, category_name=None, limit=settings.VIEW_SUMMARIZE_MONTH_DEFAULT_PAGE_SIZE):
+    def find_by_month(cls,
+                      year: int,
+                      month: int,
+                      category_name: Optional[str] = None,
+                      limit: int = settings.VIEW_SUMMARIZE_MONTH_DEFAULT_PAGE_SIZE) -> QuerySet:
         """
         Find entries in the given month in year
+        
         :param year: four-digits year
-        :param month: jan=1, feb=2, ...
-        :param category_name:
-                - name of the category
-                - if it is not given, all categories are selected
-        :param limit: maximum number of entries to return
-        :return: QuerySet
+        :param month: 1, 2, ... 12
+        :param category_name: name of the category. If not given, all categories are selected
+        :param limit: maximum number of entries to return. No limit is set if -1 is given
         """
         result = cls.objects.filter(date__year=year, date__month=month).order_by('date')
         if category_name is not None:
             result = result.filter(categories__name=category_name)
-        return result[:limit] if limit < INF else result
+        return result[:limit] if limit >= 0 else result
 
     @classmethod
-    def find_by_week(cls, isoyear, week, category_name=None, limit=settings.VIEW_SUMMARIZE_WEEK_DEFAULT_PAGE_SIZE):
+    def find_by_week(cls,
+                     isoyear: int,
+                     week: int,
+                     category_name: Optional[str] = None,
+                     limit: int = settings.VIEW_SUMMARIZE_WEEK_DEFAULT_PAGE_SIZE) -> QuerySet:
         """
         Find entries in the given week in year
+
         :param isoyear: four-digits ISO8601 year of the actual datetime object
         :param week: ISO8601 week in year
-        :param category_name:
-                - name of the category
-                - if it is not given, all categories are selected
-        :param limit: maximum number of entries to return
-        :return: QuerySet
+        :param category_name: name of the category. If not given, all categories are selected
+        :param limit: maximum number of entries to return. No limit is set if -1 is given
         """
         result = cls.objects.filter(date__isoyear=isoyear, date__week=week).order_by('date')
         if category_name is not None:
             result = result.filter(categories__name=category_name)
-        return result[:limit] if limit < INF else result
+        return result[:limit] if limit >= 0 else result
 
     ##############################################################
     #                 CALCULATE TOTAL METHODS                    #
     ##############################################################
 
     @classmethod
-    def total_by_date_range(cls, start_date=None, end_date=None, category_name=None):
+    def total_by_date_range(cls,
+                            start_date: NullableDate = None,
+                            end_date: NullableDate = None,
+                            category_name: Optional[str] = None) -> float:
         """
         Find total value of entries between start_date and end_date (inclusive) which belong to the given category name
+
         :param start_date:
         :param end_date:
             - can be None, datetime objects or a string 'YYYY-mm-dd'
             - time info will be discarded and replaced with 23:59:59 for end_date and 00:00:00 for start_date
             - if start_date (or end_date) is None, it will select from the beginning (or till the ending)
-        :param category_name:
-            - name of the category
-            - if it is not given, all categories are selected
-        :return float
+        :param category_name: name of the category. If not given, all categories are selected
          """
-        result = cls.find_by_date_range(start_date, end_date, category_name, INF).order_by()
+        result = cls.find_by_date_range(start_date, end_date, category_name, -1).order_by()
         result = result.aggregate(total=Sum('value'))['total']
         return result if result is not None else 0
 
     @classmethod
-    def total_by_year(cls, year, category_name=None):
+    def total_by_year(cls,
+                      year: int,
+                      category_name: Optional[str] = None) -> float:
         """
         Find total value of entries in the given year
+
         :param year: four-digits year
         :param category_name:
                 - name of the category
                 - if it is not given, all categories are selected
-        :return: float
         """
-        result = cls.find_by_year(year, category_name, INF).order_by()
+        result = cls.find_by_year(year, category_name, -1).order_by()
         result = result.aggregate(total=Sum('value'))['total']
         return result if result is not None else 0
 
     @classmethod
-    def total_by_month(cls, year, month, category_name=None):
+    def total_by_month(cls,
+                       year: int,
+                       month: int,
+                       category_name: Optional[str] = None) -> float:
         """
         Find total value of entries in the given month in year
+
         :param year: four-digits year
-        :param month: jan=1, feb=2, ...
+        :param month: 1, 2, ... 12
         :param category_name:
                 - name of the category
                 - if it is not given, all categories are selected
-        :return: float
         """
-        result = cls.find_by_month(year, month, category_name, INF).order_by()
+        result = cls.find_by_month(year, month, category_name, -1).order_by()
         result = result.aggregate(total=Sum('value'))['total']
         return result if result is not None else 0
 
     @classmethod
-    def total_by_week(cls, isoyear, week, category_name=None):
+    def total_by_week(cls,
+                      isoyear: int,
+                      week: int,
+                      category_name: Optional[str] = None) -> float:
         """
         Find total value of entries in the given week in year
+
         :param isoyear: four-digits ISO8601 year of the actual datetime object
         :param week: ISO8601 week in year
         :param category_name:
                 - name of the category
                 - if it is not given, all categories are selected
-        :return: float
         """
-        result = cls.find_by_week(isoyear, week, category_name, INF).order_by()
+        result = cls.find_by_week(isoyear, week, category_name, -1).order_by()
         result = result.aggregate(total=Sum('value'))['total']
         return result if result is not None else 0
 
@@ -279,35 +300,37 @@ class Entry(models.Model):
     ##############################################################
 
     @staticmethod
-    def __modify_start_date(start_date):
+    def __modify_start_date(start_date: NullableDate) -> str:
         """
         Helper method to modify start date
+
         :raise TypeError when start_date is not string or datetime object
         :raise ValueError when start_date is a string but does not match "%Y-%m-%d"
         """
         if start_date is None:
             return '1000-1-1'
         if isinstance(start_date, datetime):
-            return start_date.replace(hour=0, minute=0, second=0)
+            return start_date.strftime("%Y-%m-%d 0:0:0")
         if isinstance(start_date, str):
             datetime.strptime(start_date, "%Y-%m-%d")
-            return start_date + ' 0:0:0'
+            return start_date + " 0:0:0"
         raise TypeError('Invalid datetime')
 
     @staticmethod
-    def __modify_end_date(end_date):
+    def __modify_end_date(end_date: NullableDate) -> str:
         """
         Helper method to modify end_date
+
         :raise TypeError when start_date is not string or datetime object
         :raise ValueError when start_date is a string but does not match "%Y-%m-%d"
         """
         if end_date is None:
             return '9999-12-31'
         if isinstance(end_date, datetime):
-            return end_date.replace(hour=23, minute=59, second=59)
+            return end_date.strftime("%Y-%m-%d 23:59:59")
         if isinstance(end_date, str):
             datetime.strptime(end_date, "%Y-%m-%d")
-            return end_date + ' 23:59:59'
+            return end_date + " 23:59:59"
         raise TypeError('Invalid datetime')
 
 
@@ -337,24 +360,25 @@ class Info(models.Model):
         's': str,
         'b': lambda value: value[0] in ['t', 'T', '1'] if isinstance(value, str) else value
     }
-    """A dictionary matches value_type to a str to value_type converter"""
+    """A dictionary matches value_type to a str-to-value_type converter"""
 
     def __str__(self):
         return self.name + "=" + self.value
 
-    def get_actual_value(self):
+    def get_actual_value(self) -> Union[int, float, str, bool]:
         """Get the actual info in the correct type, NOT as a string as in database"""
         return self.__converter[self.value_type](self.value)
 
     @classmethod
-    def get(cls, name):
+    def get(cls, name) -> Union[int, float, str, bool]:
         """Get the actual info with the given name in the correct type"""
         return cls.objects.get(name=name).get_actual_value()
 
     @classmethod
-    def set(cls, name, value):
+    def set(cls, name, value) -> None:
         """
         Set value of the info with given name and save to database
+
         :raise ValueError if value is invalid
         """
         info = cls.objects.get(name=name)
