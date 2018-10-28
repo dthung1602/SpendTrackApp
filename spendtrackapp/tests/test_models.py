@@ -8,6 +8,8 @@ from .utils import data_provider
 class TestCategory(TestCase):
     fixtures = ['test/category.json']
 
+    # TODO test create category fail -> exceed max hierarchy depth
+
     @data_provider(category_ancestors)
     def test_ancestors(self, category_id, expected_ancestor_ids):
         category = Category.objects.get(pk=category_id)
@@ -48,9 +50,11 @@ class TestEntry(TestCase):
         entry.change_category(category)
         category_ids = [cat.id for cat in entry.categories.all()]
         self.assertCountEqual(expected_ids, category_ids)
+        self.assertEqual(category_id, entry.leaf_category.id)
         entry.save()
         category_ids = [cat.id for cat in entry.categories.all()]
         self.assertCountEqual(expected_ids, category_ids)
+        self.assertEqual(category_id, entry.leaf_category.id)
 
     @data_provider(entry_change_category_fail)
     def test_change_category_fail(self, entry_id, category_id):
@@ -63,6 +67,11 @@ class TestEntry(TestCase):
     def test_modify_date(self, func, date, expected_exception):
         with self.assertRaises(expected_exception):
             func(date)
+
+    @data_provider(entry_leaf_category)
+    def test_leaf_category(self, entry_id, expected_category_id):
+        entry = Entry.objects.get(pk=entry_id)
+        self.assertEqual(expected_category_id, entry.leaf_category.id)
 
     ##############################################################
     #                       FIND METHODS                         #
@@ -147,7 +156,7 @@ class TestEntry(TestCase):
     ##############################################################
     #                 FIND METHODS WITH LIMIT                    #
     ##############################################################
-    
+
     @data_provider(entry_find_by_date_range_with_limit)
     def test_find_by_date_range_with_limit(self, start_date, end_date, limit, expected_ids):
         entries = Entry.find_by_date_range(start_date, end_date, limit=limit)

@@ -13,12 +13,6 @@ def index_index_entries_in_week():
     ]
 
 
-def index_index_others():
-    return [
-        [152, [1, 10, 12]]
-    ]
-
-
 def index_add_success():
     return [
         [

@@ -1,10 +1,107 @@
-<p>{{ current_balance }}</p>
-<p>{{ now }}</p>
-<p>{{ total_in_week }}</p>
-<form method="post" action="{% url 'add' %}">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <p><label for="category_id">Category ID</label><input type="number" name="category_id" id="category_id"></p>
-    {#    <input>#}
-    <input type="submit">
-</form>
+{% extends "spendtrackapp/base.html" %}
+
+{% block main %}
+
+    <div class="container">
+
+        <!-- Clock and Balance -->
+        <div class="row info">
+            <div class="seven columns box" id="clock"></div>
+            <div class="five columns box">
+                <div>Balance</div>
+                <div>{{ current_balance }}</div>
+            </div>
+            <script>startTime()</script>
+        </div>
+
+        <!-- Entries in this week -->
+        <div class="row box">
+            <table class="twelve columns">
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Content</th>
+                    <th class="right-align">Value</th>
+                    <th class="right-align">Category</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for entry in entries_in_week %}
+                    <tr>
+                        <td>{{ entry.formatted_date }}</td>
+                        <td>{{ entry.content }}</td>
+                        <td class="right-align">{{ entry.value }}</td>
+                        <td class="right-align">{{ entry.leaf_category }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td class="no-data">No data to display</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Total in week -->
+            <div class="row info">
+                <div class="one-third column">TOTAL</div>
+                <div id="total-in-week" class="two-thirds column">{{ total_in_week }}</div>
+            </div>
+        </div>
+
+        <!-- Add new entry -->
+        <form class="box" action="{% url "add" %}">
+            {% csrf_token %}
+
+            <div class="row">
+                <!-- Date time -->
+                <div class="five columns">
+                    <label for="date">Datetime</label>
+                    <input type="datetime-local" id="date" name="date" placeholder="yyyy-mm-ddThh:mm"
+                           autocomplete="off">
+                    <div class="button" onclick="setDatetimeNow()">Now</div>
+                    <div id="date-error" class="input-error"></div>
+                </div>
+
+                <!-- Content -->
+                <div class="seven columns">
+                    <label for="content">Content</label>
+                    <input type="text" id="content" name="content" placeholder="A carrot and an apple" maxlength="200">
+                    <div id="content-error" class="input-error"></div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Category -->
+                <div class="five columns">
+                    <label for="category_id">Category</label>
+                    <input type="hidden" name="category_id" id="category_id" value="" autocomplete="off">
+                    <div class="select">
+                        <div onclick="showDropDown('select-category')" class="select-btn clickable">
+                            <span id="category-display" class="clickable">Select a category</span>
+                            <span class="clickable" style="float: right">&#x25BC</span>
+                        </div>
+                        <div id="select-category" class="select-content">
+                            {{ category_hierarchy | safe }}
+                        </div>
+                    </div>
+                    <div id="category-error" class="input-error"></div>
+                </div>
+
+                <!-- Value -->
+                <div class="seven columns">
+                    <label for="value">Price</label>
+                    <input type="text" id="value" name="value" placeholder="1.25 + 2.3 * 5"
+                           pattern="^[0-9 \+\-\*\/\(\)\.]+$">
+                    <div id="value-error" class="input-error"></div>
+                </div>
+            </div>
+
+            <!-- Submit and clear -->
+            <div class="row submit-row">
+                <div class="button" onclick="clearFields()">CLEAR</div>
+                <div class="button button-primary" onclick="submitForm()">ADD</div>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

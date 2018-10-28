@@ -1,6 +1,5 @@
 from datetime import datetime
 
-
 from spendtrackapp.models import Info, Entry
 
 
@@ -108,6 +107,23 @@ def entry_change_category_fail():
         [1, 3],
         [1, 5],
         [1, 10],
+    ]
+
+
+def entry_leaf_category():
+    return [
+        [1, 4],
+        [2, 4],
+        [3, 7],
+        [4, 7],
+        [5, 7],
+        [6, 8],
+        [7, 8],
+        [8, 9],
+        [9, 11],
+        [10, 11],
+        [11, 12],
+        [12, 12],
     ]
 
 

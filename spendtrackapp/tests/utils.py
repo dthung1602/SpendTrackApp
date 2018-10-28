@@ -15,6 +15,27 @@ class NoDbTestRunner(DiscoverRunner):
         pass
 
 
+class UnbufferedStream(object):
+    """
+    A stream wrapper that disable buffering
+    Ref: https://stackoverflow.com/questions/107705/disable-output-buffering
+    """
+
+    def __init__(self, stream):
+        self.stream = stream
+
+    def write(self, data):
+        self.stream.write(data)
+        self.stream.flush()
+
+    def writelines(self, data):
+        self.stream.writelines(data)
+        self.stream.flush()
+
+    def __getattr__(self, attr):
+        return getattr(self.stream, attr)
+
+
 def data_provider(data_provider_function, verbose=True):
     """PHPUnit style data provider decorator"""
 
@@ -33,7 +54,6 @@ def data_provider(data_provider_function, verbose=True):
                     if verbose:
                         print("Failed with data set #%d: " % i, end='', file=sys.stderr)
                         print(data_set, file=sys.stderr)
-                        sys.stderr.flush()
                     raise
                 else:
                     if verbose:

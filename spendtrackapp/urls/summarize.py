@@ -4,9 +4,16 @@ from spendtrackapp.views.summarize import *
 # noinspection PyUnresolvedReferences
 from . import converters
 
+app_name = 'summarize'
 urlpatterns = [
-    path('<yyyy:year>', year_handler, name='summarize_year'),
-    path('<yyyy:year>/<mmm:month>', month_handler, name='summarize_month'),
-    path('<yyyy:year>/<ww:week>', week_handler, name='summarize_week'),
-    path('<date:start_date>/<date:end_date>', date_range_handler, name='summarize_date_range'),
+    path('', index, name='index'),
+
+    path('<yyyy:year>', year_handler, name='year'),
+    path('<yyyy:year>/<mmm:month>', month_handler, name='month'),
+    path('<yyyy:year>/<ww:week>', week_handler, name='week'),
+    path('<date:start_date>/<date:end_date>', date_range_handler, name='date_range'),
+
+    path('this-week', this_week_handler, name='this_week'),
+    path('this-month', this_month_handler, name='this_month'),
+    path('this-year', this_year_handler, name='this_year')
 ]

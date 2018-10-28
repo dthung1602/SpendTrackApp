@@ -3,53 +3,15 @@ from typing import Tuple, Dict
 
 from django.contrib.auth.decorators import login_required
 from django.http.response import JsonResponse
-from django.shortcuts import render
 
 from spendtrackapp.models import Entry, Category
+from spendtrackapp.views.utils import render
 
 
-def get_date_range_total(start_date: str,
-                         end_date: str) -> Tuple[float, Dict[str, float]]:
-    """Get grand total and total of each category in the given date range"""
-
-    total = float(Entry.total_by_date_range(start_date, end_date))
-    category_total = {}
-    for category in Category.objects.all():
-        category_total[category.name] = float(
-            Entry.total_by_date_range(start_date, end_date, category_name=category.name))
-    return total, category_total
-
-
-def get_year_total(year: int) -> Tuple[float, Dict[str, float]]:
-    """Get grand total and total of each category in the given year"""
-
-    total = float(Entry.total_by_year(year))
-    category_total = {}
-    for category in Category.objects.all():
-        category_total[category.name] = float(Entry.total_by_year(year, category_name=category.name))
-    return total, category_total
-
-
-def get_month_total(year: int,
-                    month: int) -> Tuple[float, Dict[str, float]]:
-    """Get grand total and total of each category in the given month"""
-
-    total = float(Entry.total_by_month(year, month))
-    category_total = {}
-    for category in Category.objects.all():
-        category_total[category.name] = float(Entry.total_by_month(year, month, category_name=category.name))
-    return total, category_total
-
-
-def get_week_total(year: int,
-                   week: int) -> Tuple[float, Dict[str, float]]:
-    """Get grand total and total of each category in the given week"""
-
-    total = float(Entry.total_by_week(year, week))
-    category_total = {}
-    for category in Category.objects.all():
-        category_total[category.name] = float(Entry.total_by_week(year, week, category_name=category.name))
-    return total, category_total
+@login_required
+def index():
+    """Handle index summarize page"""
+    pass
 
 
 @login_required
@@ -70,7 +32,7 @@ def date_range_handler(request, start_date, end_date):
         return JsonResponse(context)
 
     # Ordinary request
-    entries = list(Entry.find_by_date_range(start_date, end_date))
+    entries = Entry.find_by_date_range(start_date, end_date)
     context.update({
         'entries': entries
     })
@@ -169,3 +131,70 @@ def week_handler(request, year, week):
         'last_week_category_total': last_week_category_total
     })
     return render(request, "spendtrackapp/summarize_week.html", context)
+
+
+@login_required
+def this_year_handler(request):
+    now = datetime.now()
+    return year_handler(request, now.year)
+
+
+@login_required
+def this_month_handler(request):
+    now = datetime.now()
+    return month_handler(request, now.year, now.month)
+
+
+@login_required
+def this_week_handler(request):
+    isoyear, week, _ = datetime.now().isocalendar()
+    return week_handler(request, isoyear, week)
+
+
+##############################################################
+#                        UTILITIES                           #
+##############################################################
+
+def get_date_range_total(start_date: str,
+                         end_date: str) -> Tuple[float, Dict[str, float]]:
+    """Get grand total and total of each category in the given date range"""
+
+    total = float(Entry.total_by_date_range(start_date, end_date))
+    category_total = {}
+    # todo inefficient
+    for category in Category.objects.all():
+        category_total[category.name] = float(
+            Entry.total_by_date_range(start_date, end_date, category_name=category.name))
+    return total, category_total
+
+
+def get_year_total(year: int) -> Tuple[float, Dict[str, float]]:
+    """Get grand total and total of each category in the given year"""
+
+    total = float(Entry.total_by_year(year))
+    category_total = {}
+    for category in Category.objects.all():
+        category_total[category.name] = float(Entry.total_by_year(year, category_name=category.name))
+    return total, category_total
+
+
+def get_month_total(year: int,
+                    month: int) -> Tuple[float, Dict[str, float]]:
+    """Get grand total and total of each category in the given month"""
+
+    total = float(Entry.total_by_month(year, month))
+    category_total = {}
+    for category in Category.objects.all():
+        category_total[category.name] = float(Entry.total_by_month(year, month, category_name=category.name))
+    return total, category_total
+
+
+def get_week_total(year: int,
+                   week: int) -> Tuple[float, Dict[str, float]]:
+    """Get grand total and total of each category in the given week"""
+
+    total = float(Entry.total_by_week(year, week))
+    category_total = {}
+    for category in Category.objects.all():
+        category_total[category.name] = float(Entry.total_by_week(year, week, category_name=category.name))
+    return total, category_total

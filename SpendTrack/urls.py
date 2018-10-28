@@ -23,7 +23,7 @@ urlpatterns = [
     path('', index.index_handler, name='index'),
     path('add/', index.add_handler, name='add'),
 
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls, name='admin'),
     path('auth/', include('django.contrib.auth.urls')),
 
     path('summarize/', include('spendtrackapp.urls.summarize')),

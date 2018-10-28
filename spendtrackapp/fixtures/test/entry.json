@@ -10,7 +10,8 @@
         1,
         2,
         4
-      ]
+      ],
+      "leaf_category": 4
     }
   },
   {
@@ -24,7 +25,8 @@
         1,
         2,
         4
-      ]
+      ],
+      "leaf_category": 4
     }
   },
   {
@@ -38,7 +40,8 @@
         1,
         5,
         7
-      ]
+      ],
+      "leaf_category": 7
     }
   },
   {
@@ -52,7 +55,8 @@
         1,
         5,
         7
-      ]
+      ],
+      "leaf_category": 7
     }
   },
   {
@@ -66,7 +70,8 @@
         1,
         5,
         7
-      ]
+      ],
+      "leaf_category": 7
     }
   },
   {
@@ -80,7 +85,8 @@
         1,
         5,
         8
-      ]
+      ],
+      "leaf_category": 8
     }
   },
   {
@@ -94,7 +100,8 @@
         1,
         5,
         8
-      ]
+      ],
+      "leaf_category": 8
     }
   },
   {
@@ -108,7 +115,8 @@
         1,
         5,
         9
-      ]
+      ],
+      "leaf_category": 9
     }
   },
   {
@@ -121,7 +129,8 @@
       "categories": [
         10,
         11
-      ]
+      ],
+      "leaf_category": 11
     }
   },
   {
@@ -134,7 +143,8 @@
       "categories": [
         10,
         11
-      ]
+      ],
+      "leaf_category": 11
     }
   },
   {
@@ -146,7 +156,8 @@
       "value": "-8.50",
       "categories": [
         12
-      ]
+      ],
+      "leaf_category": 12
     }
   },
   {
@@ -158,7 +169,8 @@
       "value": "-9.00",
       "categories": [
         12
-      ]
+      ],
+      "leaf_category": 12
     }
   },
   {
@@ -170,7 +182,8 @@
       "value": "50.00",
       "categories": [
         12
-      ]
+      ],
+      "leaf_category": 12
     }
   },
   {
@@ -184,7 +197,8 @@
         1,
         2,
         4
-      ]
+      ],
+      "leaf_category": 4
     }
   },
   {
@@ -198,7 +212,8 @@
         1,
         5,
         8
-      ]
+      ],
+      "leaf_category": 8
     }
   },
   {
@@ -212,7 +227,8 @@
         1,
         5,
         8
-      ]
+      ],
+      "leaf_category": 8
     }
   },
   {
@@ -225,7 +241,8 @@
       "categories": [
         10,
         14
-      ]
+      ],
+      "leaf_category": 14
     }
   },
   {
@@ -238,7 +255,8 @@
       "categories": [
         10,
         14
-      ]
+      ],
+      "leaf_category": 14
     }
   },
   {
@@ -251,7 +269,8 @@
       "categories": [
         10,
         11
-      ]
+      ],
+      "leaf_category": 11
     }
   },
   {
@@ -263,7 +282,8 @@
       "value": "-12.50",
       "categories": [
         12
-      ]
+      ],
+      "leaf_category": 12
     }
   },
   {
@@ -275,7 +295,8 @@
       "value": "-2.50",
       "categories": [
         12
-      ]
+      ],
+      "leaf_category": 12
     }
   },
   {
@@ -287,7 +308,8 @@
       "value": "-1.50",
       "categories": [
         12
-      ]
+      ],
+      "leaf_category": 12
     }
   },
   {
@@ -299,7 +321,8 @@
       "value": "-1.50",
       "categories": [
         12
-      ]
+      ],
+      "leaf_category": 12
     }
   },
   {
@@ -311,7 +334,8 @@
       "value": "25",
       "categories": [
         12
-      ]
+      ],
+      "leaf_category": 12
     }
   },
   {
@@ -323,7 +347,8 @@
       "value": "-2.5",
       "categories": [
         12
-      ]
+      ],
+      "leaf_category": 12
     }
   },
   {
@@ -335,7 +360,8 @@
       "value": "-5",
       "categories": [
         12
-      ]
+      ],
+      "leaf_category": 12
     }
   }
 ]

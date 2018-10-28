@@ -80,10 +80,6 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': ''
     }
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': 'sqlite3.db'
-    # }
 }
 
 # Password validation
@@ -130,6 +126,14 @@ LOGIN_URL = 'login'
 #             APP CONFIG             #
 ######################################
 
+APP_VERSION = 0.1
+
+CONTACT_GITHUB = 'https://github.com/'
+
+CONTACT_EMAIL = 'mailto:abc@gmail.com'
+
+CONTACT_FACEBOOK = 'https://www.facebook.com/'
+
 VIEW_SUMMARIZE_DATE_RANGE_DEFAULT_PAGE_SIZE = 30
 
 VIEW_SUMMARIZE_YEAR_DEFAULT_PAGE_SIZE = 30
@@ -137,3 +141,5 @@ VIEW_SUMMARIZE_YEAR_DEFAULT_PAGE_SIZE = 30
 VIEW_SUMMARIZE_MONTH_DEFAULT_PAGE_SIZE = 30
 
 VIEW_SUMMARIZE_WEEK_DEFAULT_PAGE_SIZE = -1
+
+MODEL_CATEGORY_HIERARCHY_MAX_DEPTH = 3

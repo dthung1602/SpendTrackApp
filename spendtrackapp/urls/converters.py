@@ -21,7 +21,7 @@ class ThreeCharMonthConverter:
     months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
 
     def to_python(self, value):
-        pos = self.months.index(value)
+        pos = self.months.index(value.lower())
         if pos == -1:
             raise ValueError
         return pos + 1

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+    {% load static %}
+    <link rel="shortcut icon" type="image/png" href="{% static "spendtrackapp/img/favicon.png" %}"/>
+    <link rel="stylesheet" href="{% static "/spendtrackapp/css/normalize.css" %}">
+    <link rel="stylesheet" href="{% static "/spendtrackapp/css/skeleton.css" %}">
+    <link rel="stylesheet" href="{% static "/spendtrackapp/css/style.css" %}">
+    <script src="{% static "spendtrackapp/js/jquery-3.3.1.min.js" %}"></script>
+    <script src="{% static "/spendtrackapp/js/index.js" %}"></script>
+</head>
+<body>
+
+<header>
+    {% block header %}
+        <div class="container">
+            <img src="{% static "spendtrackapp/img/logo.png" %}" alt="Logo SpendTrackApp" class="logo">
+            <span class="badge">VERSION {{ app_version }}</span>
+        </div>
+    {% endblock %}
+</header>
+
+<nav>
+    {% block nav %}
+        <div class="container">
+            <div class="navbar">
+                <a href="{% url "index" %}">HOME</a>
+                <div class="drop-down-menu">
+                    <div class="drop-btn">SUMMARIZE</div>
+                    <div class="drop-down-content">
+                        <a href="{% url "summarize:this_week" %}">This week</a>
+                        <a href="{% url "summarize:this_month" %}">This month</a>
+                        <a href="{% url "summarize:this_year" %}">This year</a>
+                        <a href="{% url "summarize:index" %}">Others</a>
+                    </div>
+                </div>
+                <a href="{% url "plan:index" %}">PLAN</a>
+                <a href="{% url "settings:index" %}">SETTINGS</a>
+                <a href="{% url "admin:index" %}">ADMIN</a>
+            </div>
+        </div>
+    {% endblock %}
+</nav>
+
+<main>
+    {% block main %}
+        <div class="container">
+            <p>Advertisse id ac deveniatur consistere mo voluptatem ad facultates. Ii fide ad jure illa visu inde nudi.
+                Mentibus dedissem pla dum abducere ita duo. Levitatem sae tes eos assentiar cau perfectum venientia
+                imaginari. Hae ego notionibus res sit defectibus desiderant objectivus patrocinio viderentur. Cui motum
+                mei rei qua eodem tangi. Mei perciperem aut ego agnoscitur artificium solutiones cohaereant. Angelos
+                alienum agendam existam to spondeo de. Chartam ingenii sed scripti fallere res nec caeteri perduci vis.
+                Scriptura inquirere gi co vi extitisse quadratam pertinent. Fecto dubio major jam lor operi miror falsi.
+                Ab automata deveniri facturum formemus tollitur si cogitare eo. Ab virorum reliqui at haustam me dicitur
+                ex. Sum etc missae nam latere natura quieti pla. Hac pla consistat animalium veniebant. </p>
+            <p>Nos mea requiratur lor quamprimum intellectu. Si et ordinem eo videmus ei tacitus. Dormio sui loquor vix
+                cap aperte hoc. Conceptum dubitavit facultate ne si plerosque. Vere fert agi tam ille. Facultatem imo
+                rum pla quaerantur affirmarem quaecunque expectabam vul ponderibus. Haud co quis sint bile de in sese.
+                Atque satis habet imo nia tes mox ipsis fieri. </p>
+            <p>Rom cernitur sum ulterius agi temporis ineptire uti exhibent. Etiamsi ut pugnare ad luminis si gi laborio
+                dominum judicem. Si humanas affirmo et admitto innatas id fictile is creando. Imo qua invitus sic
+                utilius praeter. Obversari incurrant dubitarem facultate tollentur est percipere sub nos. Aeque has
+                motus eodem verba capax vos ullam. </p>
+        </div>
+
+    {% endblock %}
+</main>
+
+<footer>
+    {% block footer %}
+        <div class="container footer">
+
+            <!-- Contact -->
+            <div class="contact">
+                <a href="{{ contact_github }}" target="_blank">
+                    <img src="{% static "spendtrackapp/img/iconmonstr-github-1-48.png" %}" alt="github">
+                </a>
+                <a href="{{ contact_email }}" target="_blank">
+                    <img src="{% static "spendtrackapp/img/iconmonstr-email-10-48.png" %}" alt="email">
+                </a>
+                <a href="{{ contact_facebook }}" target="_blank">
+                    <img src="{% static "spendtrackapp/img/iconmonstr-facebook-4-48.png" %}" alt="facebook">
+                </a>
+            </div>
+
+            <!-- Navigation -->
+            <div class="row nav-footer">
+                <a href="{% url "index" %}">HOME</a>
+                <a href="{% url "summarize:index" %}">SUMMARIZES</a>
+                <a href="{% url "plan:index" %}">PLANS</a>
+                <a href="{% url "settings:index" %}">SETTINGS</a>
+                <a href="{% url "admin:index" %}">ADMIN</a>
+            </div>
+
+            <!-- Other info -->
+            <div class="row last-footer">
+                <div>Built with <a href="https://www.djangoproject.com/" target="_blank">Django</a> 2.1.2</div>
+                <div>using <a href="https://jquery.com/" target="_blank">jQuery</a> 3.3.1
+                    and <a href="http://getskeleton.com/" target="_blank">Skeleton</a> CSS framework 2.0.4
+                </div>
+                <div>with images from <a href="https://iconmonstr.com/" target="_blank">iconmonstr</a>
+                    and <a href="https://www.tailorbrands.com/lp-home" target="_blank">tailorbrands</a></div>
+            </div>
+        </div>
+    {% endblock %}
+</footer>
+
+</body>
+</html>

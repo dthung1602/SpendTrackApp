@@ -79,6 +79,12 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        """Override save method to validate category before changes are made in DB"""
+        if len(self.parent.ancestors) + 2 > settings.MODEL_CATEGORY_HIERARCHY_MAX_DEPTH:
+            raise ValueError("MODEL_CATEGORY_HIERARCHY_MAX_DEPTH exceeded")
+        super().save(force_insert, force_update, using, update_fields)
+
     @classmethod
     def get_leaf_category(cls, category_id: int) -> Optional[Category]:
         """
@@ -122,6 +128,18 @@ class Entry(models.Model):
     Any item must belong to EXACTLY ONE leaf category
     """
 
+    leaf_category = models.ForeignKey(
+        Category,
+        on_delete=models.PROTECT,
+        related_name="leaf_category",
+        null=True
+    )
+    """The category stands lowest in the hierarchy (has no children) that the entry belongs to"""
+
+    @property
+    def formatted_date(self):
+        return self.date.strftime("%a %b %d, %I %p")
+
     def __str__(self):
         return self.date.strftime("[%Y-%m-%d] ") + self.content[:20].ljust(20) + " " + str(self.value)
 
@@ -136,6 +154,7 @@ class Entry(models.Model):
         to_add_category_ids = [category.id] + category.ancestors_ids
         self.categories.clear()
         self.categories.add(*to_add_category_ids)
+        self.leaf_category = category
 
     ##############################################################
     #                       FIND METHODS                         #
@@ -146,7 +165,8 @@ class Entry(models.Model):
                            start_date: NullableDate = None,
                            end_date: NullableDate = None,
                            category_name: Optional[str] = None,
-                           limit: int = settings.VIEW_SUMMARIZE_DATE_RANGE_DEFAULT_PAGE_SIZE) -> QuerySet:
+                           limit: int = settings.VIEW_SUMMARIZE_DATE_RANGE_DEFAULT_PAGE_SIZE,
+                           prefetch: bool = True) -> QuerySet:
         """
         Find entries between start_date and end_date (inclusive) which belong to the given category name
 
@@ -154,32 +174,39 @@ class Entry(models.Model):
         :param end_date:
             - can be None, datetime objects or a string 'YYYY-mm-dd'
             - time info will be discarded and replaced with 23:59:59 for end_date and 00:00:00 for start_date
-            - if start_date (or end_date) is None, it will select from the beginning (or till the ending)
+            - if start_date (or end_date) is None, it will show_drop_down from the beginning (or till the ending)
         :param category_name: name of the category. If not given, all categories are selected
         :param limit: maximum number of entries to return. No limit is set if -1 is given
+        :param prefetch: whether to prefetch associated categories
         """
         start_date = cls.__modify_start_date(start_date)
         end_date = cls.__modify_end_date(end_date)
         result = cls.objects.filter(date__range=(start_date, end_date)).order_by('date')
         if category_name is not None:
             result = result.filter(categories__name=category_name)
+        if prefetch:
+            result = result.prefetch_related("categories", "leaf_category")
         return result[:limit] if limit >= 0 else result
 
     @classmethod
     def find_by_year(cls,
                      year: int,
                      category_name: Optional[str] = None,
-                     limit: int = settings.VIEW_SUMMARIZE_YEAR_DEFAULT_PAGE_SIZE) -> QuerySet:
+                     limit: int = settings.VIEW_SUMMARIZE_YEAR_DEFAULT_PAGE_SIZE,
+                     prefetch: bool = True) -> QuerySet:
         """
         Find entries in the given year
 
         :param year: four-digits year
         :param category_name: name of the category. If not given, all categories are selected
         :param limit: maximum number of entries to return. No limit is set if -1 is given
+        :param prefetch: whether to prefetch associated categories
         """
         result = cls.objects.filter(date__year=year).order_by('date')
         if category_name is not None:
             result = result.filter(categories__name=category_name)
+        if prefetch:
+            result = result.prefetch_related("categories", "leaf_category")
         return result[:limit] if limit >= 0 else result
 
     @classmethod
@@ -187,7 +214,8 @@ class Entry(models.Model):
                       year: int,
                       month: int,
                       category_name: Optional[str] = None,
-                      limit: int = settings.VIEW_SUMMARIZE_MONTH_DEFAULT_PAGE_SIZE) -> QuerySet:
+                      limit: int = settings.VIEW_SUMMARIZE_MONTH_DEFAULT_PAGE_SIZE,
+                      prefetch: bool = True) -> QuerySet:
         """
         Find entries in the given month in year
         
@@ -195,10 +223,13 @@ class Entry(models.Model):
         :param month: 1, 2, ... 12
         :param category_name: name of the category. If not given, all categories are selected
         :param limit: maximum number of entries to return. No limit is set if -1 is given
+        :param prefetch: whether to prefetch associated categories
         """
         result = cls.objects.filter(date__year=year, date__month=month).order_by('date')
         if category_name is not None:
             result = result.filter(categories__name=category_name)
+        if prefetch:
+            result = result.prefetch_related("categories", "leaf_category")
         return result[:limit] if limit >= 0 else result
 
     @classmethod
@@ -206,7 +237,8 @@ class Entry(models.Model):
                      isoyear: int,
                      week: int,
                      category_name: Optional[str] = None,
-                     limit: int = settings.VIEW_SUMMARIZE_WEEK_DEFAULT_PAGE_SIZE) -> QuerySet:
+                     limit: int = settings.VIEW_SUMMARIZE_WEEK_DEFAULT_PAGE_SIZE,
+                     prefetch: bool = True) -> QuerySet:
         """
         Find entries in the given week in year
 
@@ -214,10 +246,13 @@ class Entry(models.Model):
         :param week: ISO8601 week in year
         :param category_name: name of the category. If not given, all categories are selected
         :param limit: maximum number of entries to return. No limit is set if -1 is given
+        :param prefetch: whether to prefetch associated categories
         """
         result = cls.objects.filter(date__isoyear=isoyear, date__week=week).order_by('date')
         if category_name is not None:
             result = result.filter(categories__name=category_name)
+        if prefetch:
+            result = result.prefetch_related("categories", "leaf_category")
         return result[:limit] if limit >= 0 else result
 
     ##############################################################
@@ -236,10 +271,10 @@ class Entry(models.Model):
         :param end_date:
             - can be None, datetime objects or a string 'YYYY-mm-dd'
             - time info will be discarded and replaced with 23:59:59 for end_date and 00:00:00 for start_date
-            - if start_date (or end_date) is None, it will select from the beginning (or till the ending)
+            - if start_date (or end_date) is None, it will show_drop_down from the beginning (or till the ending)
         :param category_name: name of the category. If not given, all categories are selected
          """
-        result = cls.find_by_date_range(start_date, end_date, category_name, -1).order_by()
+        result = cls.find_by_date_range(start_date, end_date, category_name, -1, False).order_by()
         result = result.aggregate(total=Sum('value'))['total']
         return result if result is not None else 0
 
@@ -255,7 +290,7 @@ class Entry(models.Model):
                 - name of the category
                 - if it is not given, all categories are selected
         """
-        result = cls.find_by_year(year, category_name, -1).order_by()
+        result = cls.find_by_year(year, category_name, -1, False).order_by()
         result = result.aggregate(total=Sum('value'))['total']
         return result if result is not None else 0
 
@@ -273,7 +308,7 @@ class Entry(models.Model):
                 - name of the category
                 - if it is not given, all categories are selected
         """
-        result = cls.find_by_month(year, month, category_name, -1).order_by()
+        result = cls.find_by_month(year, month, category_name, -1, False).order_by()
         result = result.aggregate(total=Sum('value'))['total']
         return result if result is not None else 0
 
@@ -291,7 +326,7 @@ class Entry(models.Model):
                 - name of the category
                 - if it is not given, all categories are selected
         """
-        result = cls.find_by_week(isoyear, week, category_name, -1).order_by()
+        result = cls.find_by_week(isoyear, week, category_name, -1, False).order_by()
         result = result.aggregate(total=Sum('value'))['total']
         return result if result is not None else 0
 

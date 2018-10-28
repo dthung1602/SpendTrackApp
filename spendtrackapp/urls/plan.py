@@ -2,9 +2,10 @@ from django.urls import path
 
 from spendtrackapp.views.plan import *
 
+app_name = 'plan'
 urlpatterns = [
-    path('', index, name='plan_index'),
-    path('add/', add, name='plan_add'),
-    path('delete/', delete, name='plan_delete'),
-    path('edit/', edit, name='plan_edit'),
+    path('', index, name='index'),
+    path('add/', add, name='add'),
+    path('delete/', delete, name='delete'),
+    path('edit/', edit, name='edit'),
 ]
