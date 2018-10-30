@@ -1,12 +1,8 @@
-daysInWeekNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-monthNames = ["January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"];
+// ------------------- CLOCK --------------------
 
-function fillZero(n) {
-    if (n < 10) n = "0" + n;
-    return n;
-}
-
+/**
+ * Make the clock in homepage click
+ */
 function startTime() {
     let now = new Date();
 
@@ -18,143 +14,27 @@ function startTime() {
     let minute = fillZero(now.getMinutes());
     let second = fillZero(now.getSeconds());
 
-    let clock = document.getElementById("clock");
-    clock.innerHTML = "<div>" + dayInWeek + " " + day + "/" + month + "/" + year
-        + "</div><div>" + hour + ":" + minute + ":" + second + "</div>";
+    $("#clock").html(
+        "<div>" + dayInWeek + " " + day + "/" + month + "/" + year + "</div>" +
+        "<div>" + hour + ":" + minute + ":" + second + "</div>"
+    );
 
     setTimeout(startTime, 1000)
 }
 
-function showDropDown(id) {
-    document.getElementById(id).classList.toggle('show')
+// ------------- CATEGORY SELECT DROP DOWN----------------
+
+/**
+ * Display select category drop down
+ */
+function showDropDown() {
+    $("#select-category").toggleClass('show');
 }
 
-function select(categoryId) {
-    document.getElementById('category_id').value = categoryId;
-    document.getElementById('category-display').innerText = document.getElementById('cat-' + categoryId).innerText;
-}
-
-function setDatetimeNow() {
-    let d = new Date();
-    let datetime = [d.getFullYear(), fillZero(d.getMonth() + 1), fillZero(d.getDate())].join('-')
-        + ' ' + [fillZero(d.getHours()), fillZero(d.getMinutes())].join(':');
-    let datetimeField = document.getElementById('date');
-    datetimeField.value = datetime;
-    if (datetimeField.value !== datetime)
-        datetimeField.value = datetime.replace(' ', 'T')
-}
-
-function clearFields() {
-    $('input[name!="csrfmiddlewaretoken"]').each(function (index, element) {
-        element.value = ''
-    });
-    $('#category-display').html('Select a category');
-}
-
-
-function submitForm() {
-    let csrfToken = $('[name="csrfmiddlewaretoken"]').val();
-    let date = $('#date').val().replace('T', ' ');
-    let content = $('#content').val().trim();
-    let categoryId = $('#category_id').val();
-    let value = $('#value').val();
-
-    let addSuccess = function (response) {
-        let row = $('<tr>').appendTo($('tbody'));
-        let categoryDisplay = $('#category-display');
-        let totalInWeek = $('#total-in-week');
-
-        value = parseFloat(value);
-        date = new Date(date);
-        date = daysInWeekNames[date.getDay()].substr(0, 3) + " "
-            + monthNames[date.getMonth()].substr(0, 3) + " "
-            + fillZero(date.getDate()) + ", "
-            + fillZero(date.getHours() % 12) + " "
-            + (date.getHours() >= 12 ? 'PM' : 'AM');
-
-        $('<td>').text(date).appendTo(row);
-        $('<td>').text(content).appendTo(row);
-        $('<td class="right-align">').text(value.toFixed(2)).appendTo(row);
-        $('<td class="right-align">').text(categoryDisplay.html()).appendTo(row);
-
-        value = parseFloat(totalInWeek.text()) + value;
-        totalInWeek.text(value.toFixed(2));
-        $('.input-error').hide();
-        clearFields();
-    };
-
-    let addError = function (response, status, error) {
-        switch (error) {
-            case 'Bad Request':
-                let fields = ['date', 'content', 'category_id', 'value'];
-                let causes = [];
-                for (let i = 0; i < fields.length; i++) {
-                    let f = fields[i];
-                    if (response.responseJSON.hasOwnProperty(f)) {
-                        let r = response.responseJSON[f];
-                        for (let j = 0; j < r.length; j++) {
-                            causes.push(r[j])
-                        }
-                    }
-                }
-                alert("Bad request:\n- " + causes.join('\n- '));
-                break;
-            case 'Internal Server Error':
-                alert("Internal Server Error\nPlease try again later");
-                break;
-            default :
-                alert("Unknown error\nPlease try again later");
-        }
-    };
-
-    let error = false;
-    $('.input-error').hide();
-
-    if (isNaN(Date.parse(date))) {
-        error = true;
-        $('#date-error').show().html('Datetime must have format yyyy-mm-ddThh:mm');
-    }
-
-    if (content === "") {
-        error = true;
-        $('#content-error').show().html('Content cannot be empty');
-    }
-
-    if (categoryId === "") {
-        error = true;
-        $('#category-error').show().html('A category must be selected');
-    }
-
-    try {
-        if (!value.match('^[0-9 \\+\\-\\*\\/\\(\\)\\.]+$'))
-            throw "";
-        value = eval(value).toFixed(2);
-    } catch (err) {
-        error = true;
-        $('#value-error').show().html('Invalid arithmetic expression');
-    }
-
-    if (error) return;
-
-    let data = {
-        csrfmiddlewaretoken: csrfToken,
-        date: date,
-        content: content,
-        category_id: categoryId,
-        value: value
-    };
-
-    $.ajax({
-        url: '/add/',
-        type: 'POST',
-        dataType: 'json',
-        data: data,
-        success: addSuccess,
-        error: addError,
-    });
-}
-
-window.onclick = function (event) {
+/**
+ * Hide select category drop down when click outside
+ */
+function hideDropDown(event) {
     if (!event.target.matches('.clickable')) {
         let dropDowns = document.getElementsByClassName("select-content");
         for (let i = 0; i < dropDowns.length; i++) {
@@ -164,4 +44,191 @@ window.onclick = function (event) {
             }
         }
     }
-};
+}
+
+window.onclick = hideDropDown;
+
+/**
+ * Select a category
+ * @param categoryId
+ */
+function select(categoryId) {
+    $('#category_id').val(categoryId);
+    $('#category-display').text($('#cat-' + categoryId).text());
+}
+
+// ------------------------ FORM -----------------------
+
+/**
+ * Set now to Date field
+ */
+function setDatetimeNow() {
+    let d = new Date();
+    let datetime = [d.getFullYear(), fillZero(d.getMonth() + 1), fillZero(d.getDate())].join('-')
+        + ' ' + [fillZero(d.getHours()), fillZero(d.getMinutes())].join(':');
+
+    // Fire fox
+    let datetimeField = $('#date');
+    datetimeField.val(datetime);
+
+    // Other browsers
+    if (datetimeField.val() !== datetime)
+        datetimeField.val(datetime.replace(' ', 'T'))
+}
+
+/**
+ * Clear all input fields in new entry form
+ */
+function clearFields() {
+    $('input[name!="csrfmiddlewaretoken"]').each(
+        function (index, element) {
+            element.value = ''
+        }
+    );
+    $('#category-display').html('Select a category');
+}
+
+// ------------- SUBMIT FORM ----------------
+
+/**
+ * Return an object contains all submit data
+ */
+function getSubmitData() {
+    return {
+        csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
+        date: $('#date').val().replace('T', ' '),
+        content: $('#content').val().trim(),
+        category_id: $('#category_id').val(),
+        value: $('#value').val(),
+    }
+}
+
+/**
+ * Display errors when submitting the form
+ * @param response
+ * @param status
+ * @param error
+ */
+function addError(response, status, error) {
+    switch (error) {
+        case 'Bad Request':
+            let fields = ['date', 'content', 'category_id', 'value'];
+            let causes = [];
+            for (let i = 0; i < fields.length; i++) {
+                let f = fields[i];
+                if (response.responseJSON.hasOwnProperty(f)) {
+                    let r = response.responseJSON[f];
+                    for (let j = 0; j < r.length; j++) {
+                        causes.push(r[j])
+                    }
+                }
+            }
+            alert("Bad request:\n- " + causes.join('\n- '));
+            break;
+        case 'Internal Server Error':
+            alert("Internal Server Error\nPlease try again later");
+            break;
+        default :
+            alert("Unknown error\nPlease try again later");
+    }
+}
+
+/**
+ * Create a function to call when new entry is added successfully
+ * @param data: object contain submit data
+ * @returns {Function} a function that update page content when a new entry is added successfully
+ */
+function addSuccessFunc(data) {
+    return function (response) {
+        // get elements
+        let row = $('<tr>').appendTo($('tbody'));
+        let categoryDisplay = $('#category-display');
+        let totalInWeek = $('#total-in-week');
+        let currentBalance = $('#current-balance');
+
+        // convert data to correct format
+        data.value = parseFloat(data.value);
+        data.date = new Date(data.date);
+        data.date = daysInWeekNames[data.date.getDay()].substr(0, 3) + " "
+            + monthNames[data.date.getMonth()].substr(0, 3) + " "
+            + fillZero(data.date.getDate()) + ", "
+            + fillZero(data.date.getHours() % 12) + " "
+            + (data.date.getHours() >= 12 ? 'PM' : 'AM');
+
+        // add new row to table
+        $('<td>').text(data.date).appendTo(row);
+        $('<td>').text(data.content).appendTo(row);
+        $('<td class="right-align">').text(data.value.toFixed(2)).appendTo(row);
+        $('<td class="right-align">').text(categoryDisplay.text()).appendTo(row);
+
+        // change total in week and balance
+        totalInWeek.text((parseFloat(totalInWeek.text()) + data.value).toFixed(2));
+        currentBalance.text((parseFloat(currentBalance.text()) + data.value).toFixed(2));
+
+        // clear form
+        $('.input-error').hide();
+        $('.no-data').remove();
+        clearFields();
+    }
+}
+
+/**
+ * Validate form and display errors
+ * @param data
+ * @returns {boolean} whether form is valid
+ */
+function validateForm(data) {
+    let valid = true;
+    $('.input-error').hide();
+
+    // valid date time
+    if (isNaN(Date.parse(data.date))) {
+        valid = false;
+        $('#date-error').show().html('Datetime must have format yyyy-mm-dd hh:mm');
+    }
+
+    // content must not be empty
+    if (data.content === "") {
+        valid = false;
+        $('#content-error').show().html('Content cannot be empty');
+    }
+
+    // category must not be empty
+    if (data.category_id === "") {
+        valid = false;
+        $('#category-error').show().html('A category must be selected');
+    }
+
+    // evaluate arithmetic expression in value fielD
+    try {
+        if (!data.value.match('^[0-9 \\+\\-\\*\\/\\(\\)\\.]+$'))
+            throw "";
+        data.value = eval(data.value).toFixed(2);
+    } catch (err) {
+        valid = false;
+        $('#value-error').show().html('Invalid arithmetic expression');
+    }
+
+    return valid;
+}
+
+/**
+ *  Validate form, submit and handle result
+ */
+function submitForm() {
+    // get values to submit
+    let data = getSubmitData();
+
+    // validate form
+    if (!validateForm(data)) return;
+
+    // send ajax request
+    $.ajax({
+        url: '/add/',
+        type: 'POST',
+        dataType: 'json',
+        data: data,
+        success: addSuccessFunc(data),
+        error: addError,
+    });
+}

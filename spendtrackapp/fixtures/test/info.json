@@ -4,7 +4,7 @@
     "pk": 14,
     "fields": {
       "name": "a string",
-      "value": "a long long long string",
+      "_value": "a long long long string",
       "value_type": "s"
     }
   },
@@ -13,7 +13,7 @@
     "pk": 15,
     "fields": {
       "name": "an int1",
-      "value": "58",
+      "_value": "58",
       "value_type": "i"
     }
   },
@@ -22,7 +22,7 @@
     "pk": 16,
     "fields": {
       "name": "an int2",
-      "value": "-58",
+      "_value": "-58",
       "value_type": "i"
     }
   },
@@ -31,7 +31,7 @@
     "pk": 17,
     "fields": {
       "name": "a float1",
-      "value": "58.1515",
+      "_value": "58.1515",
       "value_type": "f"
     }
   },
@@ -40,7 +40,7 @@
     "pk": 18,
     "fields": {
       "name": "a float2",
-      "value": "-58.1515",
+      "_value": "-58.1515",
       "value_type": "f"
     }
   },
@@ -49,7 +49,7 @@
     "pk": 19,
     "fields": {
       "name": "a float3",
-      "value": "58.1515e3",
+      "_value": "58.1515e3",
       "value_type": "f"
     }
   },
@@ -58,7 +58,7 @@
     "pk": 20,
     "fields": {
       "name": "a bool1",
-      "value": "True",
+      "_value": "True",
       "value_type": "b"
     }
   },
@@ -67,7 +67,7 @@
     "pk": 21,
     "fields": {
       "name": "a bool2",
-      "value": "1",
+      "_value": "1",
       "value_type": "b"
     }
   },
@@ -76,7 +76,7 @@
     "pk": 22,
     "fields": {
       "name": "a bool3",
-      "value": "False",
+      "_value": "False",
       "value_type": "b"
     }
   },
@@ -85,7 +85,7 @@
     "pk": 23,
     "fields": {
       "name": "a bool4",
-      "value": "0",
+      "_value": "0",
       "value_type": "b"
     }
   },
@@ -94,7 +94,7 @@
     "pk": 24,
     "fields": {
       "name": "fail int",
-      "value": "abc",
+      "_value": "abc",
       "value_type": "i"
     }
   },
@@ -103,7 +103,7 @@
     "pk": 25,
     "fields": {
       "name": "fail float",
-      "value": "abc",
+      "_value": "abc",
       "value_type": "f"
     }
   },
@@ -112,7 +112,7 @@
     "pk": 26,
     "fields": {
       "name": "CURRENT_BALANCE",
-      "value": "152",
+      "_value": "152",
       "value_type": "f"
     }
   },
@@ -121,8 +121,80 @@
     "pk": 27,
     "fields": {
       "name": "INIT_BALANCE",
-      "value": "0",
+      "_value": "0",
       "value_type": "f"
+    }
+  },
+  {
+    "model": "spendtrackapp.info",
+    "pk": 28,
+    "fields": {
+      "name": "FLOAT1",
+      "_value": "1.5",
+      "value_type": "f"
+    }
+  },
+  {
+    "model": "spendtrackapp.info",
+    "pk": 29,
+    "fields": {
+      "name": "FLOAT2",
+      "_value": "-2.5",
+      "value_type": "f"
+    }
+  },
+  {
+    "model": "spendtrackapp.info",
+    "pk": 30,
+    "fields": {
+      "name": "INT1",
+      "_value": "2",
+      "value_type": "i"
+    }
+  },
+  {
+    "model": "spendtrackapp.info",
+    "pk": 31,
+    "fields": {
+      "name": "INT2",
+      "_value": "-3",
+      "value_type": "i"
+    }
+  },
+  {
+    "model": "spendtrackapp.info",
+    "pk": 32,
+    "fields": {
+      "name": "BOOL1",
+      "_value": "True",
+      "value_type": "b"
+    }
+  },
+  {
+    "model": "spendtrackapp.info",
+    "pk": 33,
+    "fields": {
+      "name": "BOOL2",
+      "_value": "False",
+      "value_type": "b"
+    }
+  },
+  {
+    "model": "spendtrackapp.info",
+    "pk": 35,
+    "fields": {
+      "name": "STR1",
+      "_value": "abc",
+      "value_type": "s"
+    }
+  },
+  {
+    "model": "spendtrackapp.info",
+    "pk": 36,
+    "fields": {
+      "name": "STR2",
+      "_value": "def",
+      "value_type": "s"
     }
   }
 ]

@@ -1,5 +1,10 @@
 {% extends "spendtrackapp/base.html" %}
 
+{% block script %}
+    {% load static %}
+    <script src="{% static "spendtrackapp/js/index.js" %}"></script>
+{% endblock %}
+
 {% block main %}
 
     <div class="container">
@@ -9,7 +14,7 @@
             <div class="seven columns box" id="clock"></div>
             <div class="five columns box">
                 <div>Balance</div>
-                <div>{{ current_balance }}</div>
+                <div id="current-balance">{{ current_balance }}</div>
             </div>
             <script>startTime()</script>
         </div>
@@ -56,7 +61,7 @@
                 <!-- Date time -->
                 <div class="five columns">
                     <label for="date">Datetime</label>
-                    <input type="datetime-local" id="date" name="date" placeholder="yyyy-mm-ddThh:mm"
+                    <input type="datetime-local" id="date" name="date" placeholder="yyyy-mm-dd hh:mm"
                            autocomplete="off">
                     <div class="button" onclick="setDatetimeNow()">Now</div>
                     <div id="date-error" class="input-error"></div>
@@ -76,7 +81,7 @@
                     <label for="category_id">Category</label>
                     <input type="hidden" name="category_id" id="category_id" value="" autocomplete="off">
                     <div class="select">
-                        <div onclick="showDropDown('select-category')" class="select-btn clickable">
+                        <div onclick="showDropDown()" class="select-btn clickable">
                             <span id="category-display" class="clickable">Select a category</span>
                             <span class="clickable" style="float: right">&#x25BC</span>
                         </div>
@@ -89,7 +94,7 @@
 
                 <!-- Value -->
                 <div class="seven columns">
-                    <label for="value">Price</label>
+                    <label for="value">Value</label>
                     <input type="text" id="value" name="value" placeholder="1.25 + 2.3 * 5"
                            pattern="^[0-9 \+\-\*\/\(\)\.]+$">
                     <div id="value-error" class="input-error"></div>

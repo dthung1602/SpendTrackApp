@@ -521,3 +521,78 @@ def info_set_fail():
         ['an int1', 1.5, ValueError],
         ['a float1', 'abc', ValueError]
     ]
+
+
+def info_add_built_in_type():
+    return [
+        ['FLOAT1', 1.5, 3],
+        ['FLOAT1', -0.5, 1],
+        ['FLOAT1', 5, 6.5],
+        ['FLOAT1', -3, -1.5],
+
+        ['INT1', 1.5, 3.5],
+        ['INT1', -0.5, 1.5],
+        ['INT1', 5, 7],
+        ['INT1', -3, -1],
+
+        ['BOOL1', 1.5, 2.5],
+        ['BOOL1', -0.5, 0.5],
+        ['BOOL1', 5, 6],
+        ['BOOL1', -3, -2],
+
+        ['BOOL2', 1.5, 1.5],
+        ['BOOL2', -0.5, -0.5],
+        ['BOOL2', 5, 5],
+        ['BOOL2', -3, -3],
+    ]
+
+
+def info_add_info():
+    return [
+        ['FLOAT1', 'FLOAT2', -1],
+        ['FLOAT1', 'INT2', -1.5],
+        ['FLOAT1', 'BOOL1', 2.5],
+        ['FLOAT1', 'BOOL2', 1.5],
+
+        ['INT1', 'FLOAT2', -0.5],
+        ['INT1', 'INT2', -1],
+        ['INT1', 'BOOL1', 3],
+        ['INT1', 'BOOL2', 2],
+
+        ['BOOL1', 'FLOAT2', -1.5],
+        ['BOOL1', 'INT2', -2],
+
+        ['BOOL2', 'FLOAT2', -2.5],
+        ['BOOL2', 'INT2', -3],
+
+        ['BOOL1', 'BOOL1', 2],
+        ['BOOL2', 'BOOL2', 0],
+        ['BOOL1', 'BOOL2', 1],
+        ['BOOL2', 'BOOL1', 1],
+
+    ]
+
+
+def info_iadd_built_in_type():
+    return [
+        ['FLOAT1', 1.5, 3],
+        ['FLOAT1', -0.5, 1],
+        ['FLOAT1', 5, 6.5],
+        ['FLOAT1', -3, -1.5],
+
+        ['INT1', 5, 7],
+        ['INT1', -3, -1],
+    ]
+
+
+def info_iadd_info():
+    return [
+        ['FLOAT1', 'FLOAT2', -1],
+        ['FLOAT1', 'INT2', -1.5],
+        ['FLOAT1', 'BOOL1', 2.5],
+        ['FLOAT1', 'BOOL2', 1.5],
+
+        ['INT1', 'INT2', -1],
+        ['INT1', 'BOOL1', 3],
+        ['INT1', 'BOOL2', 2],
+    ]

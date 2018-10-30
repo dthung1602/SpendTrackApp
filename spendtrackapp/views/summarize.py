@@ -135,18 +135,21 @@ def week_handler(request, year, week):
 
 @login_required
 def this_year_handler(request):
+    """Handle summarize this year page"""
     now = datetime.now()
     return year_handler(request, now.year)
 
 
 @login_required
 def this_month_handler(request):
+    """Handle summarize this month page"""
     now = datetime.now()
     return month_handler(request, now.year, now.month)
 
 
 @login_required
 def this_week_handler(request):
+    """Handle summarize this week page"""
     isoyear, week, _ = datetime.now().isocalendar()
     return week_handler(request, isoyear, week)
 
