@@ -1,3 +1,4 @@
+import inspect
 import sys
 
 from django.test.runner import DiscoverRunner
@@ -18,6 +19,7 @@ class NoDbTestRunner(DiscoverRunner):
 class UnbufferedStream(object):
     """
     A stream wrapper that disable buffering
+
     Ref: https://stackoverflow.com/questions/107705/disable-output-buffering
     """
 
@@ -36,6 +38,26 @@ class UnbufferedStream(object):
         return getattr(self.stream, attr)
 
 
+def get_class_that_defined_method(method):
+    """
+    Return the name of the class that defines given method
+
+    Ref: https://stackoverflow.com/questions/3589311/get-defining-class-of-unbound-method-object-in-python-3/25959545#25959545
+    """
+
+    if inspect.ismethod(method):
+        for cls in inspect.getmro(method.__self__.__class__):
+            if cls.__dict__.get(method.__name__) is method:
+                return cls.__name__
+        method = method.__func__  # fallback to __qualname__ parsing
+    if inspect.isfunction(method):
+        cls = getattr(inspect.getmodule(method),
+                      method.__qualname__.split('.<locals>', 1)[0].rsplit('.', 1)[0])
+        if isinstance(cls, type):
+            return cls.__name__
+    return getattr(method, '__objclass__', None).__name__  # handle special descriptor objects
+
+
 def data_provider(data_provider_function, verbose=True):
     """PHPUnit style data provider decorator"""
 
@@ -43,7 +65,8 @@ def data_provider(data_provider_function, verbose=True):
         def new_test_function(self, *args):
             i = 0
             if verbose:
-                print("\nTest function: " + test_function.__name__)
+                print("\nTest class   : " + get_class_that_defined_method(test_function))
+                print("Test function: " + test_function.__name__)
             for data_set in data_provider_function():
                 try:
                     if verbose:

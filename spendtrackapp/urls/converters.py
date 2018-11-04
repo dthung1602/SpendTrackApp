@@ -27,6 +27,8 @@ class ThreeCharMonthConverter:
         return pos + 1
 
     def to_url(self, value):
+        if isinstance(value, str) and value.lower() in self.months:
+            return value.lower()
         return self.months[int(value) - 1]
 
 

@@ -1,0 +1,103 @@
+{% extends "spendtrackapp/base.html" %}
+
+{% block script %}
+    {% load static %}
+    <script src="{% static "spendtrackapp/js/summarize_index.js" %}"></script>
+{% endblock %}
+
+{% block main %}
+
+    <div class="container">
+        <form class="box" method="post">
+            {% csrf_token %}
+
+            <!-- Type to summarize -->
+            <div class="row">
+                <div class="four columns">
+                    <label for="summarize-type">Summarize type</label>
+                    <select id="summarize-type" name="summarize-type"
+                            onchange="selectSummarizeType()" autocomplete="off">
+                        <option value="year">Year</option>
+                        <option value="month">Month</option>
+                        <option value="week">Week</option>
+                        <option value="daterange" selected>Date range</option>
+                    </select>
+                </div>
+
+                <!-- Summarize year -->
+                <div id="summarize-year" class="summarize-group">
+                    <div class="four columns">
+                        <label for="year-year">Year</label>
+                        <input id="year-year" name="year-year" type="number" min="2000" max="2100" step="1">
+                    </div>
+                </div>
+
+                <!-- Summarize month -->
+                <div id="summarize-month" class="summarize-group">
+                    <!-- year -->
+                    <div class="four columns">
+                        <label for="month-year">Year</label>
+                        <input id="month-year" name="month-year" type="number" min="2000" max="2100" step="1">
+                    </div>
+
+                    <!-- month -->
+                    <div class="four columns">
+                        <label for="month-month">Month</label>
+                        <select id="month-month" name="month-month">
+                            <option value="jan">January</option>
+                            <option value="feb">February</option>
+                            <option value="mar">March</option>
+                            <option value="apr">April</option>
+                            <option value="may">May</option>
+                            <option value="jun">June</option>
+                            <option value="jul">July</option>
+                            <option value="aug">August</option>
+                            <option value="sep">September</option>
+                            <option value="oct">October</option>
+                            <option value="nov">November</option>
+                            <option value="dec">December</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Summarize week -->
+                <div id="summarize-week" class="summarize-group">
+                    <!-- year -->
+                    <div class="four columns">
+                        <label for="week-year">ISO Year</label>
+                        <input id="week-year" name="week-year" type="number" min="2000" max="2100" step="1">
+                    </div>
+
+                    <!-- week -->
+                    <div class="four columns">
+                        <label for="week-week">ISO Week</label>
+                        <input id="week-week" name="week-week" type="number" min="1" max="53" step="1">
+                    </div>
+                </div>
+
+                <!-- Summarize daterange -->
+                <div id="summarize-daterange" class="summarize-group">
+                    <!-- start date -->
+                    <div class="four columns">
+                        <label for="start-date">Start date</label>
+                        <input id="start-date" name="start-date" type="date">
+                    </div>
+
+                    <!-- end date -->
+                    <div class="four columns">
+                        <label for="end-date">End date</label>
+                        <input id="end-date" name="end-date" type="date">
+                    </div>
+                </div>
+                <script>selectSummarizeType()</script>
+            </div>
+
+            <!-- Submit and clear -->
+            <div class="row submit-row">
+                <button class="button button-primary">SUMMARIZE</button>
+                <div class="button" onclick="clearFields()">CLEAR</div>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

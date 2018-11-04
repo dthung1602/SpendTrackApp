@@ -1,7 +1,12 @@
+/*******************************
+ *           GENERAL           *
+ *******************************/
+
+/* make date and datetime-local look like other Skeleton input fields*/
 input[type="datetime-local"],
 input[type="date"] {
     height: 38px;
-    padding: 6px 10px; /* The 6px vertically centers text on FF, ignored by Webkit */
+    padding: 6px 10px;
     background-color: #fff;
     border: 1px solid #D1D1D1;
     border-radius: 4px;
@@ -18,6 +23,10 @@ input[type="date"]:focus {
 input[type="text"] {
     width: 100%;
 }
+
+/*******************************
+ *           HEADER            *
+ *******************************/
 
 .logo {
     display: inline-block;
@@ -36,6 +45,10 @@ input[type="text"] {
     margin-top: 35px;
     margin-bottom: 30px;
 }
+
+/*******************************
+ *          NAV BAR            *
+ *******************************/
 
 .navbar {
     overflow: hidden;
@@ -92,6 +105,20 @@ input[type="text"] {
     display: block;
 }
 
+/*******************************
+ *           BOXES             *
+ *******************************/
+
+/* Contain box */
+.box {
+    padding: 25px;
+    margin-bottom: 35px;
+    margin-top: 0;
+    border: rgba(120, 200, 208, 0.47) solid 4px;
+    border-radius: 15px;
+}
+
+/* Info box */
 @font-face {
     font-family: 'digital-clock-font';
     src: url('/static/spendtrackapp/font/digital-7/digital-7-mono.ttf');
@@ -103,17 +130,13 @@ input[type="text"] {
     font-size: xx-large;
 }
 
-.box {
-    padding: 25px;
-    margin-bottom: 35px;
-    margin-top: 0;
-    border: rgba(120, 200, 208, 0.47) solid 4px;
-    border-radius: 15px;
-}
-
 .info > div > div:nth-child(2) {
     font-size: 160%;
 }
+
+/*******************************
+ *           UTILS             *
+ *******************************/
 
 .no-data {
     border: none;
@@ -123,12 +146,22 @@ input[type="text"] {
     color: #888888;
 }
 
-.right-align{
+.right-align {
     text-align: right;
-    padding-right: 30px;
 }
 
-/*--------------------------------------------*/
+.left-align {
+    text-align: left;
+}
+
+.center-align {
+    text-align: center;
+}
+
+/*******************************
+ *      SELECT CATEGORY        *
+ *******************************/
+
 .select-btn {
     height: 38px;
     width: 205px;
@@ -216,8 +249,11 @@ input[type="text"] {
     padding-left: 120px;
 }
 
+/*******************************
+ *            FORMS            *
+ *******************************/
+
 .submit-row {
-    text-align: right;
     padding-top: 15px;
     padding-bottom: 0;
     margin: 0 0;
@@ -230,6 +266,18 @@ input[type="text"] {
     margin-bottom: 20px;
     display: block;
 }
+
+/*******************************
+ *         SUMMARIZE           *
+ *******************************/
+
+.summarize-group {
+    display: none;
+}
+
+/*******************************
+ *           FOOTER            *
+ *******************************/
 
 .footer {
     background: #183f62;

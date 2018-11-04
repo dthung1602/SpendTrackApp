@@ -124,6 +124,174 @@ def index_add_fail():
     ]
 
 
+def summarize_index_success():
+    return [
+        # all ok
+        [
+            {
+                'summarize-type': 'year',
+                'year-year': 2017
+            },
+            '/summarize/2017',
+            200
+        ],
+        [
+            {
+                'summarize-type': 'month',
+                'month-year': 2015,
+                'month-month': 'feb'
+            },
+            '/summarize/2015/feb',
+            200
+        ],
+        [
+            {
+                'summarize-type': 'month',
+                'month-year': 2015,
+                'month-month': 'FeB'
+            },
+            '/summarize/2015/feb',
+            200
+        ],
+        [
+            {
+                'summarize-type': 'week',
+                'week-year': 2019,
+                'week-week': 53
+            },
+            '/summarize/2019/53',
+            200
+        ],
+        [
+            {
+                'summarize-type': 'daterange',
+                'start-date': '2015-02-15',
+                'end-date': '2015-12-03',
+            },
+            '/summarize/2015-02-15/2015-12-03',
+            200
+        ],
+    ]
+
+
+def summarize_index_fail():
+    return [
+        # problems with summarize type
+        [
+            {
+                'year-year': 2017
+            },
+            'Missing field'
+        ],
+        [
+            {
+                'summarize-type': 'abc',
+                'year-year': 2017
+            },
+            'Invalid summarize type'
+        ],
+
+        # invalid fields
+        [
+            {
+                'summarize-type': 'year',
+                'year-year': 20179
+            },
+            'Invalid year'
+        ],
+        [
+            {
+                'summarize-type': 'month',
+                'month-year': 20159,
+                'month-month': 'feb'
+            },
+            'Invalid year or month'
+        ],
+        [
+            {
+                'summarize-type': 'month',
+                'month-year': 2015,
+                'month-month': 'xxx'
+            },
+            'Invalid year or month'
+        ],
+        [
+            {
+                'summarize-type': 'week',
+                'week-year': 20199,
+                'week-week': 52
+            },
+            'Invalid ISO year and week'
+        ],
+        [
+            {
+                'summarize-type': 'daterange',
+                'start-date': '2015-99-15',
+                'end-date': '2015-12-03',
+            },
+            'Invalid start date or end date'
+        ],
+        [
+            {
+                'summarize-type': 'daterange',
+                'start-date': '2015-02-15',
+                'end-date': '2015-12-32',
+            },
+            'Invalid start date or end date'
+        ],
+
+        # missing fields
+        [
+            {
+                'summarize-type': 'year',
+            },
+            'Missing field'
+        ],
+        [
+            {
+                'summarize-type': 'month',
+                'month-month': 'feb'
+            },
+            'Missing field'
+        ],
+        [
+            {
+                'summarize-type': 'month',
+                'month-year': 2015,
+            },
+            'Missing field'
+        ],
+        [
+            {
+                'summarize-type': 'week',
+                'week-week': 53
+            },
+            'Missing field'
+        ],
+        [
+            {
+                'summarize-type': 'week',
+                'week-year': 2019,
+            },
+            'Missing field'
+        ],
+        [
+            {
+                'summarize-type': 'daterange',
+                'end-date': '2015-12-03',
+            },
+            'Missing field'
+        ],
+        [
+            {
+                'summarize-type': 'daterange',
+                'start-date': '2015-02-15',
+            },
+            'Missing field'
+        ],
+    ]
+
+
 def summarize_date_range_ajax():
     return [
         # all

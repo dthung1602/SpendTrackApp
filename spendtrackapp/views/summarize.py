@@ -2,16 +2,79 @@ from datetime import datetime, timedelta
 from typing import Tuple, Dict
 
 from django.contrib.auth.decorators import login_required
-from django.http.response import JsonResponse
+from django.http.response import JsonResponse, HttpResponseBadRequest, HttpResponseRedirect
+from django.shortcuts import reverse
 
 from spendtrackapp.models import Entry, Category
 from spendtrackapp.views.utils import render
 
 
 @login_required
-def index():
+def index(request):
     """Handle index summarize page"""
-    pass
+
+    # GET request => render page
+    if request.method == 'GET':
+        return render(request, "spendtrackapp/summarize_index.html")
+
+    # POST request => redirect
+
+    if 'summarize-type' not in request.POST:
+        return HttpResponseBadRequest('Missing field')
+    summarize_type = request.POST['summarize-type']
+
+    # year
+    if summarize_type == 'year':
+        if 'year-year' not in request.POST:
+            return HttpResponseBadRequest('Missing field')
+        year = request.POST['year-year']
+        if not is_valid_year(year):
+            return HttpResponseBadRequest('Invalid year')
+        return HttpResponseRedirect(
+            reverse('summarize:year', kwargs={'year': year})
+        )
+
+    # month
+    if summarize_type == 'month':
+        if 'month-month' not in request.POST \
+                or 'month-year' not in request.POST:
+            return HttpResponseBadRequest('Missing field')
+        year = request.POST['month-year']
+        month = request.POST['month-month']
+        if not is_valid_year(year) or not is_valid_month(month):
+            return HttpResponseBadRequest('Invalid year or month')
+        return HttpResponseRedirect(
+            reverse('summarize:month', kwargs={'year': year, 'month': month})
+        )
+
+    # week
+    if summarize_type == 'week':
+        if 'week-week' not in request.POST \
+                or 'week-year' not in request.POST:
+            return HttpResponseBadRequest('Missing field')
+        year = request.POST['week-year']
+        week = request.POST['week-week']
+        if not is_valid_iso_week(year, week):
+            return HttpResponseBadRequest('Invalid ISO year and week')
+        return HttpResponseRedirect(
+            reverse('summarize:week', kwargs={'year': year, 'week': week})
+        )
+
+    # date range
+    if summarize_type == 'daterange':
+        if 'start-date' not in request.POST \
+                or 'end-date' not in request.POST:
+            return HttpResponseBadRequest('Missing field')
+        start_date = request.POST['start-date']
+        end_date = request.POST['end-date']
+        if not is_valid_date(start_date) or not is_valid_date(end_date):
+            return HttpResponseBadRequest('Invalid start date or end date')
+        return HttpResponseRedirect(
+            reverse('summarize:date_range', kwargs={'start_date': start_date, 'end_date': end_date})
+        )
+
+    # bad summarize-type
+    return HttpResponseBadRequest('Invalid summarize type')
 
 
 @login_required
@@ -201,3 +264,43 @@ def get_week_total(year: int,
     for category in Category.objects.all():
         category_total[category.name] = float(Entry.total_by_week(year, week, category_name=category.name))
     return total, category_total
+
+
+def is_valid_year(year: str) -> bool:
+    """Check whether the given year is valid"""
+
+    try:
+        year = int(year)
+        return 1000 <= year <= 9999
+    except ValueError:
+        return False
+
+
+def is_valid_month(month: str) -> bool:
+    """Check whether the given month is valid"""
+
+    return month.lower() in [
+        'jan', 'feb', 'mar', 'apr',
+        'may', 'jun', 'jul', 'aug',
+        'sep', 'oct', 'nov', 'dec'
+    ]
+
+
+def is_valid_iso_week(year: str, week: str) -> bool:
+    """Check whether the given ISO week & ISO year is valid"""
+
+    try:
+        datetime.strptime(year + ' ' + week, '%Y %W')
+        return True
+    except ValueError:
+        return False
+
+
+def is_valid_date(date: str) -> bool:
+    """Check whether the given date is valid"""
+
+    try:
+        datetime.strptime(date, '%Y-%m-%d')
+        return True
+    except ValueError:
+        return False

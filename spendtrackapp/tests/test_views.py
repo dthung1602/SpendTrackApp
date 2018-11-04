@@ -83,6 +83,29 @@ class TestIndex(TestView):
 class TestSummarize(TestView):
     fixtures = ['test/auth_user.json', 'test/entry_categories.json', 'test/category.json', 'test/entry.json']
 
+    @data_provider(summarize_index_success)
+    def test_index_success(self, data, expected_redirected_url, target_status_code):
+        response = self.client.post(
+            reverse('summarize:index'),
+            data=data
+        )
+        self.assertRedirects(
+            response,
+            expected_redirected_url,
+            status_code=302,
+            target_status_code=target_status_code,
+            fetch_redirect_response=False
+        )
+
+    @data_provider(summarize_index_fail)
+    def test_index_fail(self, data, fail_reason):
+        response = self.client.post(
+            reverse('summarize:index'),
+            data=data
+        )
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(fail_reason, response.content.decode('utf-8'))
+
     def __test_ajax(self, named_path, expected_dict, **kwargs):
         """
         Helper class to abstract away tests that mock ajax requests
