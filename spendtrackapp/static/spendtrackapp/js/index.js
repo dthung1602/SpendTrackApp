@@ -7,12 +7,12 @@ function startTime() {
     let now = new Date();
 
     let year = now.getFullYear();
-    let month = fillZero(now.getMonth() + 1);
-    let day = fillZero(now.getDate());
+    let month = (now.getMonth() + 1).fillZero();
+    let day = now.getDate().fillZero();
     let dayInWeek = daysInWeekNames[now.getDay()];
-    let hour = fillZero(now.getHours());
-    let minute = fillZero(now.getMinutes());
-    let second = fillZero(now.getSeconds());
+    let hour = now.getHours().fillZero();
+    let minute = now.getMinutes().fillZero();
+    let second = now.getSeconds().fillZero();
 
     $("#clock").html(
         "<div>" + dayInWeek + " " + day + "/" + month + "/" + year + "</div>" +
@@ -64,8 +64,8 @@ function select(categoryId) {
  */
 function setDatetimeNow() {
     let d = new Date();
-    let datetime = [d.getFullYear(), fillZero(d.getMonth() + 1), fillZero(d.getDate())].join('-')
-        + ' ' + [fillZero(d.getHours()), fillZero(d.getMinutes())].join(':');
+    let datetime = [d.getFullYear(), (d.getMonth() + 1).fillZero(), d.getDate().fillZero()].join('-')
+        + ' ' + [d.getHours().fillZero(), d.getMinutes().fillZero()].join(':');
 
     // Fire fox
     let datetimeField = $('#date');
@@ -151,8 +151,8 @@ function addSuccessFunc(data) {
         data.date = new Date(data.date);
         data.date = daysInWeekNames[data.date.getDay()].substr(0, 3) + " "
             + monthNames[data.date.getMonth()].substr(0, 3) + " "
-            + fillZero(data.date.getDate()) + ", "
-            + fillZero(data.date.getHours() % 12) + " "
+            + data.date.getDate().fillZero() + ", "
+            + (data.date.getHours() % 12).fillZero() + " "
             + (data.date.getHours() >= 12 ? 'PM' : 'AM');
 
         // add new row to table

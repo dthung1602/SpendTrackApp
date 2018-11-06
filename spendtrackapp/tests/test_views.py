@@ -84,7 +84,7 @@ class TestSummarize(TestView):
     fixtures = ['test/auth_user.json', 'test/entry_categories.json', 'test/category.json', 'test/entry.json']
 
     @data_provider(summarize_index_success)
-    def test_index_success(self, data, expected_redirected_url, target_status_code):
+    def test_index_success(self, data, expected_redirected_url):
         response = self.client.post(
             reverse('summarize:index'),
             data=data
@@ -93,7 +93,6 @@ class TestSummarize(TestView):
             response,
             expected_redirected_url,
             status_code=302,
-            target_status_code=target_status_code,
             fetch_redirect_response=False
         )
 

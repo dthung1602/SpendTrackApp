@@ -14,9 +14,9 @@
             <!-- Type to summarize -->
             <div class="row">
                 <div class="four columns">
-                    <label for="summarize-type">Summarize type</label>
-                    <select id="summarize-type" name="summarize-type"
-                            onchange="selectSummarizeType()" autocomplete="off">
+                    <label for="summarize_type">Summarize type</label>
+                    <select id="summarize_type" name="summarize_type" autocomplete="off"
+                            onchange="selectSummarizeType()">
                         <option value="year">Year</option>
                         <option value="month">Month</option>
                         <option value="week">Week</option>
@@ -25,25 +25,27 @@
                 </div>
 
                 <!-- Summarize year -->
-                <div id="summarize-year" class="summarize-group">
+                <div id="summarize_year" class="summarize-group">
                     <div class="four columns">
-                        <label for="year-year">Year</label>
-                        <input id="year-year" name="year-year" type="number" min="2000" max="2100" step="1">
+                        <label for="year_year">Year</label>
+                        <input id="year_year" name="year_year" type="number" autocomplete="off"
+                               min="2000" max="2100" step="1">
                     </div>
                 </div>
 
                 <!-- Summarize month -->
-                <div id="summarize-month" class="summarize-group">
+                <div id="summarize_month" class="summarize-group">
                     <!-- year -->
                     <div class="four columns">
-                        <label for="month-year">Year</label>
-                        <input id="month-year" name="month-year" type="number" min="2000" max="2100" step="1">
+                        <label for="month_year">Year</label>
+                        <input id="month_year" name="month_year" type="number" autocomplete="off"
+                               min="2000" max="2100" step="1">
                     </div>
 
                     <!-- month -->
                     <div class="four columns">
-                        <label for="month-month">Month</label>
-                        <select id="month-month" name="month-month">
+                        <label for="month_month">Month</label>
+                        <select id="month_month" name="month_month" autocomplete="off">
                             <option value="jan">January</option>
                             <option value="feb">February</option>
                             <option value="mar">March</option>
@@ -61,40 +63,50 @@
                 </div>
 
                 <!-- Summarize week -->
-                <div id="summarize-week" class="summarize-group">
+                <div id="summarize_week" class="summarize-group">
                     <!-- year -->
                     <div class="four columns">
-                        <label for="week-year">ISO Year</label>
-                        <input id="week-year" name="week-year" type="number" min="2000" max="2100" step="1">
+                        <label for="week_year">ISO Year</label>
+                        <input id="week_year" name="week_year" type="number" autocomplete="off"
+                               min="2000" max="2100" step="1">
                     </div>
 
                     <!-- week -->
                     <div class="four columns">
-                        <label for="week-week">ISO Week</label>
-                        <input id="week-week" name="week-week" type="number" min="1" max="53" step="1">
+                        <label for="week_week">ISO Week</label>
+                        <input id="week_week" name="week_week" type="number" autocomplete="off"
+                               min="1" max="53" step="1">
                     </div>
                 </div>
 
                 <!-- Summarize daterange -->
-                <div id="summarize-daterange" class="summarize-group">
+                <div id="summarize_daterange" class="summarize-group">
                     <!-- start date -->
                     <div class="four columns">
-                        <label for="start-date">Start date</label>
-                        <input id="start-date" name="start-date" type="date">
+                        <label for="start_date">Start date</label>
+                        <input id="start_date" name="start_date" type="date">
                     </div>
 
                     <!-- end date -->
                     <div class="four columns">
-                        <label for="end-date">End date</label>
-                        <input id="end-date" name="end-date" type="date">
+                        <label for="end_date">End date</label>
+                        <input id="end_date" name="end_date" type="date">
+                        <div class="button" onclick="setEndDateNow()">NOW</div>
                     </div>
                 </div>
-                <script>selectSummarizeType()</script>
+                <script>
+                    selectSummarizeType();
+                    fillDefaultValues();
+                </script>
+            </div>
+
+            <div class="row">
+                <div class="twelve columns input-error"></div>
             </div>
 
             <!-- Submit and clear -->
             <div class="row submit-row">
-                <button class="button button-primary">SUMMARIZE</button>
+                <div class="button button-primary" onclick="submitForm()">SUMMARIZE</div>
                 <div class="button" onclick="clearFields()">CLEAR</div>
             </div>
         </form>

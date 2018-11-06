@@ -129,47 +129,42 @@ def summarize_index_success():
         # all ok
         [
             {
-                'summarize-type': 'year',
-                'year-year': 2017
+                'summarize_type': 'year',
+                'year_year': 2017
             },
-            '/summarize/2017',
-            200
+            '/summarize/2017'
         ],
         [
             {
-                'summarize-type': 'month',
-                'month-year': 2015,
-                'month-month': 'feb'
+                'summarize_type': 'month',
+                'month_year': 2015,
+                'month_month': 'feb'
             },
-            '/summarize/2015/feb',
-            200
+            '/summarize/2015/feb'
         ],
         [
             {
-                'summarize-type': 'month',
-                'month-year': 2015,
-                'month-month': 'FeB'
+                'summarize_type': 'month',
+                'month_year': 2015,
+                'month_month': 'FeB'
             },
-            '/summarize/2015/feb',
-            200
+            '/summarize/2015/feb'
         ],
         [
             {
-                'summarize-type': 'week',
-                'week-year': 2019,
-                'week-week': 53
+                'summarize_type': 'week',
+                'week_year': 2019,
+                'week_week': 53
             },
-            '/summarize/2019/53',
-            200
+            '/summarize/2019/53'
         ],
         [
             {
-                'summarize-type': 'daterange',
-                'start-date': '2015-02-15',
-                'end-date': '2015-12-03',
+                'summarize_type': 'daterange',
+                'start_date': '2015-02-15',
+                'end_date': '2015-12-03',
             },
-            '/summarize/2015-02-15/2015-12-03',
-            200
+            '/summarize/2015-02-15/2015-12-03'
         ],
     ]
 
@@ -179,14 +174,14 @@ def summarize_index_fail():
         # problems with summarize type
         [
             {
-                'year-year': 2017
+                'year_year': 2017
             },
             'Missing field'
         ],
         [
             {
-                'summarize-type': 'abc',
-                'year-year': 2017
+                'summarize_type': 'abc',
+                'year_year': 2017
             },
             'Invalid summarize type'
         ],
@@ -194,48 +189,56 @@ def summarize_index_fail():
         # invalid fields
         [
             {
-                'summarize-type': 'year',
-                'year-year': 20179
+                'summarize_type': 'year',
+                'year_year': 20179
             },
             'Invalid year'
         ],
         [
             {
-                'summarize-type': 'month',
-                'month-year': 20159,
-                'month-month': 'feb'
+                'summarize_type': 'month',
+                'month_year': 20159,
+                'month_month': 'feb'
             },
             'Invalid year or month'
         ],
         [
             {
-                'summarize-type': 'month',
-                'month-year': 2015,
-                'month-month': 'xxx'
+                'summarize_type': 'month',
+                'month_year': 2015,
+                'month_month': 'xxx'
             },
             'Invalid year or month'
         ],
         [
             {
-                'summarize-type': 'week',
-                'week-year': 20199,
-                'week-week': 52
+                'summarize_type': 'week',
+                'week_year': 20199,
+                'week_week': 52
             },
             'Invalid ISO year and week'
         ],
         [
             {
-                'summarize-type': 'daterange',
-                'start-date': '2015-99-15',
-                'end-date': '2015-12-03',
+                'summarize_type': 'daterange',
+                'start_date': '2015-99-15',
+                'end_date': '2015-12-03',
             },
             'Invalid start date or end date'
         ],
         [
             {
-                'summarize-type': 'daterange',
-                'start-date': '2015-02-15',
-                'end-date': '2015-12-32',
+                'summarize_type': 'daterange',
+                'start_date': '2015-02-15',
+                'end_date': '2015-12-32',
+            },
+            'Invalid start date or end date'
+        ],
+        [
+            {
+                'summarize_type': 'daterange',
+                'start_date': '2015-12-15',
+                'end_date': '2015-02-02',
             },
             'Invalid start date or end date'
         ],
@@ -243,49 +246,49 @@ def summarize_index_fail():
         # missing fields
         [
             {
-                'summarize-type': 'year',
+                'summarize_type': 'year',
             },
             'Missing field'
         ],
         [
             {
-                'summarize-type': 'month',
-                'month-month': 'feb'
+                'summarize_type': 'month',
+                'month_month': 'feb'
             },
             'Missing field'
         ],
         [
             {
-                'summarize-type': 'month',
-                'month-year': 2015,
+                'summarize_type': 'month',
+                'month_year': 2015,
             },
             'Missing field'
         ],
         [
             {
-                'summarize-type': 'week',
-                'week-week': 53
+                'summarize_type': 'week',
+                'week_week': 53
             },
             'Missing field'
         ],
         [
             {
-                'summarize-type': 'week',
-                'week-year': 2019,
+                'summarize_type': 'week',
+                'week_year': 2019,
             },
             'Missing field'
         ],
         [
             {
-                'summarize-type': 'daterange',
-                'end-date': '2015-12-03',
+                'summarize_type': 'daterange',
+                'end_date': '2015-12-03',
             },
             'Missing field'
         ],
         [
             {
-                'summarize-type': 'daterange',
-                'start-date': '2015-02-15',
+                'summarize_type': 'daterange',
+                'start_date': '2015-02-15',
             },
             'Missing field'
         ],
