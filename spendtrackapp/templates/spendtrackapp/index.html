@@ -20,38 +20,56 @@
         </div>
 
         <!-- Entries in this week -->
-        <div class="row box">
-            <table class="twelve columns">
-                <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Content</th>
-                    <th class="right-align">Value</th>
-                    <th class="right-align">Category</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for entry in entries_in_week %}
+        <div class="box">
+            <div class="row">
+                <table class="twelve columns">
+                    <thead>
                     <tr>
-                        <td>{{ entry.formatted_date }}</td>
-                        <td>{{ entry.content }}</td>
-                        <td class="right-align">{{ entry.value }}</td>
-                        <td class="right-align">{{ entry.leaf_category }}</td>
+                        <th>Date</th>
+                        <th>Content</th>
+                        <th class="align-right">Value</th>
+                        <th class="align-right">Category</th>
                     </tr>
-                {% empty %}
-                    <tr>
-                        <td class="no-data">No data to display</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    {% for entries_page in entries_pages %}
+                        {% for entry in entries_page %}
+                            <tr class="table-page-{{ forloop.parentloop.counter }}">
+                                <td>{{ entry.formatted_date }}</td>
+                                <td>{{ entry.content }}</td>
+                                <td class="align-right">{{ entry.value }}</td>
+                                <td class="align-right">{{ entry.leaf_category }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% empty %}
+                        <tr>
+                            <td class="no-data">No data to display</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
 
             <!-- Total in week -->
             <div class="row info">
                 <div class="one-third column">TOTAL</div>
                 <div id="total-in-week" class="two-thirds column">{{ total_in_week }}</div>
             </div>
-        </div>
+
+            <!-- page control -->
+            {% if entries_pages|length > 1 %}
+                <div class="row">
+                    <div class="twelve columns group-btn align-right">
+                        {% for ep in entries_pages %}
+                            <div class="button"
+                            onclick="viewTablePage({{ forloop.counter }})">{{ forloop.counter }}</div>
+                        {% endfor %}
+                    </div>
+                    <script>viewTablePage(1)</script>
+                </div>
+            {% endif %}
+
+        </div>1
 
         <!-- Add new entry -->
         <form class="box" action="{% url "add" %}">
@@ -102,7 +120,7 @@
             </div>
 
             <!-- Submit and clear -->
-            <div class="row submit-row right-align">
+            <div class="row submit-row align-right">
                 <div class="button" onclick="clearFields()">CLEAR</div>
                 <div class="button button-primary" onclick="submitForm()">ADD</div>
             </div>

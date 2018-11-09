@@ -1,10 +1,101 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+{% extends "spendtrackapp/base.html" %}
 
-</body>
-</html>
+{% block script %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static "/spendtrackapp/css/chartist.min.css" %}">
+    <link rel="stylesheet" href="{% static "/spendtrackapp/css/chart_style.css" %}">
+    <script src="{% static "spendtrackapp/js/chartist.min.js" %}"></script>
+    <script src="{% static "spendtrackapp/js/summarize_year.js" %}"></script>
+{% endblock %}
+
+{% block main %}
+
+    <div class="container">
+
+        <!-- Year title -->
+        <div class="row">
+            <div class="twelve columns">
+                <h1>{{ now.year }}</h1>
+            </div>
+        </div>
+
+        <!-- Entries in year -->
+        <div class="row">
+            <table class="twelve columns">
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Content</th>
+                    <th class="align-right">Value</th>
+                    <th class="align-right">Category</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for entries_page in entries_pages %}
+                    {% for entry in entries_page %}
+                        <tr class="table-page-{{ forloop.parentloop.counter }}">
+                            <td>{{ entry.formatted_date }}</td>
+                            <td>{{ entry.content }}</td>
+                            <td class="align-right">{{ entry.value }}</td>
+                            <td class="align-right">{{ entry.leaf_category }}</td>
+                        </tr>
+                    {% endfor %}
+                {% empty %}
+                    <tr>
+                        <td class="no-data">No data to display</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- page control -->
+        {% if entries_pages|length > 1 %}
+            <div class="row">
+                <div class="twelve columns group-btn align-right">
+                    {% for ep in entries_pages %}
+                        <div class="button" onclick="viewTablePage({{ forloop.counter }})">{{ forloop.counter }}</div>
+                    {% endfor %}
+                </div>
+                <script>viewTablePage(1)</script>
+            </div>
+        {% endif %}
+
+        <!-- This year total vs last year's -->
+        <br>
+        <div class="row info">
+            <div class="one-half column" style="color: #19739f">LAST YEAR: {{ last_year_total }}</div>
+            <div class="one-half column" style="color: #183f62">THIS YEAR: {{ this_year_total }}</div>
+        </div>
+
+        <!-- Monthly total this year vs last year's -->
+        <div class="row">
+            <div class="twelve columns">
+                <div class="chart chart-bar" id="bar-chart"></div>
+            </div>
+        </div>
+
+        <!-- Total by categories this year vs last year's -->
+        <div class="row">
+            <div class="one-half column">
+                <div class="chart chart-pie" id="last-year-pie-chart"></div>
+            </div>
+            <div class="one-half column">
+                <div class="chart chart-pie" id="this-year-pie-chart"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Charts -->
+    <script>
+        let lastYearBarChartSeries = {{ last_year_monthly_total | safe }};
+        let thisYearBarChartSeries = {{ this_year_monthly_total | safe }};
+        let lastYearPieChartSeries = {{ last_year_category_total | safe }};
+        let thisYearPieChartSeries = {{ this_year_category_total | safe }};
+        let categoriesNames = {{ categories_names | safe }};
+        let isLeaf = {{ is_leaf | safe }}
+        renderCharts();
+    </script>
+
+{% endblock %}

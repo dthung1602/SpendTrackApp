@@ -1,12 +1,14 @@
-from datetime import datetime, timedelta
-from typing import Tuple, Dict
+from datetime import timedelta
+from typing import Tuple, Dict, List
 
 from django.contrib.auth.decorators import login_required
 from django.http.response import JsonResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import reverse
 
 from spendtrackapp.models import Entry, Category
-from spendtrackapp.views.utils import render
+from spendtrackapp.views.utils import *
+
+categories = Category.objects.all().order_by('name')
 
 
 @login_required
@@ -69,7 +71,7 @@ def index(request):
         end_date = request.POST['end_date']
         if not is_valid_dates(start_date, end_date):
             return HttpResponseBadRequest('Invalid start date or end date')
-        
+
         return HttpResponseRedirect(
             reverse('summarize:date_range', kwargs={'start_date': start_date, 'end_date': end_date})
         )
@@ -107,27 +109,35 @@ def date_range_handler(request, start_date, end_date):
 def year_handler(request, year):
     """
     Handle summarize year page
-    If the request is AJAX, only grand total and total of each category in year is returned in JSON format
-    Otherwise, a full HTML document is returned
+    If the request is AJAX, only info of year is returned in JSON format
+    GET request: info of year and the year before is returned
     """
 
     # AJAX request
-    this_year_total, this_year_category_total = get_year_total(year)
+    this_year = get_year_info(year)
     context = {
-        'this_year_total': this_year_total,
-        'this_year_category_total': this_year_category_total,
+        'this_year_total': this_year[0],
+        'this_year_category_total': this_year[1],
+        'this_year_monthly_total': this_year[2]
     }
     if request.is_ajax():
         return JsonResponse(context)
 
-    # Ordinary request
-    entries = Entry.find_by_year(year)
-    last_year_total, last_year_category_total = get_year_total(year - 1)
-    context.update({
-        'entries': entries,
-        'last_year_total': last_year_total,
-        'last_year_category_total': last_year_category_total
-    })
+    # GET request
+    last_year = get_year_info(year - 1)
+
+    context = {
+        'page_title': year,
+        'categories_names': arr_to_js_str([category.name for category in categories], str),
+        'is_leaf': arr_to_js_str([category.is_leaf for category in categories], bool),
+        'this_year_total': this_year[0],
+        'this_year_category_total': arr_to_js_str(this_year[1], float),
+        'this_year_monthly_total': arr_to_js_str(this_year[2], float),
+        'entries_pages': this_year[3],
+        'last_year_total': last_year[0],
+        'last_year_category_total': arr_to_js_str(last_year[1], float),
+        'last_year_monthly_total': arr_to_js_str(last_year[2], float),
+    }
     return render(request, "spendtrackapp/summarize_year.html", context)
 
 
@@ -235,14 +245,15 @@ def get_date_range_total(start_date: str,
     return total, category_total
 
 
-def get_year_total(year: int) -> Tuple[float, Dict[str, float]]:
-    """Get grand total and total of each category in the given year"""
+def get_year_info(year: int) -> Tuple[float, List[float], List[float], List[List[Entry]]]:
+    """Get grand total, total of each category, total of each month and entries (group into pages) in the given year"""
 
-    total = float(Entry.total_by_year(year))
-    category_total = {}
-    for category in Category.objects.all():
-        category_total[category.name] = float(Entry.total_by_year(year, category_name=category.name))
-    return total, category_total
+    entries = list(Entry.find_by_year(year))
+    total = sum([entry.value for entry in entries])
+    total_by_category = [Entry.total_by_year(year, category_name=cat.name) for cat in categories]
+    total_by_month = [sum([entry.value for entry in entries if entry.date.month == m]) for m in range(1, 13)]
+    entries_pages = group_array(entries, settings.VIEW_SUMMARIZE_YEAR_DEFAULT_PAGE_SIZE)
+    return total, total_by_category, total_by_month, entries_pages
 
 
 def get_month_total(year: int,

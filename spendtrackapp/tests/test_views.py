@@ -112,11 +112,20 @@ class TestSummarize(TestView):
         :param expected_dict: expected dictionary after loading from response json string
         :param kwargs: named parameters of the named path
         """
+
         response = self.client.get(
             reverse(named_path, kwargs=kwargs),
             HTTP_X_REQUESTED_WITH='XMLHttpRequest'
         )
         dict_from_json = json.loads(response.content.decode('utf-8'))
+
+        #  convert all data to float
+        for key in dict_from_json:
+            if isinstance(dict_from_json[key], list):
+                dict_from_json[key] = [float(e) for e in dict_from_json[key]]
+            else:
+                dict_from_json[key] = float(dict_from_json[key])
+
         self.assertEqual(200, response.status_code)
         self.assertDictEqual(expected_dict, dict_from_json)
 
@@ -182,15 +191,19 @@ class TestSummarize(TestView):
         :param expected_context: expected context of the response
         :param kwargs: named parameters of the named path
         """
+
         response = self.client.get(reverse(named_path, kwargs=kwargs))
         self.assertEqual(200, response.status_code)
 
         for key in expected_context:
             if key == 'entries':
-                entries_ids = [entry.id for entry in response.context['entries']]
+                entries_ids = []
+                for entries_page in response.context['entries_pages']:
+                    entries_ids += [entry.id for entry in entries_page]
                 self.assertSequenceEqual(expected_context['entries'], entries_ids)
             else:
-                self.assertEqual(expected_context[key], response.context[key])
+                value = eval(str(response.context[key]))
+                self.assertEqual(expected_context[key], value)
 
     @data_provider(summarize_date_range)
     def test_date_range(self, start_date, end_date, expected_dict):

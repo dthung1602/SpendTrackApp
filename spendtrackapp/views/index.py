@@ -5,7 +5,7 @@ from django.http.response import JsonResponse
 
 from spendtrackapp.forms import *
 from spendtrackapp.models import *
-from spendtrackapp.views.utils import render
+from spendtrackapp.views.utils import *
 
 
 @login_required
@@ -14,14 +14,14 @@ def index_handler(request):
 
     current_balance = Info.get('CURRENT_BALANCE').value
     isoyear, week, week_day = datetime.now().isocalendar()
-    entries_in_week = Entry.find_by_week(isoyear, week)
+    entries_in_week = group_array(Entry.find_by_week(isoyear, week), settings.VIEW_SUMMARIZE_WEEK_DEFAULT_PAGE_SIZE)
     total_in_week = Entry.total_by_week(isoyear, week)
 
     context = {
         'page_title': 'SpendTrackApp',
         'current_balance': current_balance,
         'category_hierarchy': category_hierarchy_html(),
-        'entries_in_week': entries_in_week.all(),
+        'entries_pages': entries_in_week,
         'total_in_week': total_in_week,
     }
     return render(request, 'spendtrackapp/index.html', context)

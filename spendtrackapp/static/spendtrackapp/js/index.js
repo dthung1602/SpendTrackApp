@@ -158,8 +158,8 @@ function addSuccessFunc(data) {
         // add new row to table
         $('<td>').text(data.date).appendTo(row);
         $('<td>').text(data.content).appendTo(row);
-        $('<td class="right-align">').text(data.value.toFixed(2)).appendTo(row);
-        $('<td class="right-align">').text(categoryDisplay.text()).appendTo(row);
+        $('<td class="align-right">').text(data.value.toFixed(2)).appendTo(row);
+        $('<td class="align-right">').text(categoryDisplay.text()).appendTo(row);
 
         // change total in week and balance
         totalInWeek.text((parseFloat(totalInWeek.text()) + data.value).toFixed(2));

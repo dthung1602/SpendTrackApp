@@ -146,15 +146,15 @@ input[type="text"] {
     color: #888888;
 }
 
-.right-align {
+.align-right {
     text-align: right;
 }
 
-.left-align {
+.align-left {
     text-align: left;
 }
 
-.center-align {
+.align-center {
     text-align: center;
 }
 
@@ -266,6 +266,54 @@ input[type="text"] {
     margin-bottom: 20px;
     display: block;
 }
+
+/*******************************
+ *         ENTRY TABLE         *
+ *******************************/
+
+.group-btn {
+    font-size: 0;
+    margin-bottom: 20px;
+}
+
+.group-btn .button,
+.group-btn button {
+    display: inline-block;
+    height: 38px;
+    padding: 0 5px;
+    margin: 5px 0;
+    color: #555;
+    text-align: center;
+    font-size: small;
+    font-weight: 600;
+    letter-spacing: .1rem;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    background-color: transparent;
+    border-color: #dddddd;
+    border-top: 1px solid #dddddd;
+    border-bottom: 1px solid #dddddd;
+    border-radius: 0;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+/*.group-btn .button:first-child,*/
+/*.group-btn button:first-child {*/
+    /*border-bottom-left-radius: 8px;*/
+    /*border-top-left-radius: 8px;*/
+    /*padding-left: 8px;*/
+    /*margin-left: 3px;*/
+/*}*/
+
+/*.group-btn .button:last-child,*/
+/*.group-btn button:last-child {*/
+    /*border-bottom-right-radius: 8px;*/
+    /*border-top-right-radius: 8px;*/
+    /*padding-right: 8px;*/
+    /*margin-right: 3px;*/
+/*}*/
 
 /*******************************
  *         SUMMARIZE           *

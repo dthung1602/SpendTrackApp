@@ -166,7 +166,7 @@ class Entry(models.Model):
                            start_date: NullableDate = None,
                            end_date: NullableDate = None,
                            category_name: Optional[str] = None,
-                           limit: int = settings.VIEW_SUMMARIZE_DATE_RANGE_DEFAULT_PAGE_SIZE,
+                           limit: int = -1,
                            prefetch: bool = True) -> QuerySet:
         """
         Find entries between start_date and end_date (inclusive) which belong to the given category name
@@ -193,7 +193,7 @@ class Entry(models.Model):
     def find_by_year(cls,
                      year: int,
                      category_name: Optional[str] = None,
-                     limit: int = settings.VIEW_SUMMARIZE_YEAR_DEFAULT_PAGE_SIZE,
+                     limit: int = -1,
                      prefetch: bool = True) -> QuerySet:
         """
         Find entries in the given year
@@ -215,7 +215,7 @@ class Entry(models.Model):
                       year: int,
                       month: int,
                       category_name: Optional[str] = None,
-                      limit: int = settings.VIEW_SUMMARIZE_MONTH_DEFAULT_PAGE_SIZE,
+                      limit: int = -1,
                       prefetch: bool = True) -> QuerySet:
         """
         Find entries in the given month in year
@@ -238,7 +238,7 @@ class Entry(models.Model):
                      isoyear: int,
                      week: int,
                      category_name: Optional[str] = None,
-                     limit: int = settings.VIEW_SUMMARIZE_WEEK_DEFAULT_PAGE_SIZE,
+                     limit: int = - 1,
                      prefetch: bool = True) -> QuerySet:
         """
         Find entries in the given week in year

@@ -15,9 +15,9 @@ monthNamesAbr = [
 /**
  * Fill a leading zero if integer n < 9
  */
-Number.prototype.fillZero = function() {
+Number.prototype.fillZero = function () {
     let value = this.valueOf();
-    if (Number.isInteger(value) && 0<= value && value <= 9 )
+    if (Number.isInteger(value) && 0 <= value && value <= 9)
         return "0" + value;
     return "" + value;
 };
@@ -54,16 +54,18 @@ function redirectPost(location, args) {
  * e.g. 2014/12/29 is Monday in week  1 of 2015
  *      2012/1/1   is Sunday in week 52 of 2011
  */
-Date.prototype.getISOCalendar = function() {
-    // Copy date so don't modify original
+Date.prototype.getISOCalendar = function () {
     let d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
-    // Set to nearest Thursday: current date + 4 - current day number
-    // Make Sunday's day number 7
-    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
-    // Get first day of year
-    let yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
-    // Calculate full weeks to nearest Thursday
-    let weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
-    // Return array of year and week number
+    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+    let yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    let weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
     return [d.getUTCFullYear(), weekNo];
 };
+
+/**
+ * Switch between table pages
+ */
+function viewTablePage(page) {
+    $('[class^="table-page-"]').hide();
+    $('.table-page-' + page).show();
+}
