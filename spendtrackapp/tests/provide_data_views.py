@@ -342,17 +342,32 @@ def summarize_month_ajax():
     return [
         [2017, 1, {
             'this_month_total': 19.50,
-            'this_month_category_total': [0, 0, 0, 19.50, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            'this_month_category_total': [0, 0, 0, 19.50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'this_month_daily_total': [
+                -1.5, 0, 23.5, 0, -2.5, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+            ]
         }],
 
         [2017, 10, {
             'this_month_total': -15,
-            'this_month_category_total': [0, -2.50, 0, -12.50, 0, -2.50, 0, 0, 0, 0, 0, 0, 0, 0]
+            'this_month_category_total': [0, -2.50, 0, -12.50, 0, -2.50, 0, 0, 0, 0, 0, 0, 0, 0],
+            'this_month_daily_total': [
+                0, -12.5, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, -2.5, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+            ]
         }],
 
         [2017, 5, {
             'this_month_total': 0,
-            'this_month_category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            'this_month_category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'this_month_daily_total': [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+            ]
         }]
     ]
 
@@ -437,24 +452,54 @@ def summarize_month():
         [2017, 1, {
             'this_month_total': 19.50,
             'this_month_category_total': [0, 0, 0, 19.50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'this_month_daily_total': [
+                -1.5, 0, 23.5, 0, -2.5, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+            ],
             'last_month_total': 0,
             'last_month_category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'last_month_daily_total': [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+            ],
             'entries': [22, 23, 24, 25]
         }],
 
         [2017, 10, {
             'this_month_total': -15,
             'this_month_category_total': [0, -2.50, 0, -12.50, 0, -2.50, 0, 0, 0, 0, 0, 0, 0, 0],
+            'this_month_daily_total': [
+                0, -12.5, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, -2.5, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+            ],
             'last_month_total': 0,
             'last_month_category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'last_month_daily_total': [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+            ],
             'entries': [20, 18]
         }],
 
         [2017, 9, {
             'this_month_total': 0,
             'this_month_category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'this_month_daily_total': [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+            ],
             'last_month_total': 50,
             'last_month_category_total': [50, 0, 0, 0, 0, 0, 50, 0, 50, 0, 0, 0, 0, 0],
+            'last_month_daily_total': [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 50,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+            ],
             'entries': []
         }]
     ]

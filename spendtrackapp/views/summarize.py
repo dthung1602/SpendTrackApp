@@ -124,16 +124,24 @@ def year_handler(request, year):
         return JsonResponse(context)
 
     # GET request
+    links = get_year_links(year)
     last_year = get_year_info(year - 1)
 
     context = {
         'page_title': year,
         'categories_names': arr_to_js_str([category.name for category in categories], str),
         'is_leaf': arr_to_js_str([category.is_leaf for category in categories], bool),
+
+        'last_year_link': links[0],
+        'last_year_name': links[1],
+        'next_year_link': links[2],
+        'next_year_name': links[3],
+
         'this_year_total': this_year[0],
         'this_year_category_total': arr_to_js_str(this_year[1], float),
         'this_year_monthly_total': arr_to_js_str(this_year[2], float),
         'entries_pages': this_year[3],
+
         'last_year_total': last_year[0],
         'last_year_category_total': arr_to_js_str(last_year[1], float),
         'last_year_monthly_total': arr_to_js_str(last_year[2], float),
@@ -145,31 +153,47 @@ def year_handler(request, year):
 def month_handler(request, year, month):
     """
     Handle summarize month page
-    If the request is AJAX, only grand total and total of each category in month is returned in JSON format
-    Otherwise, a full HTML document is returned
+    If the request is AJAX, only info of month is returned in JSON format
+    GET request: info of month and the month before is returned
     """
 
     # AJAX request
-    this_month_total, this_month_category_total = get_month_total(year, month)
+    this_month = get_month_info(year, month)
     context = {
-        'this_month_total': this_month_total,
-        'this_month_category_total': this_month_category_total,
+        'this_month_total': this_month[0],
+        'this_month_category_total': this_month[1],
+        'this_month_daily_total': this_month[2]
     }
     if request.is_ajax():
         return JsonResponse(context)
 
-    # Ordinary request
-    entries = Entry.find_by_month(year, month)
-    month -= 1
-    if month == 0:
-        month = 12
-        year -= 1
-    last_month_total, last_month_category_total = get_month_total(year, month)
-    context.update({
-        'entries': entries,
-        'last_month_total': last_month_total,
-        'last_month_category_total': last_month_category_total
-    })
+    # GET request
+    if month == 1:
+        last_month = get_month_info(year - 1, 12)
+    else:
+        last_month = get_month_info(year, month - 1)
+
+    links = get_month_links(year, month)
+
+    context = {
+        'page_title': month_full_names[month - 1] + " " + str(year),
+        'categories_names': arr_to_js_str([category.name for category in categories], str),
+        'is_leaf': arr_to_js_str([category.is_leaf for category in categories], bool),
+
+        'last_month_link': links[0],
+        'last_month_name': links[1],
+        'next_month_link': links[2],
+        'next_month_name': links[3],
+
+        'this_month_total': this_month[0],
+        'this_month_category_total': arr_to_js_str(this_month[1], float),
+        'this_month_daily_total': arr_to_js_str(this_month[2], float),
+        'entries_pages': this_month[3],
+
+        'last_month_total': last_month[0],
+        'last_month_category_total': arr_to_js_str(last_month[1], float),
+        'last_month_daily_total': arr_to_js_str(last_month[2], float),
+    }
     return render(request, "spendtrackapp/summarize_month.html", context)
 
 
@@ -256,15 +280,16 @@ def get_year_info(year: int) -> Tuple[float, List[float], List[float], List[List
     return total, total_by_category, total_by_month, entries_pages
 
 
-def get_month_total(year: int,
-                    month: int) -> Tuple[float, Dict[str, float]]:
-    """Get grand total and total of each category in the given month"""
+def get_month_info(year: int,
+                   month: int) -> Tuple[float, List[float], List[float], List[List[Entry]]]:
+    """Get grand total, total of each category, total of each month and entries (group into pages) in the given month"""
 
-    total = float(Entry.total_by_month(year, month))
-    category_total = {}
-    for category in Category.objects.all():
-        category_total[category.name] = float(Entry.total_by_month(year, month, category_name=category.name))
-    return total, category_total
+    entries = list(Entry.find_by_month(year, month))
+    total = sum([entry.value for entry in entries])
+    total_by_category = [Entry.total_by_month(year, month, category_name=cat.name) for cat in categories]
+    total_by_day = [sum([entry.value for entry in entries if entry.date.day == d]) for d in range(1, 32)]
+    entries_pages = group_array(entries, settings.VIEW_SUMMARIZE_MONTH_DEFAULT_PAGE_SIZE)
+    return total, total_by_category, total_by_day, entries_pages
 
 
 def get_week_total(year: int,
@@ -317,3 +342,36 @@ def is_valid_dates(start_date: str, end_date: str) -> bool:
         return start_date <= end_date
     except ValueError:
         return False
+
+
+def get_year_links(year):
+    return [
+        reverse("summarize:year", kwargs={'year': year - 1}),
+        str(year - 1),
+        reverse("summarize:year", kwargs={'year': year + 1}),
+        str(year + 1)
+    ]
+
+
+def get_month_links(year, month):
+    prev_year = year
+    prev_month = month - 1
+    if prev_month == 0:
+        prev_month = 12
+        prev_year = year - 1
+
+    next_year = year
+    next_month = month + 1
+    if next_month == 13:
+        next_month = 1
+        next_year = year + 1
+
+    prv = datetime(prev_year, prev_month, 1)
+    nxt = datetime(next_year, next_month, 1)
+
+    return [
+        reverse("summarize:month", kwargs={'year': prv.year, 'month': prv.month}),
+        prv.strftime("%B %Y"),
+        reverse("summarize:month", kwargs={'year': nxt.year, 'month': nxt.month}),
+        nxt.strftime("%B %Y"),
+    ]

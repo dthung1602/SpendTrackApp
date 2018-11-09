@@ -63,9 +63,37 @@ Date.prototype.getISOCalendar = function () {
 };
 
 /**
+ * JS version of range in python
+ */
+function range() {
+    switch (arguments.length) {
+        case 2:
+            let start = arguments[0];
+            let end = arguments[1];
+            return (new Array(end - start)).fill(undefined).map((_, i) => i + start);
+        case 1:
+            return [...Array(arguments[0])];
+        default:
+            throw "Invalid Arguments"
+    }
+}
+
+/**
+ * Scroll to page top
+ */
+function scrollToTop() {
+    document.querySelector('nav').scrollIntoView({
+        behavior: 'smooth'
+    });
+}
+
+
+/**
  * Switch between table pages
  */
 function viewTablePage(page) {
     $('[class^="table-page-"]').hide();
     $('.table-page-' + page).show();
+    $('.page-control .button').removeClass('selected');
+    $('.page-control .button:nth-child(' + page + ')').addClass('selected');
 }

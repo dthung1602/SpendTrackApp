@@ -3,6 +3,11 @@ from django.shortcuts import render as rd
 from datetime import datetime
 from math import ceil
 
+month_full_names = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+]
+
 
 def render(request, template_name, context=None, content_type=None, status=None, using=None):
     """Override render function to add information to context for base.html"""

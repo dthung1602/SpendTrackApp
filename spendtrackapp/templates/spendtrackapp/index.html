@@ -59,17 +59,17 @@
             <!-- page control -->
             {% if entries_pages|length > 1 %}
                 <div class="row">
-                    <div class="twelve columns group-btn align-right">
+                    <div class="twelve columns group-btn page-control align-right">
                         {% for ep in entries_pages %}
                             <div class="button"
-                            onclick="viewTablePage({{ forloop.counter }})">{{ forloop.counter }}</div>
+                                 onclick="viewTablePage({{ forloop.counter }})">{{ forloop.counter }}</div>
                         {% endfor %}
                     </div>
                     <script>viewTablePage(1)</script>
                 </div>
             {% endif %}
 
-        </div>1
+        </div>
 
         <!-- Add new entry -->
         <form class="box" action="{% url "add" %}">

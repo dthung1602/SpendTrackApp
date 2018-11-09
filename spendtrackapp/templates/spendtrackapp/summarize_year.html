@@ -15,10 +15,18 @@
         <!-- Year title -->
         <div class="row">
             <div class="twelve columns">
-                <h1>{{ now.year }}</h1>
+                <h1>{{ page_title }}</h1>
             </div>
         </div>
-
+    
+        <!-- Nav -->
+        <div class="row">
+            <div class="twelve columns align-right text-link">
+                <a href="{{ last_year_link }}">« {{ last_year_name }}</a>
+                <a href="{{ next_year_link }}">{{ next_year_name }} »</a>
+            </div>
+        </div>
+    
         <!-- Entries in year -->
         <div class="row">
             <table class="twelve columns">
@@ -52,7 +60,7 @@
         <!-- page control -->
         {% if entries_pages|length > 1 %}
             <div class="row">
-                <div class="twelve columns group-btn align-right">
+                <div class="twelve columns group-btn page-control align-right">
                     {% for ep in entries_pages %}
                         <div class="button" onclick="viewTablePage({{ forloop.counter }})">{{ forloop.counter }}</div>
                     {% endfor %}
@@ -85,6 +93,14 @@
             </div>
         </div>
 
+        <!-- Nav -->
+        <div class="row">
+            <div class="twelve columns align-center text-link">
+                <br>
+                <a href="{{ last_year_link }}">« {{ last_year_name }}</a>
+                <a href="{{ next_year_link }}">{{ next_year_name }} »</a>
+            </div>
+        </div>
     </div>
 
     <!-- Charts -->

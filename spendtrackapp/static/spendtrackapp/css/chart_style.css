@@ -131,3 +131,22 @@
     fill: #555555;
     font-size: medium;
 }
+
+.chart-line .ct-series-a .ct-line {
+    stroke: #19739f;
+    stroke-width: 4px;
+}
+
+.chart-line .ct-series-b .ct-line {
+    stroke: #183f62;
+    stroke-width: 4px;
+}
+
+.chart-line .ct-series-a .ct-area {
+    fill: #28b8ff;
+}
+
+.chart-line .ct-series-b .ct-area {
+    fill: #112c44;
+}
+

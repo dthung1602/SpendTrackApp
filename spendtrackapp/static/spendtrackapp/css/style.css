@@ -291,29 +291,33 @@ input[type="text"] {
     text-decoration: none;
     white-space: nowrap;
     background-color: transparent;
-    border-color: #dddddd;
-    border-top: 1px solid #dddddd;
-    border-bottom: 1px solid #dddddd;
+    border-color: #eeeeee;
+    border-top: 1px solid #eeeeee;
+    border-bottom: 1px solid #eeeeee;
     border-radius: 0;
     cursor: pointer;
     box-sizing: border-box;
 }
 
-/*.group-btn .button:first-child,*/
-/*.group-btn button:first-child {*/
-    /*border-bottom-left-radius: 8px;*/
-    /*border-top-left-radius: 8px;*/
-    /*padding-left: 8px;*/
-    /*margin-left: 3px;*/
-/*}*/
+.group-btn .selected {
+    background: #d8d8d8;
+}
 
-/*.group-btn .button:last-child,*/
-/*.group-btn button:last-child {*/
-    /*border-bottom-right-radius: 8px;*/
-    /*border-top-right-radius: 8px;*/
-    /*padding-right: 8px;*/
-    /*margin-right: 3px;*/
-/*}*/
+.group-btn .button:first-child,
+.group-btn button:first-child {
+    border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
+    padding-left: 5px;
+    margin-left: 3px;
+}
+
+.group-btn .button:last-child,
+.group-btn button:last-child {
+    border-bottom-right-radius: 3px;
+    border-top-right-radius: 3px;
+    padding-right: 5px;
+    margin-right: 3px;
+}
 
 /*******************************
  *         SUMMARIZE           *
@@ -324,8 +328,47 @@ input[type="text"] {
 }
 
 /*******************************
+ *          SUMMARIZE          *
+ *******************************/
+
+.text-link {
+    margin-top: 0;
+    margin-bottom: 35px;
+}
+
+.text-link a {
+    font-size: medium;
+    color: #555555;
+    text-decoration: none;
+    padding: 5px 5px;
+    margin: 5px 5px;
+}
+
+.text-link a:hover {
+    color: black;
+    text-decoration: underline;
+}
+
+/*******************************
  *           FOOTER            *
  *******************************/
+
+.button-scroll-up {
+    display: inline-block;
+    border: none;
+    background: rgba(189, 189, 189, 0.26);
+    text-transform: uppercase;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 0;
+    margin-bottom: 30px;
+}
+
+.button-scroll-up:hover {
+    /*color: rgba(189, 189, 189, 0.26);*/
+    background: white;
+    border: 1px solid rgba(125, 125, 125, 0.62);
+}
 
 .footer {
     background: #183f62;
