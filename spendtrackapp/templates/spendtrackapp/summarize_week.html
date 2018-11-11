@@ -1,118 +1,37 @@
-{% extends "spendtrackapp/base.html" %}
+{% extends "spendtrackapp/summarize_base.html" %}
 
-{% block script %}
-    {% load static %}
-    <link rel="stylesheet" href="{% static "/spendtrackapp/css/chartist.min.css" %}">
-    <link rel="stylesheet" href="{% static "/spendtrackapp/css/chart_style.css" %}">
-    <script src="{% static "spendtrackapp/js/chartist.min.js" %}"></script>
-    <script src="{% static "spendtrackapp/js/summarize_week.js" %}"></script>
-{% endblock %}
-
-{% block main %}
-
-    <div class="container">
-
-        <!-- Week title -->
-        <div class="row">
-            <div class="twelve columns">
-                <h1>{{ page_title }}</h1>
-            </div>
-        </div>
-
-        <!-- Nav -->
-        <div class="row">
-            <div class="twelve columns align-right text-link">
-                <a href="{{ last_week_link }}">« {{ last_week_name }}</a>
-                <a href="{{ next_week_link }}">{{ next_week_name }} »</a>
-            </div>
-        </div>
-
-        <!-- Entries in week -->
-        <div class="row">
-            <table class="twelve columns">
-                <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Content</th>
-                    <th class="align-right">Value</th>
-                    <th class="align-right">Category</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for entries_page in entries_pages %}
-                    {% for entry in entries_page %}
-                        <tr class="table-page-{{ forloop.parentloop.counter }}">
-                            <td>{{ entry.formatted_date }}</td>
-                            <td>{{ entry.content }}</td>
-                            <td class="align-right">{{ entry.value }}</td>
-                            <td class="align-right">{{ entry.leaf_category }}</td>
-                        </tr>
-                    {% endfor %}
-                {% empty %}
-                    <tr>
-                        <td class="no-data">No data to display</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <!-- page control -->
-        {% if entries_pages|length > 1 %}
-            <div class="row">
-                <div class="twelve columns group-btn page-control align-right">
-                    {% for ep in entries_pages %}
-                        <div class="button" onclick="viewTablePage({{ forloop.counter }})">{{ forloop.counter }}</div>
-                    {% endfor %}
-                </div>
-                <script>viewTablePage(1)</script>
-            </div>
-        {% endif %}
-
-        <!-- This week total vs last week's -->
-        <br>
-        <div class="row info">
-            <div class="one-half column" style="color: #19739f">LAST WEEK: {{ last_week_total }}</div>
-            <div class="one-half column" style="color: #183f62">THIS WEEK: {{ this_week_total }}</div>
-        </div>
-
-        <!-- Weekly total this week vs last week's -->
-        <div class="row">
-            <div class="twelve columns">
-                <div class="chart chart-bar" id="bar-chart"></div>
-            </div>
-        </div>
-
-        <!-- Total by categories this week vs last week's -->
-        <div class="row">
-            <div class="one-half column">
-                <div class="chart chart-pie" id="last-week-pie-chart"></div>
-            </div>
-            <div class="one-half column">
-                <div class="chart chart-pie" id="this-week-pie-chart"></div>
-            </div>
-        </div>
-
-        <!-- Nav -->
-        <div class="row">
-            <div class="twelve columns align-center text-link">
-                <br>
-                <a href="{{ last_week_link }}">« {{ last_week_name }}</a>
-                <a href="{{ next_week_link }}">{{ next_week_name }} »</a>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Charts -->
+{% block chart_render %}
     <script>
-        let lastWeekBarChartSeries = {{ last_week_daily_total | safe }};
-        let thisWeekBarChartSeries = {{ this_week_daily_total | safe }};
-        let lastWeekPieChartSeries = {{ last_week_category_total | safe }};
-        let thisWeekPieChartSeries = {{ this_week_category_total | safe }};
-        let categoriesNames = {{ categories_names | safe }};
-        let isLeaf = {{ is_leaf | safe }}
-        renderCharts();
-    </script>
+        // bar chart
+        Chartist.Bar('#bar-chart', {
+            labels: daysInWeekNamesM,
+            series: [
+                lastPeriodFirstChartSeries,
+                thisPeriodFirstChartSeries
+            ]
+        }, barChartOptions, barChartResponsiveOptions);
 
+        // filter out non-leaf categories
+        let lastWeekLeafCategoriesSeries = [];
+        let thisWeekLeafCategoriesSeries = [];
+        for (let i = 0; i < categoriesNames.length; i++) {
+            if (isLeaf[i]) {
+                lastWeekLeafCategoriesSeries.push(lastPeriodPieChartSeries[i]);
+                thisWeekLeafCategoriesSeries.push(thisPeriodPieChartSeries[i]);
+            }
+        }
+
+        // last week pie chart
+        Chartist.Pie('#last-period-pie-chart', {
+            labels: categoriesNames,
+            series: lastWeekLeafCategoriesSeries
+        }, pieChartOptions, pieChartResponsiveOptions);
+
+        // this week pie chart
+        Chartist.Pie('#this-period-pie-chart', {
+            labels: categoriesNames,
+            series: thisWeekLeafCategoriesSeries
+        }, pieChartOptions, pieChartResponsiveOptions);
+
+    </script>
 {% endblock %}

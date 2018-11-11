@@ -319,21 +319,21 @@ def summarize_date_range_ajax():
 def summarize_year_ajax():
     return [
         [2017, {
-            'this_year_total': 12.50,
-            'this_year_category_total': [47, -32.50, 5.50, -2, 0, -38, 47, 0, 47, 0, 0, 0, 0, 0],
-            'this_year_monthly_total': [19.5, -35.5, -15, 0, 0, -9, -3, 50, 0, -15, 0, 20.5]
+            'total': 12.50,
+            'category_total': [47, -32.50, 5.50, -2, 0, -38, 47, 0, 47, 0, 0, 0, 0, 0],
+            'sub_period_total': [19.5, -35.5, -15, 0, 0, -9, -3, 50, 0, -15, 0, 20.5]
         }],
 
         [2016, {
-            'this_year_total': -28.50,
-            'this_year_category_total': [-20, 0, 0, -8.50, 0, 0, 0, 0, 0, -20, 0, -3.50, -16.50, 0],
-            'this_year_monthly_total': [-10, 0, -25.5, 0, 0, 0, -2, 9, 0, 0, 0, 0]
+            'total': -28.50,
+            'category_total': [-20, 0, 0, -8.50, 0, 0, 0, 0, 0, -20, 0, -3.50, -16.50, 0],
+            'sub_period_total': [-10, 0, -25.5, 0, 0, 0, -2, 9, 0, 0, 0, 0]
         }],
 
         [2018, {
-            'this_year_total': 0,
-            'this_year_category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            'this_year_monthly_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            'total': 0,
+            'category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'sub_period_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         }]
     ]
 
@@ -341,9 +341,9 @@ def summarize_year_ajax():
 def summarize_month_ajax():
     return [
         [2017, 1, {
-            'this_month_total': 19.50,
-            'this_month_category_total': [0, 0, 0, 19.50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            'this_month_daily_total': [
+            'total': 19.50,
+            'category_total': [0, 0, 0, 19.50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'sub_period_total': [
                 -1.5, 0, 23.5, 0, -2.5, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -351,9 +351,9 @@ def summarize_month_ajax():
         }],
 
         [2017, 10, {
-            'this_month_total': -15,
-            'this_month_category_total': [0, -2.50, 0, -12.50, 0, -2.50, 0, 0, 0, 0, 0, 0, 0, 0],
-            'this_month_daily_total': [
+            'total': -15,
+            'category_total': [0, -2.50, 0, -12.50, 0, -2.50, 0, 0, 0, 0, 0, 0, 0, 0],
+            'sub_period_total': [
                 0, -12.5, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, -2.5, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -361,9 +361,9 @@ def summarize_month_ajax():
         }],
 
         [2017, 5, {
-            'this_month_total': 0,
-            'this_month_category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            'this_month_daily_total': [
+            'total': 0,
+            'category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'sub_period_total': [
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -375,21 +375,21 @@ def summarize_month_ajax():
 def summarize_week_ajax():
     return [
         [2015, 45, {
-            'this_week_total': 89,
-            'this_week_category_total': [91.50, 0, 0, -2.50, 0, 0, 0, 0, 0, 91.50, 0, -8.50, 100, 0],
-            'this_week_daily_total': [0, 0, 0, 100, 0, -11, 0]
+            'total': 89,
+            'category_total': [91.50, 0, 0, -2.50, 0, 0, 0, 0, 0, 91.50, 0, -8.50, 100, 0],
+            'sub_period_total': [0, 0, 0, 100, 0, -11, 0]
         }],
 
         [2019, 52, {
-            'this_week_total': 0,
-            'this_week_category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            'this_week_daily_total': [0, 0, 0, 0, 0, 0, 0]
+            'total': 0,
+            'category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'sub_period_total': [0, 0, 0, 0, 0, 0, 0]
         }],
 
         [2020, 1, {
-            'this_week_total': -5,
-            'this_week_category_total': [0, 0, 0, -5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            'this_week_daily_total': [0, -5, 0, 0, 0, 0, 0]
+            'total': -5,
+            'category_total': [0, 0, 0, -5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'sub_period_total': [0, -5, 0, 0, 0, 0, 0]
         }]
     ]
 
@@ -419,32 +419,32 @@ def summarize_date_range():
 def summarize_year():
     return [
         [2016, {
-            'this_year_total': -28.50,
-            'this_year_category_total': [-20, 0, 0, -8.50, 0, 0, 0, 0, 0, -20, 0, -3.50, -16.50, 0],
-            'this_year_monthly_total': [-10, 0, -25.5, 0, 0, 0, -2, 9, 0, 0, 0, 0],
-            'last_year_total': 88.5,
-            'last_year_category_total': [91, 0, 0, -2.50, 0, 0, -0.50, 0, -0.50, 91.50, 0, -8.50, 100, 0],
-            'last_year_monthly_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, -0.5, 89, 0],
+            'this_period_total': -28.50,
+            'this_period_category_total': [-20, 0, 0, -8.50, 0, 0, 0, 0, 0, -20, 0, -3.50, -16.50, 0],
+            'this_sub_period_total': [-10, 0, -25.5, 0, 0, 0, -2, 9, 0, 0, 0, 0],
+            'last_period_total': 88.5,
+            'last_period_category_total': [91, 0, 0, -2.50, 0, 0, -0.50, 0, -0.50, 91.50, 0, -8.50, 100, 0],
+            'last_sub_period_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, -0.5, 89, 0],
             'entries': [11, 4, 15, 3, 6]
         }],
 
         [2017, {
-            'this_year_total': 12.50,
-            'this_year_category_total': [47, -32.50, 5.50, -2, 0, -38, 47, 0, 47, 0, 0, 0, 0, 0],
-            'this_year_monthly_total': [19.5, -35.5, -15, 0, 0, -9, -3, 50, 0, -15, 0, 20.5],
-            'last_year_total': -28.50,
-            'last_year_category_total': [-20, 0, 0, -8.50, 0, 0, 0, 0, 0, -20, 0, -3.50, -16.50, 0],
-            'last_year_monthly_total': [-10, 0, -25.5, 0, 0, 0, -2, 9, 0, 0, 0, 0],
+            'this_period_total': 12.50,
+            'this_period_category_total': [47, -32.50, 5.50, -2, 0, -38, 47, 0, 47, 0, 0, 0, 0, 0],
+            'this_sub_period_total': [19.5, -35.5, -15, 0, 0, -9, -3, 50, 0, -15, 0, 20.5],
+            'last_period_total': -28.50,
+            'last_period_category_total': [-20, 0, 0, -8.50, 0, 0, 0, 0, 0, -20, 0, -3.50, -16.50, 0],
+            'last_sub_period_total': [-10, 0, -25.5, 0, 0, 0, -2, 9, 0, 0, 0, 0],
             'entries': [22, 23, 24, 25, 17, 9, 12, 2, 1, 20, 18, 10]
         }],
 
         [2018, {
-            'this_year_total': 0,
-            'this_year_category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            'this_year_monthly_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            'last_year_total': 12.50,
-            'last_year_category_total': [47, -32.50, 5.50, -2, 0, -38, 47, 0, 47, 0, 0, 0, 0, 0],
-            'last_year_monthly_total': [19.5, -35.5, -15, 0, 0, -9, -3, 50, 0, -15, 0, 20.5],
+            'this_period_total': 0,
+            'this_period_category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'this_sub_period_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'last_period_total': 12.50,
+            'last_period_category_total': [47, -32.50, 5.50, -2, 0, -38, 47, 0, 47, 0, 0, 0, 0, 0],
+            'last_sub_period_total': [19.5, -35.5, -15, 0, 0, -9, -3, 50, 0, -15, 0, 20.5],
             'entries': []
         }]
     ]
@@ -453,16 +453,16 @@ def summarize_year():
 def summarize_month():
     return [
         [2017, 1, {
-            'this_month_total': 19.50,
-            'this_month_category_total': [0, 0, 0, 19.50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            'this_month_daily_total': [
+            'this_period_total': 19.50,
+            'this_period_category_total': [0, 0, 0, 19.50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'this_sub_period_total': [
                 -1.5, 0, 23.5, 0, -2.5, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
             ],
-            'last_month_total': 0,
-            'last_month_category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            'last_month_daily_total': [
+            'last_period_total': 0,
+            'last_period_category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'last_sub_period_total': [
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -471,16 +471,16 @@ def summarize_month():
         }],
 
         [2017, 10, {
-            'this_month_total': -15,
-            'this_month_category_total': [0, -2.50, 0, -12.50, 0, -2.50, 0, 0, 0, 0, 0, 0, 0, 0],
-            'this_month_daily_total': [
+            'this_period_total': -15,
+            'this_period_category_total': [0, -2.50, 0, -12.50, 0, -2.50, 0, 0, 0, 0, 0, 0, 0, 0],
+            'this_sub_period_total': [
                 0, -12.5, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, -2.5, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
             ],
-            'last_month_total': 0,
-            'last_month_category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            'last_month_daily_total': [
+            'last_period_total': 0,
+            'last_period_category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'last_sub_period_total': [
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -489,16 +489,16 @@ def summarize_month():
         }],
 
         [2017, 9, {
-            'this_month_total': 0,
-            'this_month_category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            'this_month_daily_total': [
+            'this_period_total': 0,
+            'this_period_category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'this_sub_period_total': [
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
             ],
-            'last_month_total': 50,
-            'last_month_category_total': [50, 0, 0, 0, 0, 0, 50, 0, 50, 0, 0, 0, 0, 0],
-            'last_month_daily_total': [
+            'last_period_total': 50,
+            'last_period_category_total': [50, 0, 0, 0, 0, 0, 50, 0, 50, 0, 0, 0, 0, 0],
+            'last_sub_period_total': [
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 50,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -511,32 +511,32 @@ def summarize_month():
 def summarize_week():
     return [
         [2017, 1, {
-            'this_week_total': 21,
-            'this_week_category_total': [0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            'this_week_daily_total': [0, 23.5, 0, -2.5, 0, 0, 0],
-            'last_week_total': -1.50,
-            'last_week_category_total': [0, 0, 0, -1.50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            'last_week_daily_total': [0, 0, 0, 0, 0, 0, -1.5],
+            'this_period_total': 21,
+            'this_period_category_total': [0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'this_sub_period_total': [0, 23.5, 0, -2.5, 0, 0, 0],
+            'last_period_total': -1.50,
+            'last_period_category_total': [0, 0, 0, -1.50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'last_sub_period_total': [0, 0, 0, 0, 0, 0, -1.5],
             'entries': [23, 24, 25]
         }],
 
         [2019, 52, {
-            'this_week_total': 0,
-            'this_week_category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            'this_week_daily_total': [0, 0, 0, 0, 0, 0, 0],
-            'last_week_total': 0,
-            'last_week_category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            'last_week_daily_total': [0, 0, 0, 0, 0, 0, 0],
+            'this_period_total': 0,
+            'this_period_category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'this_sub_period_total': [0, 0, 0, 0, 0, 0, 0],
+            'last_period_total': 0,
+            'last_period_category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'last_sub_period_total': [0, 0, 0, 0, 0, 0, 0],
             'entries': []
         }],
 
         [2020, 1, {
-            'this_week_total': -5,
-            'this_week_category_total': [0, 0, 0, -5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            'this_week_daily_total': [0, -5, 0, 0, 0, 0, 0],
-            'last_week_total': 0,
-            'last_week_category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            'last_week_daily_total': [0, 0, 0, 0, 0, 0, 0],
+            'this_period_total': -5,
+            'this_period_category_total': [0, 0, 0, -5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'this_sub_period_total': [0, -5, 0, 0, 0, 0, 0],
+            'last_period_total': 0,
+            'last_period_category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'last_sub_period_total': [0, 0, 0, 0, 0, 0, 0],
             'entries': [26]
         }]
     ]

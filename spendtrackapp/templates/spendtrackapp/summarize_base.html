@@ -1,0 +1,133 @@
+{% extends "spendtrackapp/base.html" %}
+
+{% block script %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static "/spendtrackapp/css/chartist.min.css" %}">
+    <link rel="stylesheet" href="{% static "/spendtrackapp/css/chart_style.css" %}">
+    <script src="{% static "spendtrackapp/js/chartist.min.js" %}"></script>
+    <script src="{% static "spendtrackapp/js/summarize_chart_options.js" %}"></script>
+{% endblock %}
+
+{% block main %}
+
+    <div class="container">
+
+        <!-- Title -->
+        <div class="row">
+            <div class="twelve columns">
+                <h1>{{ page_title }}</h1>
+            </div>
+        </div>
+
+        <!-- Nav -->
+        {% block top_time_period_nav %}
+            <div class="row">
+                <div class="twelve columns align-right text-link">
+                    <a href="{{ last_period_link }}">« {{ last_period_name }}</a>
+                    <a href="{{ next_period_link }}">{{ next_period_name }} »</a>
+                </div>
+            </div>
+        {% endblock %}
+
+        <!-- Entries in this time period -->
+        <div class="row">
+            <table class="twelve columns">
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Content</th>
+                    <th class="align-right">Value</th>
+                    <th class="align-right">Category</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for entries_page in entries_pages %}
+                    {% for entry in entries_page %}
+                        <tr class="table-page-{{ forloop.parentloop.counter }}">
+                            <td>{{ entry.formatted_date }}</td>
+                            <td>{{ entry.content }}</td>
+                            <td class="align-right">{{ entry.value }}</td>
+                            <td class="align-right">{{ entry.leaf_category }}</td>
+                        </tr>
+                    {% endfor %}
+                {% empty %}
+                    <tr>
+                        <td class="no-data">No data to display</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Entry page control -->
+        {% if entries_pages|length > 1 %}
+            <div class="row">
+                <div class="twelve columns group-btn page-control align-right">
+                    {% for ep in entries_pages %}
+                        <div class="button" onclick="viewTablePage({{ forloop.counter }})">{{ forloop.counter }}</div>
+                    {% endfor %}
+                </div>
+                <script>viewTablePage(1)</script>
+            </div>
+        {% endif %}
+
+        <!-- This time period' total vs last time period's -->
+        <br>
+        <div class="row info capitalize">
+            {% block total %}
+                <div class="one-half column" style="color: #19739f">
+                    LAST {{ period_name }}: {{ last_period_total }}</div>
+                <div class="one-half column" style="color: #183f62">
+                    THIS {{ period_name }}: {{ this_period_total }}</div>
+            {% endblock %}
+        </div>
+
+        <!-- Sub period total of this period vs last period's -->
+        {% block first_chart %}
+            <div class="row">
+                <div class="twelve columns">
+                    <div class="chart chart-bar" id="bar-chart"></div>
+                </div>
+            </div>
+        {% endblock %}
+
+        <!-- Total by categories this period vs last period's -->
+        {% block second_chart %}
+            <div class="row">
+                <div class="one-half column">
+                    <div class="chart chart-pie" id="last-period-pie-chart"></div>
+                </div>
+                <div class="one-half column">
+                    <div class="chart chart-pie" id="this-period-pie-chart"></div>
+                </div>
+            </div>
+        {% endblock %}
+
+        <!-- Nav -->
+        {% block bottom_time_period_nav %}
+            <div class="row">
+                <div class="twelve columns align-center text-link">
+                    <a href="{{ last_period_link }}">« {{ last_period_name }}</a>
+                    <a href="{{ next_period_link }}">{{ next_period_name }} »</a>
+                </div>
+            </div>
+        {% endblock %}
+
+    </div>
+
+    {% block chart_data %}
+        <script>
+            let lastPeriodFirstChartSeries = {{ last_sub_period_total | safe }};
+            let thisPeriodFirstChartSeries = {{ this_sub_period_total | safe }};
+            let lastPeriodPieChartSeries = {{ last_period_category_total | safe }};
+            let thisPeriodPieChartSeries = {{ this_period_category_total | safe }};
+            let categoriesNames = {{ categories_names | safe }};
+            let isLeaf = {{ is_leaf | safe }};
+        </script>
+    {% endblock %}
+
+    {% block chart_render %}
+    {% endblock %}
+
+{% endblock %}
+

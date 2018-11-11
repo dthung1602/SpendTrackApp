@@ -39,10 +39,14 @@ class TestIndex(TestView):
             self.logIn()
             response = self.client.get(reverse('index'))
 
+            entry_ids = []
+            for entry_page in response.context['entries_pages']:
+                entry_ids += [entry.id for entry in entry_page]
+
             self.assertEqual(200, response.status_code)
             self.assertSequenceEqual(
                 expected_entries_in_week_ids,
-                [entry.id for entry in response.context['entries_in_week']]
+                entry_ids
             )
             self.assertAlmostEqual(
                 expected_total_in_week,
@@ -59,10 +63,14 @@ class TestIndex(TestView):
             self.assertEqual('{}', response.content.decode('utf-8'))
 
             response = self.client.get(reverse('index'))
+            entry_ids = []
+            for entry_page in response.context['entries_pages']:
+                entry_ids += [entry.id for entry in entry_page]
+
             self.assertEqual(200, response.status_code)
             self.assertCountEqual(
                 expected_entries_in_week_id,
-                [entry.id for entry in response.context['entries_in_week']]
+                entry_ids
             )
             self.assertAlmostEqual(
                 expected_total_in_week,

@@ -13,7 +13,10 @@ class TwoDigitWeekConverter:
         return value
 
     def to_url(self, value):
-        return '%02d' % int(value)
+        value = int(value)
+        if not 1 <= value <= 53:
+            raise ValueError("Week number must be between 1 and 53")
+        return '%02d' % value
 
 
 class ThreeCharMonthConverter:
@@ -29,6 +32,9 @@ class ThreeCharMonthConverter:
     def to_url(self, value):
         if isinstance(value, str) and value.lower() in self.months:
             return value.lower()
+        value = int(value)
+        if not 1 <= value <= 12:
+            raise ValueError("Month must be between 1 and 12")
         return self.months[int(value) - 1]
 
 
@@ -39,7 +45,9 @@ class FourDigitYearConverter:
         return int(value)
 
     def to_url(self, value):
-        return '%04d' % int(value)
+        if not 1000 <= int(value) <= 9999:
+            raise ValueError("Year must be between 1000 and 9999")
+        return str(value)
 
 
 class DateConverter:

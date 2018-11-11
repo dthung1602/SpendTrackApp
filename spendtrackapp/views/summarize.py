@@ -1,8 +1,10 @@
 from datetime import timedelta
-from typing import Tuple, List
+from typing import Tuple, List, Callable, Dict
 
+from dateutil.relativedelta import relativedelta
 from django.contrib.auth.decorators import login_required
-from django.http.response import JsonResponse, HttpResponseBadRequest, HttpResponseRedirect
+from django.http import HttpRequest
+from django.http.response import HttpResponse, JsonResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import reverse
 
 from spendtrackapp.models import Entry, Category
@@ -93,7 +95,7 @@ def date_range_handler(request, start_date, end_date):
     context = {
         'total': date_range_info[0],
         'category_total': date_range_info[1],
-        'daily_total': date_range_info[2],
+        'sub_period_total': date_range_info[2],
     }
     if request.is_ajax():
         return JsonResponse(context)
@@ -109,10 +111,72 @@ def date_range_handler(request, start_date, end_date):
         'end_date': str_end_date,
         'total': date_range_info[0],
         'category_total': arr_to_js_str(date_range_info[1], float),
-        'daily_total': arr_to_js_str(date_range_info[2], float),
+        'sub_period_total': arr_to_js_str(date_range_info[2], float),
         'entries_pages': date_range_info[3]
     }
     return render(request, "spendtrackapp/summarize_date_range.html", context)
+
+
+def __period_handler(request: HttpRequest,
+                     get_info_func: Callable,
+                     get_adjacent_periods: Callable,
+                     format_period: Callable,
+                     period_name: str,
+                     period: Dict) -> HttpResponse:
+    """
+    Generic handler
+
+    AJAX request: only info of this period is returned in JSON format
+    GET request: info of this period and the previous period is returned
+
+    :param request: Http request
+    :param get_info_func: a function to get all necessary info as a list
+    :param get_adjacent_periods: a function to get a dict of adjacent periods info
+    :param format_period: a function to that returns a str represent time period
+    """
+
+    # AJAX request
+    this_period_info = get_info_func(**period)
+    context = {
+        'total': this_period_info[0],
+        'category_total': this_period_info[1],
+        'sub_period_total': this_period_info[2]
+    }
+    if request.is_ajax():
+        return JsonResponse(context)
+
+    # GET request
+    last_period, next_period = get_adjacent_periods(**period)
+    last_period_info = get_info_func(**last_period)
+
+    named_url = "summarize:" + period_name
+    template_name = "spendtrackapp/summarize_" + period_name + ".html"
+
+    context = {
+        'page_title': format_period(**period),
+        'period_name': period_name,
+        'entries_pages': this_period_info[3],
+
+        'categories_names': arr_to_js_str([category.name for category in categories], str),
+        'is_leaf': arr_to_js_str([category.is_leaf for category in categories], bool),
+
+        'last_period_link': reverse(named_url, kwargs=last_period),
+        'next_period_link': reverse(named_url, kwargs=next_period),
+
+        'next_period_name': format_period(**next_period),
+        'last_period_name': format_period(**last_period),
+
+        'last_period_total': last_period_info[0],
+        'this_period_total': this_period_info[0],
+
+        'last_sub_period_total': arr_to_js_str(last_period_info[2], float),
+        'this_sub_period_total': arr_to_js_str(this_period_info[2], float),
+
+        'last_period_category_total': arr_to_js_str(last_period_info[1], float),
+        'this_period_category_total': arr_to_js_str(this_period_info[1], float),
+    }
+
+    return render(request, template_name, context)
 
 
 @login_required
@@ -123,40 +187,14 @@ def year_handler(request, year):
     GET request: info of year and the year before is returned
     """
 
-    # AJAX request
-    this_year = get_year_info(year)
-    context = {
-        'this_year_total': this_year[0],
-        'this_year_category_total': this_year[1],
-        'this_year_monthly_total': this_year[2]
-    }
-    if request.is_ajax():
-        return JsonResponse(context)
-
-    # GET request
-    links = get_year_links(year)
-    last_year = get_year_info(year - 1)
-
-    context = {
-        'page_title': year,
-        'categories_names': arr_to_js_str([category.name for category in categories], str),
-        'is_leaf': arr_to_js_str([category.is_leaf for category in categories], bool),
-
-        'last_year_link': links[0],
-        'last_year_name': links[1],
-        'next_year_link': links[2],
-        'next_year_name': links[3],
-
-        'this_year_total': this_year[0],
-        'this_year_category_total': arr_to_js_str(this_year[1], float),
-        'this_year_monthly_total': arr_to_js_str(this_year[2], float),
-        'entries_pages': this_year[3],
-
-        'last_year_total': last_year[0],
-        'last_year_category_total': arr_to_js_str(last_year[1], float),
-        'last_year_monthly_total': arr_to_js_str(last_year[2], float),
-    }
-    return render(request, "spendtrackapp/summarize_year.html", context)
+    return __period_handler(
+        request,
+        get_year_info,
+        get_adjacent_years,
+        format_year,
+        'year',
+        {'year': year}
+    )
 
 
 @login_required
@@ -167,44 +205,14 @@ def month_handler(request, year, month):
     GET request: info of month and the month before is returned
     """
 
-    # AJAX request
-    this_month = get_month_info(year, month)
-    context = {
-        'this_month_total': this_month[0],
-        'this_month_category_total': this_month[1],
-        'this_month_daily_total': this_month[2]
-    }
-    if request.is_ajax():
-        return JsonResponse(context)
-
-    # GET request
-    if month == 1:
-        last_month = get_month_info(year - 1, 12)
-    else:
-        last_month = get_month_info(year, month - 1)
-
-    links = get_month_links(year, month)
-
-    context = {
-        'page_title': month_full_names[month - 1] + " " + str(year),
-        'categories_names': arr_to_js_str([category.name for category in categories], str),
-        'is_leaf': arr_to_js_str([category.is_leaf for category in categories], bool),
-
-        'last_month_link': links[0],
-        'last_month_name': links[1],
-        'next_month_link': links[2],
-        'next_month_name': links[3],
-
-        'this_month_total': this_month[0],
-        'this_month_category_total': arr_to_js_str(this_month[1], float),
-        'this_month_daily_total': arr_to_js_str(this_month[2], float),
-        'entries_pages': this_month[3],
-
-        'last_month_total': last_month[0],
-        'last_month_category_total': arr_to_js_str(last_month[1], float),
-        'last_month_daily_total': arr_to_js_str(last_month[2], float),
-    }
-    return render(request, "spendtrackapp/summarize_month.html", context)
+    return __period_handler(
+        request,
+        get_month_info,
+        get_adjacent_months,
+        format_month,
+        'month',
+        {'year': year, 'month': month}
+    )
 
 
 @login_required
@@ -215,43 +223,14 @@ def week_handler(request, year, week):
     GET request: info of week and the week before is returned
     """
 
-    # AJAX request
-    this_week = get_week_info(year, week)
-    context = {
-        'this_week_total': this_week[0],
-        'this_week_category_total': this_week[1],
-        'this_week_daily_total': this_week[2]
-    }
-    if request.is_ajax():
-        return JsonResponse(context)
-
-    # GET request
-    prev_week = isoparse("%iW%02i" % (year, week)) - timedelta(days=7)
-    prev_iso_year, prev_iso_week, _ = prev_week.isocalendar()
-    last_week = get_week_info(prev_iso_year, prev_iso_week)
-
-    links = get_week_links(year, week)
-
-    context = {
-        'page_title': str(year) + " week " + str(week),
-        'categories_names': arr_to_js_str([category.name for category in categories], str),
-        'is_leaf': arr_to_js_str([category.is_leaf for category in categories], bool),
-
-        'last_week_link': links[0],
-        'last_week_name': links[1],
-        'next_week_link': links[2],
-        'next_week_name': links[3],
-
-        'this_week_total': this_week[0],
-        'this_week_category_total': arr_to_js_str(this_week[1], float),
-        'this_week_daily_total': arr_to_js_str(this_week[2], float),
-        'entries_pages': this_week[3],
-
-        'last_week_total': last_week[0],
-        'last_week_category_total': arr_to_js_str(last_week[1], float),
-        'last_week_daily_total': arr_to_js_str(last_week[2], float),
-    }
-    return render(request, "spendtrackapp/summarize_week.html", context)
+    return __period_handler(
+        request,
+        get_week_info,
+        get_adjacent_weeks,
+        format_week,
+        'week',
+        {'year': year, 'week': week}
+    )
 
 
 @login_required
@@ -279,13 +258,54 @@ def this_week_handler(request):
 
 
 ##############################################################
-#                        UTILITIES                           #
+#                       VALIDATORS                           #
 ##############################################################
 
-def same_date(date1: datetime, date2: datetime) -> bool:
-    """Check whether two given datetime object are in the same date"""
 
-    return date1.day == date2.day and date1.month == date2.month and date1.year == date2.year
+def is_valid_year(year: str) -> bool:
+    """Check whether the given year is valid"""
+
+    try:
+        year = int(year)
+        return 1000 <= year <= 9999
+    except ValueError:
+        return False
+
+
+def is_valid_month(month: str) -> bool:
+    """Check whether the given month is valid"""
+
+    return month.lower() in [
+        'jan', 'feb', 'mar', 'apr',
+        'may', 'jun', 'jul', 'aug',
+        'sep', 'oct', 'nov', 'dec'
+    ]
+
+
+def is_valid_iso_week(year: str, week: str) -> bool:
+    """Check whether the given ISO week & ISO year is valid"""
+
+    try:
+        isoparse("%iW%02i" % (int(year), int(week)))
+        return True
+    except ValueError:
+        return False
+
+
+def is_valid_dates(start_date: str, end_date: str) -> bool:
+    """Check whether the given start_date and end_date are valid"""
+
+    try:
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        end_date = datetime.strptime(end_date, '%Y-%m-%d')
+        return start_date <= end_date
+    except ValueError:
+        return False
+
+
+##############################################################
+#                        GET INFO                            #
+##############################################################
 
 
 def get_date_range_info(start_date: str,
@@ -338,81 +358,29 @@ def get_week_info(year: int,
     return total, total_by_category, total_by_weekday, entries_pages
 
 
-def is_valid_year(year: str) -> bool:
-    """Check whether the given year is valid"""
-
-    try:
-        year = int(year)
-        return 1000 <= year <= 9999
-    except ValueError:
-        return False
+##############################################################
+#                GET ADJACENT TIME PERIOD                    #
+##############################################################
 
 
-def is_valid_month(month: str) -> bool:
-    """Check whether the given month is valid"""
-
-    return month.lower() in [
-        'jan', 'feb', 'mar', 'apr',
-        'may', 'jun', 'jul', 'aug',
-        'sep', 'oct', 'nov', 'dec'
-    ]
-
-
-def is_valid_iso_week(year: str, week: str) -> bool:
-    """Check whether the given ISO week & ISO year is valid"""
-
-    try:
-        isoparse("%iW%02i" % (int(year), int(week)))
-        return True
-    except ValueError:
-        return False
-
-
-def is_valid_dates(start_date: str, end_date: str) -> bool:
-    """Check whether the given start_date and end_date are valid"""
-
-    try:
-        start_date = datetime.strptime(start_date, '%Y-%m-%d')
-        end_date = datetime.strptime(end_date, '%Y-%m-%d')
-        return start_date <= end_date
-    except ValueError:
-        return False
-
-
-def get_year_links(year):
+def get_adjacent_years(year):
     return [
-        reverse("summarize:year", kwargs={'year': year - 1}),
-        str(year - 1),
-        reverse("summarize:year", kwargs={'year': year + 1}),
-        str(year + 1)
+        {'year': year - 1},
+        {'year': year + 1},
     ]
 
 
-def get_month_links(year, month):
-    prev_year = year
-    prev_month = month - 1
-    if prev_month == 0:
-        prev_month = 12
-        prev_year = year - 1
-
-    next_year = year
-    next_month = month + 1
-    if next_month == 13:
-        next_month = 1
-        next_year = year + 1
-
-    prv = datetime(prev_year, prev_month, 1)
-    nxt = datetime(next_year, next_month, 1)
-
+def get_adjacent_months(year, month):
+    now = datetime(year, month, 1)
+    prv = now - relativedelta(months=1)
+    nxt = now + relativedelta(months=1)
     return [
-        reverse("summarize:month", kwargs={'year': prv.year, 'month': prv.month}),
-        prv.strftime("%B %Y"),
-        reverse("summarize:month", kwargs={'year': nxt.year, 'month': nxt.month}),
-        nxt.strftime("%B %Y"),
+        {'year': prv.year, 'month': prv.month},
+        {'year': nxt.year, 'month': nxt.month}
     ]
 
 
-def get_week_links(year, week):
+def get_adjacent_weeks(year, week):
     s = "%iW%02i" % (year, week)
     this_week = isoparse(s)
     delta = timedelta(days=7)
@@ -422,8 +390,33 @@ def get_week_links(year, week):
     next_iso_year, next_iso_week, _ = next_week.isocalendar()
 
     return [
-        reverse("summarize:week", kwargs={'year': prev_iso_year, 'week': prev_iso_week}),
-        str(prev_iso_year) + " week " + str(prev_iso_week),
-        reverse("summarize:week", kwargs={'year': next_iso_year, 'week': next_iso_week}),
-        str(next_iso_year) + " week " + str(next_iso_week)
+        {'year': prev_iso_year, 'week': prev_iso_week},
+        {'year': next_iso_year, 'week': next_iso_week}
     ]
+
+
+##############################################################
+#                         FORMAT TIME                        #
+##############################################################
+
+def format_year(year):
+    return str(year)
+
+
+def format_month(year, month):
+    return str(year) + ' ' + month_full_names[month - 1]
+
+
+def format_week(year, week):
+    return str(year) + " week " + str(week)
+
+
+##############################################################
+#                          UTILS                             #
+##############################################################
+
+
+def same_date(date1: datetime, date2: datetime) -> bool:
+    """Check whether two given datetime object are in the same date"""
+
+    return date1.day == date2.day and date1.month == date2.month and date1.year == date2.year

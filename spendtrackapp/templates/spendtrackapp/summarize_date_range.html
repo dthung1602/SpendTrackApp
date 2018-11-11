@@ -1,99 +1,82 @@
-{% extends "spendtrackapp/base.html" %}
+{% extends "spendtrackapp/summarize_base.html" %}
 
-{% block script %}
-    {% load static %}
-    <link rel="stylesheet" href="{% static "/spendtrackapp/css/chartist.min.css" %}">
-    <link rel="stylesheet" href="{% static "/spendtrackapp/css/chart_style.css" %}">
-    <script src="{% static "spendtrackapp/js/chartist.min.js" %}"></script>
-    <script src="{% static "spendtrackapp/js/summarize_daterange.js" %}"></script>
+{% block top_time_period_nav %}
+{% endblock %}
+{% block bottom_time_period_nav %}
 {% endblock %}
 
-{% block main %}
-
-    <div class="container">
-
-        <!-- daterange title -->
-        <br>
-        <div class="row">
-            <div class="twelve columns">
-                <h2>{{ page_title }}</h2>
-            </div>
-        </div>
-        <br><br>
-
-        <!-- Entries in daterange -->
-        <div class="row">
-            <table class="twelve columns">
-                <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Content</th>
-                    <th class="align-right">Value</th>
-                    <th class="align-right">Category</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for entries_page in entries_pages %}
-                    {% for entry in entries_page %}
-                        <tr class="table-page-{{ forloop.parentloop.counter }}">
-                            <td>{{ entry.formatted_date }}</td>
-                            <td>{{ entry.content }}</td>
-                            <td class="align-right">{{ entry.value }}</td>
-                            <td class="align-right">{{ entry.leaf_category }}</td>
-                        </tr>
-                    {% endfor %}
-                {% empty %}
-                    <tr>
-                        <td class="no-data">No data to display</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <!-- page control -->
-        {% if entries_pages|length > 1 %}
-            <div class="row">
-                <div class="twelve columns group-btn page-control align-right">
-                    {% for ep in entries_pages %}
-                        <div class="button" onclick="viewTablePage({{ forloop.counter }})">{{ forloop.counter }}</div>
-                    {% endfor %}
-                </div>
-                <script>viewTablePage(1)</script>
-            </div>
-        {% endif %}
-
-        <!-- Total -->
-        <br>
-        <div class="row info">
-            <div class="twelve columns" style="color: #183f62">TOTAL: {{ total }}</div>
-        </div>
-
-        <!-- Daily spending -->
-        <div class="row">
-            <div class="twelve columns">
-                <div class="chart chart-line" id="line-chart"></div>
-            </div>
-        </div>
-
-        <!-- Total by categories -->
-        <div class="row">
-            <div class="twelve column">
-                <div class="chart chart-pie" id="pie-chart"></div>
-            </div>
-        </div>
-
+{% block total %}
+    <div class="twelve columns" style="color: #183f62">
+        TOTAL: {{ total }}
     </div>
+{% endblock %}
 
-    <!-- Charts -->
+{% block first_chart %}
+    <div class="row">
+        <div class="twelve columns">
+            <div class="chart chart-line" id="line-chart"></div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block second_chart %}
+    <div class="row">
+        <div class="twelve columns">
+        <div class="chart chart-pie" id="pie-chart"></div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block chart_data %}
     <script>
         let startDate = '{{ start_date }}';
         let endDate = '{{ end_date }}';
-        let lineChartSerries = {{ daily_total | safe }};
-        let pieChartSerries = {{ category_total }};
+        let lineChartSeries = {{ sub_period_total | safe }};
+        let pieChartSeries = {{ category_total }};
         let categoriesNames = {{ categories_names | safe }};
         let isLeaf = {{ is_leaf | safe }};
         renderCharts();
     </script>
+{% endblock %}
 
+{% block chart_render %}
+    <script>
+        // little adjust to lineChartOptions
+        let numberOfLabels = 5;
+        lineChartOptions.axisX.labelInterpolationFnc = function (value, index) {
+            if (index % Math.ceil(lineChartSeries.length / numberOfLabels) === 0)
+                return value;
+            return null;
+        };
+
+        // sum for line chart
+        let lineChartData = [lineChartSeries[0]];
+        let startDateMillisecond = Date.parse(startDate);
+        let daterangeLength = (Date.parse(endDate) - startDateMillisecond) / 86400000;
+        let labels = [startDate];
+        for (let i = 1; i < daterangeLength; i++) {
+            lineChartData[i] = lineChartData[i - 1] + lineChartSeries[i];
+            let day = new Date(startDateMillisecond + i * 86400000);
+            labels[i] = [day.getFullYear(), day.getMonth() + 1, day.getDate()].join('-')
+        }
+
+        // line chart
+        Chartist.Line('#line-chart', {
+            labels: labels,
+            series: [lineChartData]
+        }, lineChartOptions, lineChartResponsiveOptions);
+
+        // filter out non-leaf categories
+        let pieChartData = [];
+        for (let i = 0; i < categoriesNames.length; i++) {
+            if (isLeaf[i])
+                pieChartData.push(pieChartSeries[i]);
+        }
+
+        // last month pie chart
+        Chartist.Pie('#pie-chart', {
+            labels: categoriesNames,
+            series: pieChartData
+        }, pieChartOptions, pieChartResponsiveOptions);
+    </script>
 {% endblock %}

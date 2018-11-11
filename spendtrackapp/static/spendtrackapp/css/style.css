@@ -146,6 +146,10 @@ input[type="text"] {
     color: #888888;
 }
 
+.capitalize {
+    text-transform: capitalize;
+}
+
 .align-right {
     text-align: right;
 }
