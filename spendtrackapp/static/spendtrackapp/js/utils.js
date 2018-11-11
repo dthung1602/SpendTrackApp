@@ -1,5 +1,15 @@
-daysInWeekNames = [
+/**
+ * Full name of days in week, start with Sunday
+ */
+daysInWeekNamesS = [
     "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+];
+
+/**
+ * Full name of days in week, start with Monday
+ */
+daysInWeekNamesM = [
+    "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
 ];
 
 monthNames = [
@@ -82,7 +92,7 @@ function range() {
  * Scroll to page top
  */
 function scrollToTop() {
-    document.querySelector('nav').scrollIntoView({
+    document.querySelector('.logo').scrollIntoView({
         behavior: 'smooth'
     });
 }

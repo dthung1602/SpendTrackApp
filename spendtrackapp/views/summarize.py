@@ -1,6 +1,7 @@
 from datetime import timedelta
 from typing import Tuple, Dict, List
 
+from dateutil.parser import isoparse
 from django.contrib.auth.decorators import login_required
 from django.http.response import JsonResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import reverse
@@ -201,33 +202,46 @@ def month_handler(request, year, month):
 def week_handler(request, year, week):
     """
     Handle summarize week page
-    If the request is AJAX, only grand total and total of each category in week is returned in JSON format
-    Otherwise, a full HTML document is returned
+    If the request is AJAX, only info of week is returned in JSON format
+    GET request: info of week and the week before is returned
     """
 
     # AJAX request
-    this_week_total, this_week_category_total = get_week_total(year, week)
+    this_week = get_week_info(year, week)
     context = {
-        'this_week_total': this_week_total,
-        'this_week_category_total': this_week_category_total,
+        'this_week_total': this_week[0],
+        'this_week_category_total': this_week[1],
+        'this_week_daily_total': this_week[2]
     }
     if request.is_ajax():
         return JsonResponse(context)
 
-    # Ordinary request
-    entries = Entry.find_by_week(year, week)
-    week -= 1
-    if week == 0:  # get the last ISO week of last iso year
-        d = datetime(year, 1, 1)
-        while d.isocalendar()[0] == year:
-            d -= timedelta(days=1)
-        year, week, _ = d.isocalendar()
-    last_week_total, last_week_category_total = get_week_total(year, week)
-    context.update({
-        'entries': entries,
-        'last_week_total': last_week_total,
-        'last_week_category_total': last_week_category_total
-    })
+    # GET request
+    prev_week = isoparse("%iW%02i" % (year, week)) - timedelta(days=7)
+    prev_iso_year, prev_iso_week, _ = prev_week.isocalendar()
+    last_week = get_week_info(prev_iso_year, prev_iso_week)
+
+    links = get_week_links(year, week)
+
+    context = {
+        'page_title': str(year) + " week " + str(week),
+        'categories_names': arr_to_js_str([category.name for category in categories], str),
+        'is_leaf': arr_to_js_str([category.is_leaf for category in categories], bool),
+
+        'last_week_link': links[0],
+        'last_week_name': links[1],
+        'next_week_link': links[2],
+        'next_week_name': links[3],
+
+        'this_week_total': this_week[0],
+        'this_week_category_total': arr_to_js_str(this_week[1], float),
+        'this_week_daily_total': arr_to_js_str(this_week[2], float),
+        'entries_pages': this_week[3],
+
+        'last_week_total': last_week[0],
+        'last_week_category_total': arr_to_js_str(last_week[1], float),
+        'last_week_daily_total': arr_to_js_str(last_week[2], float),
+    }
     return render(request, "spendtrackapp/summarize_week.html", context)
 
 
@@ -255,6 +269,12 @@ def this_week_handler(request):
 ##############################################################
 #                        UTILITIES                           #
 ##############################################################
+
+def same_date(date1: datetime, date2: datetime) -> bool:
+    """Check whether two given datetime object are in the same date"""
+
+    return date1.day == date2.day and date1.month == date2.month and date1.year == date2.year
+
 
 def get_date_range_total(start_date: str,
                          end_date: str) -> Tuple[float, Dict[str, float]]:
@@ -292,15 +312,20 @@ def get_month_info(year: int,
     return total, total_by_category, total_by_day, entries_pages
 
 
-def get_week_total(year: int,
-                   week: int) -> Tuple[float, Dict[str, float]]:
-    """Get grand total and total of each category in the given week"""
+def get_week_info(year: int,
+                  week: int) -> Tuple[float, List[float], List[float], List[List[Entry]]]:
+    """Get grand total, total of each category, total of each month and entries (group into pages) in the given month"""
 
-    total = float(Entry.total_by_week(year, week))
-    category_total = {}
-    for category in Category.objects.all():
-        category_total[category.name] = float(Entry.total_by_week(year, week, category_name=category.name))
-    return total, category_total
+    entries = list(Entry.find_by_week(year, week))
+    total = sum([entry.value for entry in entries])
+    total_by_category = [Entry.total_by_week(year, week, category_name=cat.name) for cat in categories]
+    monday = isoparse("%iW%02i" % (year, week))
+    total_by_weekday = []
+    for i in range(0, 7):
+        d = monday + timedelta(days=i)
+        total_by_weekday.append(sum([entry.value for entry in entries if same_date(entry.date, d)]))
+    entries_pages = group_array(entries, settings.VIEW_SUMMARIZE_WEEK_DEFAULT_PAGE_SIZE)
+    return total, total_by_category, total_by_weekday, entries_pages
 
 
 def is_valid_year(year: str) -> bool:
@@ -327,7 +352,7 @@ def is_valid_iso_week(year: str, week: str) -> bool:
     """Check whether the given ISO week & ISO year is valid"""
 
     try:
-        datetime.strptime(year + ' ' + week, '%Y %W')
+        isoparse("%iW%02i" % (int(year), int(week)))
         return True
     except ValueError:
         return False
@@ -374,4 +399,21 @@ def get_month_links(year, month):
         prv.strftime("%B %Y"),
         reverse("summarize:month", kwargs={'year': nxt.year, 'month': nxt.month}),
         nxt.strftime("%B %Y"),
+    ]
+
+
+def get_week_links(year, week):
+    s = "%iW%02i" % (year, week)
+    this_week = isoparse(s)
+    delta = timedelta(days=7)
+    prev_week = this_week - delta
+    next_week = this_week + delta
+    prev_iso_year, prev_iso_week, _ = prev_week.isocalendar()
+    next_iso_year, next_iso_week, _ = next_week.isocalendar()
+
+    return [
+        reverse("summarize:week", kwargs={'year': prev_iso_year, 'week': prev_iso_week}),
+        str(prev_iso_year) + " week " + str(prev_iso_week),
+        reverse("summarize:week", kwargs={'year': next_iso_year, 'week': next_iso_week}),
+        str(next_iso_year) + " week " + str(next_iso_week)
     ]

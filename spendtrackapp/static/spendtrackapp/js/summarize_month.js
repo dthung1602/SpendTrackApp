@@ -36,7 +36,7 @@ let pieChartOptions = {
 function renderCharts() {
     // sum for line chart
     let lastMonthData = [lastMonthLineChartSeries[0]];
-    let thisMonthData = [thisMonthLineChartSeries[1]];
+    let thisMonthData = [thisMonthLineChartSeries[0]];
     for (let i = 1; i < 32; i++) {
         lastMonthData[i] = lastMonthData[i - 1] + lastMonthLineChartSeries[i];
         thisMonthData[i] = thisMonthData[i - 1] + thisMonthLineChartSeries[i];

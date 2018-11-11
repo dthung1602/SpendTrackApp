@@ -9,7 +9,7 @@ function startTime() {
     let year = now.getFullYear();
     let month = (now.getMonth() + 1).fillZero();
     let day = now.getDate().fillZero();
-    let dayInWeek = daysInWeekNames[now.getDay()];
+    let dayInWeek = daysInWeekNamesS[now.getDay()];
     let hour = now.getHours().fillZero();
     let minute = now.getMinutes().fillZero();
     let second = now.getSeconds().fillZero();
@@ -149,7 +149,7 @@ function addSuccessFunc(data) {
         // convert data to correct format
         data.value = parseFloat(data.value);
         data.date = new Date(data.date);
-        data.date = daysInWeekNames[data.date.getDay()].substr(0, 3) + " "
+        data.date = daysInWeekNamesS[data.date.getDay()].substr(0, 3) + " "
             + monthNames[data.date.getMonth()].substr(0, 3) + " "
             + data.date.getDate().fillZero() + ", "
             + (data.date.getHours() % 12).fillZero() + " "

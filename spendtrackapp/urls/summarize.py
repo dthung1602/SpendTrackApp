@@ -10,7 +10,7 @@ urlpatterns = [
 
     path('<yyyy:year>', year_handler, name='year'),
     path('<yyyy:year>/<mmm:month>', month_handler, name='month'),
-    path('<yyyy:year>/<ww:week>', week_handler, name='week'),
+    path('<yyyy:year>/w<ww:week>', week_handler, name='week'),
     path('<date:start_date>/<date:end_date>', date_range_handler, name='date_range'),
 
     path('this-week', this_week_handler, name='this_week'),

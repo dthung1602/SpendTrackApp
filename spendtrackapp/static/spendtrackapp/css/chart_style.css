@@ -142,6 +142,14 @@
     stroke-width: 4px;
 }
 
+.chart-line .ct-series-a .ct-point {
+    stroke: #19739f;
+}
+
+.chart-line .ct-series-b .ct-point {
+    stroke: #183f62;
+}
+
 .chart-line .ct-series-a .ct-area {
     fill: #28b8ff;
 }
@@ -150,3 +158,6 @@
     fill: #112c44;
 }
 
+.chart-line .ct-label {
+    font-size: medium;
+}

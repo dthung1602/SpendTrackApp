@@ -156,7 +156,7 @@ def summarize_index_success():
                 'week_year': 2019,
                 'week_week': 53
             },
-            '/summarize/2019/53'
+            '/summarize/2019/w53'
         ],
         [
             {
@@ -376,17 +376,20 @@ def summarize_week_ajax():
     return [
         [2015, 45, {
             'this_week_total': 89,
-            'this_week_category_total': [91.50, 0, 0, -2.50, 0, 0, 0, 0, 0, 91.50, 0, -8.50, 100, 0]
+            'this_week_category_total': [91.50, 0, 0, -2.50, 0, 0, 0, 0, 0, 91.50, 0, -8.50, 100, 0],
+            'this_week_daily_total': [0, 0, 0, 100, 0, -11, 0]
         }],
 
         [2019, 52, {
             'this_week_total': 0,
-            'this_week_category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            'this_week_category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'this_week_daily_total': [0, 0, 0, 0, 0, 0, 0]
         }],
 
         [2020, 1, {
             'this_week_total': -5,
-            'this_week_category_total': [0, 0, 0, -5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            'this_week_category_total': [0, 0, 0, -5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'this_week_daily_total': [0, -5, 0, 0, 0, 0, 0]
         }]
     ]
 
@@ -510,24 +513,30 @@ def summarize_week():
         [2017, 1, {
             'this_week_total': 21,
             'this_week_category_total': [0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'this_week_daily_total': [0, 23.5, 0, -2.5, 0, 0, 0],
             'last_week_total': -1.50,
             'last_week_category_total': [0, 0, 0, -1.50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'last_week_daily_total': [0, 0, 0, 0, 0, 0, -1.5],
             'entries': [23, 24, 25]
         }],
 
         [2019, 52, {
             'this_week_total': 0,
             'this_week_category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'this_week_daily_total': [0, 0, 0, 0, 0, 0, 0],
             'last_week_total': 0,
             'last_week_category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'last_week_daily_total': [0, 0, 0, 0, 0, 0, 0],
             'entries': []
         }],
 
         [2020, 1, {
             'this_week_total': -5,
             'this_week_category_total': [0, 0, 0, -5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'this_week_daily_total': [0, -5, 0, 0, 0, 0, 0],
             'last_week_total': 0,
             'last_week_category_total': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'last_week_daily_total': [0, 0, 0, 0, 0, 0, 0],
             'entries': [26]
         }]
     ]
