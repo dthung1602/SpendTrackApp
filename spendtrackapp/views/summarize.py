@@ -1,7 +1,6 @@
 from datetime import timedelta
-from typing import Tuple, Dict, List
+from typing import Tuple, List
 
-from dateutil.parser import isoparse
 from django.contrib.auth.decorators import login_required
 from django.http.response import JsonResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import reverse
@@ -84,25 +83,35 @@ def index(request):
 @login_required
 def date_range_handler(request, start_date, end_date):
     """
-    Handle summarize date range page
-    If the request is AJAX, only grand total and total of each category in date range is returned in JSON format
-    Otherwise, a full HTML document is returned
+    Handle summarize daterange page
+    AJAX request: JSON format
+    GET request: html format
     """
 
     # AJAX request
-    total, category_total = get_date_range_total(start_date, end_date)
+    date_range_info = get_date_range_info(start_date, end_date)
     context = {
-        'total': total,
-        'category_total': category_total,
+        'total': date_range_info[0],
+        'category_total': date_range_info[1],
+        'daily_total': date_range_info[2],
     }
     if request.is_ajax():
         return JsonResponse(context)
 
-    # Ordinary request
-    entries = Entry.find_by_date_range(start_date, end_date)
-    context.update({
-        'entries': entries
-    })
+    # GET request
+    str_start_date = start_date.strftime('%Y-%m-%d')
+    str_end_date = end_date.strftime('%Y-%m-%d')
+    context = {
+        'page_title': "From " + str_start_date + " to " + str_end_date,
+        'categories_names': arr_to_js_str([category.name for category in categories], str),
+        'is_leaf': arr_to_js_str([category.is_leaf for category in categories], bool),
+        'start_date': str_start_date,
+        'end_date': str_end_date,
+        'total': date_range_info[0],
+        'category_total': arr_to_js_str(date_range_info[1], float),
+        'daily_total': arr_to_js_str(date_range_info[2], float),
+        'entries_pages': date_range_info[3]
+    }
     return render(request, "spendtrackapp/summarize_date_range.html", context)
 
 
@@ -110,7 +119,7 @@ def date_range_handler(request, start_date, end_date):
 def year_handler(request, year):
     """
     Handle summarize year page
-    If the request is AJAX, only info of year is returned in JSON format
+    AJAX request: only info of year is returned in JSON format
     GET request: info of year and the year before is returned
     """
 
@@ -154,7 +163,7 @@ def year_handler(request, year):
 def month_handler(request, year, month):
     """
     Handle summarize month page
-    If the request is AJAX, only info of month is returned in JSON format
+    AJAX request: only info of month is returned in JSON format
     GET request: info of month and the month before is returned
     """
 
@@ -202,7 +211,7 @@ def month_handler(request, year, month):
 def week_handler(request, year, week):
     """
     Handle summarize week page
-    If the request is AJAX, only info of week is returned in JSON format
+    AJAX request: only info of week is returned in JSON format
     GET request: info of week and the week before is returned
     """
 
@@ -248,6 +257,7 @@ def week_handler(request, year, week):
 @login_required
 def this_year_handler(request):
     """Handle summarize this year page"""
+
     now = datetime.now()
     return year_handler(request, now.year)
 
@@ -255,6 +265,7 @@ def this_year_handler(request):
 @login_required
 def this_month_handler(request):
     """Handle summarize this month page"""
+
     now = datetime.now()
     return month_handler(request, now.year, now.month)
 
@@ -262,6 +273,7 @@ def this_month_handler(request):
 @login_required
 def this_week_handler(request):
     """Handle summarize this week page"""
+
     isoyear, week, _ = datetime.now().isocalendar()
     return week_handler(request, isoyear, week)
 
@@ -276,17 +288,17 @@ def same_date(date1: datetime, date2: datetime) -> bool:
     return date1.day == date2.day and date1.month == date2.month and date1.year == date2.year
 
 
-def get_date_range_total(start_date: str,
-                         end_date: str) -> Tuple[float, Dict[str, float]]:
+def get_date_range_info(start_date: str,
+                        end_date: str) -> Tuple[float, List[float], List[float], List[List[Entry]]]:
     """Get grand total and total of each category in the given date range"""
 
-    total = float(Entry.total_by_date_range(start_date, end_date))
-    category_total = {}
-    # todo inefficient
-    for category in Category.objects.all():
-        category_total[category.name] = float(
-            Entry.total_by_date_range(start_date, end_date, category_name=category.name))
-    return total, category_total
+    entries = list(Entry.find_by_date_range(start_date, end_date))
+    total = sum([entry.value for entry in entries])
+    total_by_category = [Entry.total_by_date_range(start_date, end_date, category_name=cat.name) for cat in categories]
+    total_by_day = [sum([entry.value for entry in entries if same_date(entry.date, d)])
+                    for d in daterange(start_date, end_date)]
+    entries_pages = group_array(entries, settings.VIEW_SUMMARIZE_DATE_RANGE_DEFAULT_PAGE_SIZE)
+    return total, total_by_category, total_by_day, entries_pages
 
 
 def get_year_info(year: int) -> Tuple[float, List[float], List[float], List[List[Entry]]]:
@@ -320,10 +332,8 @@ def get_week_info(year: int,
     total = sum([entry.value for entry in entries])
     total_by_category = [Entry.total_by_week(year, week, category_name=cat.name) for cat in categories]
     monday = isoparse("%iW%02i" % (year, week))
-    total_by_weekday = []
-    for i in range(0, 7):
-        d = monday + timedelta(days=i)
-        total_by_weekday.append(sum([entry.value for entry in entries if same_date(entry.date, d)]))
+    total_by_weekday = [sum([entry.value for entry in entries if same_date(entry.date, d)])
+                        for d in daterange(monday, monday + timedelta(days=6))]
     entries_pages = group_array(entries, settings.VIEW_SUMMARIZE_WEEK_DEFAULT_PAGE_SIZE)
     return total, total_by_category, total_by_weekday, entries_pages
 

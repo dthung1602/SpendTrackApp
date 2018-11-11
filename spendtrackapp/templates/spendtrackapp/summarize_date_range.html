@@ -1,10 +1,99 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+{% extends "spendtrackapp/base.html" %}
 
-</body>
-</html>
+{% block script %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static "/spendtrackapp/css/chartist.min.css" %}">
+    <link rel="stylesheet" href="{% static "/spendtrackapp/css/chart_style.css" %}">
+    <script src="{% static "spendtrackapp/js/chartist.min.js" %}"></script>
+    <script src="{% static "spendtrackapp/js/summarize_daterange.js" %}"></script>
+{% endblock %}
+
+{% block main %}
+
+    <div class="container">
+
+        <!-- daterange title -->
+        <br>
+        <div class="row">
+            <div class="twelve columns">
+                <h2>{{ page_title }}</h2>
+            </div>
+        </div>
+        <br><br>
+
+        <!-- Entries in daterange -->
+        <div class="row">
+            <table class="twelve columns">
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Content</th>
+                    <th class="align-right">Value</th>
+                    <th class="align-right">Category</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for entries_page in entries_pages %}
+                    {% for entry in entries_page %}
+                        <tr class="table-page-{{ forloop.parentloop.counter }}">
+                            <td>{{ entry.formatted_date }}</td>
+                            <td>{{ entry.content }}</td>
+                            <td class="align-right">{{ entry.value }}</td>
+                            <td class="align-right">{{ entry.leaf_category }}</td>
+                        </tr>
+                    {% endfor %}
+                {% empty %}
+                    <tr>
+                        <td class="no-data">No data to display</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- page control -->
+        {% if entries_pages|length > 1 %}
+            <div class="row">
+                <div class="twelve columns group-btn page-control align-right">
+                    {% for ep in entries_pages %}
+                        <div class="button" onclick="viewTablePage({{ forloop.counter }})">{{ forloop.counter }}</div>
+                    {% endfor %}
+                </div>
+                <script>viewTablePage(1)</script>
+            </div>
+        {% endif %}
+
+        <!-- Total -->
+        <br>
+        <div class="row info">
+            <div class="twelve columns" style="color: #183f62">TOTAL: {{ total }}</div>
+        </div>
+
+        <!-- Daily spending -->
+        <div class="row">
+            <div class="twelve columns">
+                <div class="chart chart-line" id="line-chart"></div>
+            </div>
+        </div>
+
+        <!-- Total by categories -->
+        <div class="row">
+            <div class="twelve column">
+                <div class="chart chart-pie" id="pie-chart"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Charts -->
+    <script>
+        let startDate = '{{ start_date }}';
+        let endDate = '{{ end_date }}';
+        let lineChartSerries = {{ daily_total | safe }};
+        let pieChartSerries = {{ category_total }};
+        let categoriesNames = {{ categories_names | safe }};
+        let isLeaf = {{ is_leaf | safe }};
+        renderCharts();
+    </script>
+
+{% endblock %}

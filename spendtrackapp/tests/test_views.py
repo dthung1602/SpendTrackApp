@@ -127,7 +127,9 @@ class TestSummarize(TestView):
                 dict_from_json[key] = float(dict_from_json[key])
 
         self.assertEqual(200, response.status_code)
-        self.assertDictEqual(expected_dict, dict_from_json)
+
+        for key in expected_dict:
+            self.assertEqual(expected_dict[key], dict_from_json[key])
 
     @data_provider(summarize_date_range_ajax)
     def test_date_range_ajax(self, start_date, end_date, expected_dict):
