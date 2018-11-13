@@ -1,0 +1,146 @@
+[
+  {
+    "model": "spendtrackapp.category",
+    "pk": 1,
+    "fields": {
+      "name": "Food & drink",
+      "parent": null
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 2,
+    "fields": {
+      "name": "brf, lunch, dinner",
+      "parent": 1
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 3,
+    "fields": {
+      "name": "other food & drink",
+      "parent": 1
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 6,
+    "fields": {
+      "name": "Living",
+      "parent": null
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 7,
+    "fields": {
+      "name": "housing",
+      "parent": 6
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 8,
+    "fields": {
+      "name": "electricity",
+      "parent": 6
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 9,
+    "fields": {
+      "name": "water",
+      "parent": 6
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 10,
+    "fields": {
+      "name": "internet & phone",
+      "parent": 6
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 11,
+    "fields": {
+      "name": "Entertainment",
+      "parent": null
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 12,
+    "fields": {
+      "name": "Shopping",
+      "parent": null
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 13,
+    "fields": {
+      "name": "book",
+      "parent": 12
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 15,
+    "fields": {
+      "name": "clothing",
+      "parent": 12
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 16,
+    "fields": {
+      "name": "electronics",
+      "parent": 12
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 17,
+    "fields": {
+      "name": "other shopping",
+      "parent": 12
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 18,
+    "fields": {
+      "name": "Transportation",
+      "parent": null
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 19,
+    "fields": {
+      "name": "Travel",
+      "parent": null
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 19,
+    "fields": {
+      "name": "Other",
+      "parent": null
+    }
+  },
+  {
+    "model": "spendtrackapp.category",
+    "pk": 20,
+    "fields": {
+      "name": "Personal care & health",
+      "parent": null
+    }
+  }
+]

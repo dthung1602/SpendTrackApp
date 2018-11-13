@@ -16,6 +16,7 @@ NullableDate = TypeVar('NullableDate', Union[str, None], datetime)
 @models.DateTimeField.register_lookup
 class ExtractISOYear(Extract):
     """Enable isoyear filter"""
+
     lookup_name = 'isoyear'
 
 
@@ -50,6 +51,7 @@ class Category(models.Model):
     @property
     def children(self) -> QuerySet:
         """List of children of the category, order by name"""
+
         if self._children is None:
             self._children = Category.objects.filter(parent=self).order_by("name")
         return self._children
@@ -57,6 +59,7 @@ class Category(models.Model):
     @property
     def ancestors(self) -> List[Category]:
         """List of all ancestors of the category, order by increasing distance to this category"""
+
         if self._ancestors is None:
             self._ancestors = []
             category = self
@@ -68,6 +71,7 @@ class Category(models.Model):
     @property
     def ancestors_ids(self) -> List[int]:
         """List of all ancestors' ids"""
+
         if self._ancestors_ids is None:
             self._ancestors_ids = [cat.id for cat in self.ancestors]
         return self._ancestors_ids
@@ -75,6 +79,7 @@ class Category(models.Model):
     @property
     def is_leaf(self) -> bool:
         """Whether a category has no children"""
+
         return len(self.children) == 0
 
     def __str__(self):
@@ -82,7 +87,8 @@ class Category(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         """Override save method to validate category before changes are made in DB"""
-        if len(self.parent.ancestors) + 2 > settings.MODEL_CATEGORY_HIERARCHY_MAX_DEPTH:
+
+        if self.parent is not None and len(self.parent.ancestors) + 2 > settings.MODEL_CATEGORY_HIERARCHY_MAX_DEPTH:
             raise ValueError("MODEL_CATEGORY_HIERARCHY_MAX_DEPTH exceeded")
         super().save(force_insert, force_update, using, update_fields)
 
@@ -92,6 +98,7 @@ class Category(models.Model):
         Return None if category_id is invalid or the category is not leaf
         Otherwise return the category with matching id
         """
+
         try:
             category = Category.objects.get(pk=category_id)
             if not category.is_leaf:
@@ -103,6 +110,7 @@ class Category(models.Model):
     @classmethod
     def get_root_categories(cls) -> QuerySet:
         """Return a list of all root categories in database, order by name"""
+
         return cls.objects.filter(parent__isnull=True).order_by("name")
 
 
@@ -150,6 +158,7 @@ class Entry(models.Model):
         
         :raise ValueError when category is not leaf
         """
+
         if not category.is_leaf:
             raise ValueError('Category is not leaf')
         to_add_category_ids = [category.id] + category.ancestors_ids
@@ -180,6 +189,7 @@ class Entry(models.Model):
         :param limit: maximum number of entries to return. No limit is set if -1 is given
         :param prefetch: whether to prefetch associated categories
         """
+
         start_date = cls.__modify_start_date(start_date)
         end_date = cls.__modify_end_date(end_date)
         result = cls.objects.filter(date__range=(start_date, end_date)).order_by('date')
@@ -203,6 +213,7 @@ class Entry(models.Model):
         :param limit: maximum number of entries to return. No limit is set if -1 is given
         :param prefetch: whether to prefetch associated categories
         """
+
         result = cls.objects.filter(date__year=year).order_by('date')
         if category_name is not None:
             result = result.filter(categories__name=category_name)
@@ -226,6 +237,7 @@ class Entry(models.Model):
         :param limit: maximum number of entries to return. No limit is set if -1 is given
         :param prefetch: whether to prefetch associated categories
         """
+
         result = cls.objects.filter(date__year=year, date__month=month).order_by('date')
         if category_name is not None:
             result = result.filter(categories__name=category_name)
@@ -249,6 +261,7 @@ class Entry(models.Model):
         :param limit: maximum number of entries to return. No limit is set if -1 is given
         :param prefetch: whether to prefetch associated categories
         """
+
         result = cls.objects.filter(date__isoyear=isoyear, date__week=week).order_by('date')
         if category_name is not None:
             result = result.filter(categories__name=category_name)
@@ -275,6 +288,7 @@ class Entry(models.Model):
             - if start_date (or end_date) is None, it will show_drop_down from the beginning (or till the ending)
         :param category_name: name of the category. If not given, all categories are selected
          """
+
         result = cls.find_by_date_range(start_date, end_date, category_name, -1, False).order_by()
         result = result.aggregate(total=Sum('value'))['total']
         return result if result is not None else 0
@@ -291,6 +305,7 @@ class Entry(models.Model):
                 - name of the category
                 - if it is not given, all categories are selected
         """
+
         result = cls.find_by_year(year, category_name, -1, False).order_by()
         result = result.aggregate(total=Sum('value'))['total']
         return result if result is not None else 0
@@ -309,6 +324,7 @@ class Entry(models.Model):
                 - name of the category
                 - if it is not given, all categories are selected
         """
+
         result = cls.find_by_month(year, month, category_name, -1, False).order_by()
         result = result.aggregate(total=Sum('value'))['total']
         return result if result is not None else 0
@@ -327,6 +343,7 @@ class Entry(models.Model):
                 - name of the category
                 - if it is not given, all categories are selected
         """
+
         result = cls.find_by_week(isoyear, week, category_name, -1, False).order_by()
         result = result.aggregate(total=Sum('value'))['total']
         return result if result is not None else 0
@@ -343,6 +360,7 @@ class Entry(models.Model):
         :raise TypeError when start_date is not string or datetime object
         :raise ValueError when start_date is a string but does not match "%Y-%m-%d"
         """
+
         if start_date is None:
             return '1000-1-1'
         if isinstance(start_date, datetime):
@@ -360,6 +378,7 @@ class Entry(models.Model):
         :raise TypeError when start_date is not string or datetime object
         :raise ValueError when start_date is a string but does not match "%Y-%m-%d"
         """
+
         if end_date is None:
             return '9999-12-31'
         if isinstance(end_date, datetime):

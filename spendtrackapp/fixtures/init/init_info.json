@@ -1,0 +1,11 @@
+[
+  {
+    "model": "spendtrackapp.info",
+    "pk": 1,
+    "fields": {
+      "name": "CURRENT_BALANCE",
+      "value_type": "f",
+      "_value": "0"
+    }
+  }
+]
