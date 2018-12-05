@@ -28,25 +28,23 @@
         }, lineChartOptions, lineChartResponsiveOptions);
 
         // filter out non-leaf categories
-        let lastMonthLeafCategoriesSeries = [];
-        let thisMonthLeafCategoriesSeries = [];
         for (let i = 0; i < categoriesNames.length; i++) {
-            if (isLeaf[i]) {
-                lastMonthLeafCategoriesSeries.push(lastPeriodPieChartSeries[i]);
-                thisMonthLeafCategoriesSeries.push(thisPeriodPieChartSeries[i]);
+            if (!isLeaf[i]) {
+                lastPeriodPieChartSeries[i] = 0;
+                thisPeriodPieChartSeries[i] = 0;
             }
         }
 
         // last month pie chart
         Chartist.Pie('#last-period-pie-chart', {
             labels: categoriesNames,
-            series: lastMonthLeafCategoriesSeries
+            series: lastPeriodPieChartSeries
         }, pieChartOptions, pieChartResponsiveOptions);
 
         // this month pie chart
         Chartist.Pie('#this-period-pie-chart', {
             labels: categoriesNames,
-            series: thisMonthLeafCategoriesSeries
+            series: thisPeriodPieChartSeries
         }, pieChartOptions, pieChartResponsiveOptions);
 
     </script>

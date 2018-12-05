@@ -80,6 +80,15 @@ input[type="text"] {
     background: #155a7c;
 }
 
+.navbar .drop-down-menu:last-child {
+    float: right;
+}
+
+.navbar img {
+    width: 18px;
+    margin: 0;
+}
+
 .drop-down-content {
     display: none;
     position: absolute;
@@ -95,6 +104,10 @@ input[type="text"] {
     text-decoration: none;
     display: block;
     text-align: left;
+}
+
+.navbar > .drop-down-menu:last-child .drop-down-content {
+    right: 0;
 }
 
 .drop-down-content a:hover {
@@ -132,6 +145,14 @@ input[type="text"] {
 
 .info > div > div:nth-child(2) {
     font-size: 160%;
+}
+
+.success-panel {
+    background: #92e2a0;
+    color: green;
+    padding: 25px;
+    margin: 25px 0;
+    border-radius: 10px;
 }
 
 /*******************************
@@ -437,4 +458,19 @@ input[type="text"] {
     text-decoration: underline;
     color: white;
     padding-bottom: 15px;
+}
+
+/*******************************
+ *            LOGIN            *
+ *******************************/
+
+.login-form input {
+    width: 100%;
+}
+
+.login-notice {
+    font-style: italic;
+    font-weight: bold;
+    color: #183f62;
+    margin-bottom: 20px;
 }

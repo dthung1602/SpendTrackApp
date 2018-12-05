@@ -145,25 +145,36 @@ function addSuccessFunc(data) {
         let categoryDisplay = $('#category-display');
         let totalInWeek = $('#total-in-week');
         let currentBalance = $('#current-balance');
+        let now = new Date();
+        let submitDate = new Date(data.date);
+        let wn = submitDate.getWeekNumber();
+        let y = submitDate.getFullYear();
 
-        // convert data to correct format
-        data.value = parseFloat(data.value);
-        data.date = new Date(data.date);
-        data.date = daysInWeekNamesS[data.date.getDay()].substr(0, 3) + " "
-            + monthNames[data.date.getMonth()].substr(0, 3) + " "
-            + data.date.getDate().fillZero() + ", "
-            + (data.date.getHours() % 12).fillZero() + " "
-            + (data.date.getHours() >= 12 ? 'PM' : 'AM');
+        // if item is not in this week, inform success
+        if (now.getWeekNumber() !== wn || now.getFullYear() !== y) {
+            $('.success-panel').show().html('Item added to week ' + wn + ' of year ' + y);
 
-        // add new row to table
-        $('<td>').text(data.date).appendTo(row);
-        $('<td>').text(data.content).appendTo(row);
-        $('<td class="align-right">').text(data.value.toFixed(2)).appendTo(row);
-        $('<td class="align-right">').text(categoryDisplay.text()).appendTo(row);
+        } else { // if item in this week, update page
+            $('.success-panel').hide();
 
-        // change total in week and balance
-        totalInWeek.text((parseFloat(totalInWeek.text()) + data.value).toFixed(2));
-        currentBalance.text((parseFloat(currentBalance.text()) + data.value).toFixed(2));
+            // convert data to correct format
+            data.value = parseFloat(data.value);
+            data.date = daysInWeekNamesS[submitDate.getDay()].substr(0, 3) + " "
+                + monthNames[submitDate.getMonth()].substr(0, 3) + " "
+                + submitDate.getDate().fillZero() + ", "
+                + (submitDate.getHours() % 12).fillZero() + " "
+                + (submitDate.getHours() >= 12 ? 'PM' : 'AM');
+
+            // add new row to table
+            $('<td>').text(data.date).appendTo(row);
+            $('<td>').text(data.content).appendTo(row);
+            $('<td class="align-right">').text(data.value.toFixed(2)).appendTo(row);
+            $('<td class="align-right">').text(categoryDisplay.text()).appendTo(row);
+
+            // change total in week and balance
+            totalInWeek.text((parseFloat(totalInWeek.text()) + data.value).toFixed(2));
+            currentBalance.text((parseFloat(currentBalance.text()) + data.value).toFixed(2));
+        }
 
         // clear form
         $('.input-error').hide();

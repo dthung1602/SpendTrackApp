@@ -16,7 +16,6 @@ let lineChartResponsiveOptions = [];
 
 let lineChartOptions = {
     height: 380,
-    fullWidth: true,
     showPoint: false,
     showArea: true,
     axisX: {

@@ -35,7 +35,6 @@
         let pieChartSeries = {{ category_total }};
         let categoriesNames = {{ categories_names | safe }};
         let isLeaf = {{ is_leaf | safe }};
-        renderCharts();
     </script>
 {% endblock %}
 
@@ -67,16 +66,15 @@
         }, lineChartOptions, lineChartResponsiveOptions);
 
         // filter out non-leaf categories
-        let pieChartData = [];
         for (let i = 0; i < categoriesNames.length; i++) {
-            if (isLeaf[i])
-                pieChartData.push(pieChartSeries[i]);
+            if (!isLeaf[i])
+                pieChartSeries[i] = 0;
         }
 
         // last month pie chart
         Chartist.Pie('#pie-chart', {
             labels: categoriesNames,
-            series: pieChartData
+            series: pieChartSeries
         }, pieChartOptions, pieChartResponsiveOptions);
     </script>
 {% endblock %}

@@ -136,7 +136,7 @@ LOGIN_URL = 'login'
 #             APP CONFIG             #
 ######################################
 
-APP_VERSION = 1
+APP_VERSION = "1.1"
 
 CONTACT_GITHUB = 'https://github.com/' + os.environ['CONTACT_GITHUB']
 

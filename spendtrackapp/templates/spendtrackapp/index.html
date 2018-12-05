@@ -14,7 +14,7 @@
             <div class="seven columns box" id="clock"></div>
             <div class="five columns box">
                 <div>Balance</div>
-                <div id="current-balance">{{ current_balance }}</div>
+                <div id="current-balance">{{ current_balance | floatformat:2 }}</div>
             </div>
             <script>startTime()</script>
         </div>
@@ -69,6 +69,9 @@
                 </div>
             {% endif %}
 
+        </div>
+
+        <div class="row success-panel" style="display: none">
         </div>
 
         <!-- Add new entry -->

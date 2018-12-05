@@ -39,8 +39,18 @@
                     </div>
                 </div>
                 <a href="{% url "plan:index" %}">PLAN</a>
-                <a href="{% url "settings:index" %}">SETTINGS</a>
-                <a href="{% url "admin:index" %}">ADMIN</a>
+                <div class="drop-down-menu">
+                    <div class="drop-btn">
+                        <img src="{% static "spendtrackapp/img/settings-logo.png" %}">
+                    </div>
+                    <div class="drop-down-content">
+                        {# TODO add link #}
+                        <a href="#">My account</a>
+                        <a href="{% url "logout" %}">Logout</a>
+                        <a href="{% url "admin:index" %}">Admin page</a>
+                        <a href="{% url "settings:index" %}">More settings</a>
+                    </div>
+                </div>
             </div>
         </div>
     {% endblock %}
@@ -110,6 +120,7 @@
                     <a href="http://getskeleton.com/" target="_blank">Skeleton 2.0.4</a>
                 </div>
                 <div>with images and fonts from <a href="https://iconmonstr.com/" target="_blank">iconmonstr</a>,
+                    <a href="https://www.kisspng.com/" target="_blank">kisspng</a>,
                     <a href="https://www.tailorbrands.com/lp-home" target="_blank">tailorbrands</a>
                     and <a href="https://www.1001fonts.com">1001fonts</a>
                 </div>
