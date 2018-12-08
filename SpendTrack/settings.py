@@ -141,6 +141,8 @@ VIEW_SUMMARIZE_WEEK_DEFAULT_PAGE_SIZE = -1
 
 MODEL_CATEGORY_HIERARCHY_MAX_DEPTH = 3
 
+MODEL_PLAN_COMPARE_EQUAL_EPSILON = 0.1
+
 ######################################
 #     HEROKU DEPLOYMENT CONFIG       #
 ######################################

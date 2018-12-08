@@ -314,7 +314,7 @@ def get_date_range_info(start_date: str,
 
     entries = list(Entry.find_by_date_range(start_date, end_date))
     total = sum([entry.value for entry in entries])
-    total_by_category = [Entry.total_by_date_range(start_date, end_date, category_name=cat.name) for cat in categories]
+    total_by_category = [Entry.total_by_date_range(start_date, end_date, category=cat.name) for cat in categories]
     total_by_day = [sum([entry.value for entry in entries if same_date(entry.date, d)])
                     for d in daterange(start_date, end_date)]
     entries_pages = group_array(entries, settings.VIEW_SUMMARIZE_DATE_RANGE_DEFAULT_PAGE_SIZE)
@@ -326,7 +326,7 @@ def get_year_info(year: int) -> Tuple[float, List[float], List[float], List[List
 
     entries = list(Entry.find_by_year(year))
     total = sum([entry.value for entry in entries])
-    total_by_category = [Entry.total_by_year(year, category_name=cat.name) for cat in categories]
+    total_by_category = [Entry.total_by_year(year, category=cat.name) for cat in categories]
     total_by_month = [sum([entry.value for entry in entries if entry.date.month == m]) for m in range(1, 13)]
     entries_pages = group_array(entries, settings.VIEW_SUMMARIZE_YEAR_DEFAULT_PAGE_SIZE)
     return total, total_by_category, total_by_month, entries_pages
@@ -338,7 +338,7 @@ def get_month_info(year: int,
 
     entries = list(Entry.find_by_month(year, month))
     total = sum([entry.value for entry in entries])
-    total_by_category = [Entry.total_by_month(year, month, category_name=cat.name) for cat in categories]
+    total_by_category = [Entry.total_by_month(year, month, category=cat.name) for cat in categories]
     total_by_day = [sum([entry.value for entry in entries if entry.date.day == d]) for d in range(1, 32)]
     entries_pages = group_array(entries, settings.VIEW_SUMMARIZE_MONTH_DEFAULT_PAGE_SIZE)
     return total, total_by_category, total_by_day, entries_pages
@@ -350,7 +350,7 @@ def get_week_info(year: int,
 
     entries = list(Entry.find_by_week(year, week))
     total = sum([entry.value for entry in entries])
-    total_by_category = [Entry.total_by_week(year, week, category_name=cat.name) for cat in categories]
+    total_by_category = [Entry.total_by_week(year, week, category=cat.name) for cat in categories]
     monday = isoparse("%iW%02i" % (year, week))
     total_by_weekday = [sum([entry.value for entry in entries if same_date(entry.date, d)])
                         for d in daterange(monday, monday + timedelta(days=6))]

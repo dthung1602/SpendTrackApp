@@ -1,15 +1,19 @@
 from __future__ import annotations
 
-from datetime import datetime
+import calendar
+from datetime import datetime, date, timedelta
+from math import fabs
 from typing import List, Optional, Union, TypeVar
 
+from dateutil.parser import isoparse
 from django.conf import settings
 from django.db import models
+from django.db.models import Q
 from django.db.models import QuerySet
 from django.db.models import Sum
 from django.db.models.functions import Extract
 
-NullableDate = TypeVar('NullableDate', Union[str, None], datetime)
+NullableDate = TypeVar('NullableDate', Union[str, None], datetime, date)
 
 
 # noinspection PyAbstractClass
@@ -114,6 +118,9 @@ class Category(models.Model):
         return cls.objects.filter(parent__isnull=True).order_by("name")
 
 
+CategoryIdentifier = TypeVar('CategoryIdentifier', Optional[str], Category, int)
+
+
 class Entry(models.Model):
     """A class represents all changes in the balance"""
 
@@ -174,7 +181,7 @@ class Entry(models.Model):
     def find_by_date_range(cls,
                            start_date: NullableDate = None,
                            end_date: NullableDate = None,
-                           category_name: Optional[str] = None,
+                           category: CategoryIdentifier = None,
                            limit: int = -1,
                            prefetch: bool = True) -> QuerySet:
         """
@@ -185,47 +192,46 @@ class Entry(models.Model):
             - can be None, datetime objects or a string 'YYYY-mm-dd'
             - time info will be discarded and replaced with 23:59:59 for end_date and 00:00:00 for start_date
             - if start_date (or end_date) is None, it will show_drop_down from the beginning (or till the ending)
-        :param category_name: name of the category. If not given, all categories are selected
+        :param category: category object or its name or id. If not given, all categories are selected
         :param limit: maximum number of entries to return. No limit is set if -1 is given
         :param prefetch: whether to prefetch associated categories
         """
 
         start_date = cls.__modify_start_date(start_date)
         end_date = cls.__modify_end_date(end_date)
+
         result = cls.objects.filter(date__range=(start_date, end_date)).order_by('date')
-        if category_name is not None:
-            result = result.filter(categories__name=category_name)
-        if prefetch:
-            result = result.prefetch_related("categories", "leaf_category")
+        result = cls.__filter_category(result, category)
+        result = cls.__prefetch(result, prefetch)
+
         return result[:limit] if limit >= 0 else result
 
     @classmethod
     def find_by_year(cls,
                      year: int,
-                     category_name: Optional[str] = None,
+                     category: CategoryIdentifier = None,
                      limit: int = -1,
                      prefetch: bool = True) -> QuerySet:
         """
         Find entries in the given year
 
         :param year: four-digits year
-        :param category_name: name of the category. If not given, all categories are selected
+        :param category: category object or its name or id. If not given, all categories are selected
         :param limit: maximum number of entries to return. No limit is set if -1 is given
         :param prefetch: whether to prefetch associated categories
         """
 
         result = cls.objects.filter(date__year=year).order_by('date')
-        if category_name is not None:
-            result = result.filter(categories__name=category_name)
-        if prefetch:
-            result = result.prefetch_related("categories", "leaf_category")
+        result = cls.__filter_category(result, category)
+        result = cls.__prefetch(result, prefetch)
+
         return result[:limit] if limit >= 0 else result
 
     @classmethod
     def find_by_month(cls,
                       year: int,
                       month: int,
-                      category_name: Optional[str] = None,
+                      category: CategoryIdentifier = None,
                       limit: int = -1,
                       prefetch: bool = True) -> QuerySet:
         """
@@ -233,23 +239,22 @@ class Entry(models.Model):
         
         :param year: four-digits year
         :param month: 1, 2, ... 12
-        :param category_name: name of the category. If not given, all categories are selected
+        :param category: category object or its name or id. If not given, all categories are selected
         :param limit: maximum number of entries to return. No limit is set if -1 is given
         :param prefetch: whether to prefetch associated categories
         """
 
         result = cls.objects.filter(date__year=year, date__month=month).order_by('date')
-        if category_name is not None:
-            result = result.filter(categories__name=category_name)
-        if prefetch:
-            result = result.prefetch_related("categories", "leaf_category")
+        result = cls.__filter_category(result, category)
+        result = cls.__prefetch(result, prefetch)
+
         return result[:limit] if limit >= 0 else result
 
     @classmethod
     def find_by_week(cls,
                      isoyear: int,
                      week: int,
-                     category_name: Optional[str] = None,
+                     category: CategoryIdentifier = None,
                      limit: int = - 1,
                      prefetch: bool = True) -> QuerySet:
         """
@@ -257,16 +262,15 @@ class Entry(models.Model):
 
         :param isoyear: four-digits ISO8601 year of the actual datetime object
         :param week: ISO8601 week in year
-        :param category_name: name of the category. If not given, all categories are selected
+        :param category: category object or its name or id. If not given, all categories are selected
         :param limit: maximum number of entries to return. No limit is set if -1 is given
         :param prefetch: whether to prefetch associated categories
         """
 
         result = cls.objects.filter(date__isoyear=isoyear, date__week=week).order_by('date')
-        if category_name is not None:
-            result = result.filter(categories__name=category_name)
-        if prefetch:
-            result = result.prefetch_related("categories", "leaf_category")
+        result = cls.__filter_category(result, category)
+        result = cls.__prefetch(result, prefetch)
+
         return result[:limit] if limit >= 0 else result
 
     ##############################################################
@@ -277,7 +281,7 @@ class Entry(models.Model):
     def total_by_date_range(cls,
                             start_date: NullableDate = None,
                             end_date: NullableDate = None,
-                            category_name: Optional[str] = None) -> float:
+                            category: CategoryIdentifier = None) -> float:
         """
         Find total value of entries between start_date and end_date (inclusive) which belong to the given category name
 
@@ -286,66 +290,60 @@ class Entry(models.Model):
             - can be None, datetime objects or a string 'YYYY-mm-dd'
             - time info will be discarded and replaced with 23:59:59 for end_date and 00:00:00 for start_date
             - if start_date (or end_date) is None, it will show_drop_down from the beginning (or till the ending)
-        :param category_name: name of the category. If not given, all categories are selected
+        :param category: category object or its name or id. If not given, all categories are selected
          """
 
-        result = cls.find_by_date_range(start_date, end_date, category_name, -1, False).order_by()
-        result = result.aggregate(total=Sum('value'))['total']
+        result = cls.find_by_date_range(start_date, end_date, category, -1, False).order_by()
+        result = cls.__sum(result)
         return result if result is not None else 0
 
     @classmethod
     def total_by_year(cls,
                       year: int,
-                      category_name: Optional[str] = None) -> float:
+                      category: CategoryIdentifier = None) -> float:
         """
         Find total value of entries in the given year
 
         :param year: four-digits year
-        :param category_name:
-                - name of the category
-                - if it is not given, all categories are selected
+        :param category: category object or its name or id. If not given, all categories are selected
         """
 
-        result = cls.find_by_year(year, category_name, -1, False).order_by()
-        result = result.aggregate(total=Sum('value'))['total']
+        result = cls.find_by_year(year, category, -1, False).order_by()
+        result = cls.__sum(result)
         return result if result is not None else 0
 
     @classmethod
     def total_by_month(cls,
                        year: int,
                        month: int,
-                       category_name: Optional[str] = None) -> float:
+                       category: CategoryIdentifier = None) -> float:
         """
         Find total value of entries in the given month in year
 
         :param year: four-digits year
         :param month: 1, 2, ... 12
-        :param category_name:
-                - name of the category
-                - if it is not given, all categories are selected
+        :param category: category object or its name or id. If not given, all categories are selected
         """
 
-        result = cls.find_by_month(year, month, category_name, -1, False).order_by()
-        result = result.aggregate(total=Sum('value'))['total']
+        result = cls.find_by_month(year, month, category, -1, False).order_by()
+        result = cls.__sum(result)
         return result if result is not None else 0
 
     @classmethod
     def total_by_week(cls,
                       isoyear: int,
                       week: int,
-                      category_name: Optional[str] = None) -> float:
+                      category: CategoryIdentifier = None) -> float:
         """
         Find total value of entries in the given week in year
 
         :param isoyear: four-digits ISO8601 year of the actual datetime object
         :param week: ISO8601 week in year
-        :param category_name:
-                - name of the category
-                - if it is not given, all categories are selected
+        :param category: category object or its name or id. If not given, all categories are selected
         """
 
-        result = cls.find_by_week(isoyear, week, category_name, -1, False).order_by()
-        result = result.aggregate(total=Sum('value'))['total']
+        result = cls.find_by_week(isoyear, week, category, -1, False).order_by()
+        result = cls.__sum(result)
         return result if result is not None else 0
 
     ##############################################################
@@ -363,7 +361,7 @@ class Entry(models.Model):
 
         if start_date is None:
             return '1000-1-1'
-        if isinstance(start_date, datetime):
+        if isinstance(start_date, datetime) or isinstance(start_date, date):
             return start_date.strftime("%Y-%m-%d 0:0:0")
         if isinstance(start_date, str):
             datetime.strptime(start_date, "%Y-%m-%d")
@@ -381,12 +379,38 @@ class Entry(models.Model):
 
         if end_date is None:
             return '9999-12-31'
-        if isinstance(end_date, datetime):
+        if isinstance(end_date, datetime) or isinstance(end_date, date):
             return end_date.strftime("%Y-%m-%d 23:59:59")
         if isinstance(end_date, str):
             datetime.strptime(end_date, "%Y-%m-%d")
             return end_date + " 23:59:59"
         raise TypeError('Invalid datetime')
+
+    @staticmethod
+    def __filter_category(query: QuerySet, category: CategoryIdentifier) -> QuerySet:
+        """Helper method to filter out category"""
+
+        if isinstance(category, str):  # search by name
+            query = query.filter(categories__name=category)
+        elif isinstance(category, int):  # search by id
+            query = query.filter(categories__id=category)
+        elif isinstance(category, Category):  # search by object
+            query = query.filter(categories=category)
+        return query
+
+    @staticmethod
+    def __prefetch(query: QuerySet, prefetch: bool) -> QuerySet:
+        """Helper method to decide whether to prefetch or not"""
+
+        if prefetch:
+            query = query.prefetch_related("categories", "leaf_category")
+        return query
+
+    @staticmethod
+    def __sum(query: QuerySet) -> Optional[float]:
+        """Helper method to calculate sum of value fields"""
+
+        return query.aggregate(total=Sum('value'))['total']
 
 
 class Info(models.Model):
@@ -542,3 +566,141 @@ class Info(models.Model):
     def __rmod__(self, other):
         div_value = other.value if isinstance(other, Info) else other
         return div_value % self.value
+
+
+class Plan(models.Model):
+    """
+    A class to save plans
+    """
+
+    name = models.CharField(
+        max_length=50,
+        null=False
+    )
+    """Name of the plan"""
+
+    start_date = models.DateField()
+    """Plan's start date"""
+
+    end_date = models.DateField()
+    """Plan's end date"""
+
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        null=True
+    )
+    """Category that the plan cares about. 
+       This is null if all categories are considered in this plan."""
+
+    planned_total = models.DecimalField(
+        max_digits=12,
+        decimal_places=2
+    )
+    """Total amount of money planned to spend in this time period"""
+
+    compare = models.CharField(
+        max_length=1,
+        choices=(('>', 'gt'), ('=', 'eq'), ('<', 'lt'))
+    )
+    """Indicates how the actual total should be in comparision with the planned total 
+       for the plan to be considered as completed"""
+
+    _entries = None
+
+    _total = None
+
+    @property
+    def is_completed(self) -> bool:
+        """Whether the plan has been completed successfully"""
+
+        if self.compare == ">":
+            return self.total > self.planned_total
+        elif self.compare == "<":
+            return self.total < self.planned_total
+        else:
+            if self.planned_total == 0:
+                return self.total == 0
+            return fabs(self.total / self.planned_total - 1) < settings.MODEL_PLAN_COMPARE_EQUAL_EPSILON
+
+    @property
+    def entries(self) -> QuerySet:
+        if self._entries is None:
+            self._entries = Entry.find_by_date_range(
+                self.start_date,
+                self.end_date,
+                self.category
+            )
+        return self._entries
+
+    @property
+    def total(self) -> float:
+        if self._total is None:
+            # check if entries cache exists
+            if self._entries is not None:
+                # yes -> just sum up
+                self._total = sum(entry.value for entry in self._entries)
+            else:
+                # no -> calculate
+                self._total = Entry.total_by_date_range(
+                    self.start_date,
+                    self.end_date,
+                    self.category
+                )
+        return self._total
+
+    @property
+    def has_passed(self) -> bool:
+        """Whether the plan is in the past, i.e. its end_date has passed"""
+
+        return self.end_date < date.today()
+
+    @classmethod
+    def get_current_plans(cls) -> QuerySet:
+        """Get all the plans that has not finished"""
+
+        today = date.today()
+        return Plan.objects.filter(
+            start_date__lte=today,
+            end_date__gte=today
+        ).order_by("start_date", "end_date", "id")
+
+    @classmethod
+    def get_plans_in_date_range(cls, start_date, end_date) -> QuerySet:
+        """Get all plans that overlaps the time range"""
+
+        return Plan.objects.filter(
+            Q(start_date__lte=end_date) &
+            Q(end_date__gte=start_date)
+        ).order_by("start_date", "end_date", "id")
+
+    @classmethod
+    def get_plans_in_year(cls, year) -> QuerySet:
+        """Get all plans that overlaps the given year"""
+
+        year = str(year)
+        return cls.get_plans_in_date_range(
+            year + "-01-01",
+            year + "-12-31"
+        )
+
+    @classmethod
+    def get_plans_in_month(cls, year, month) -> QuerySet:
+        """Get all plans that overlaps the given month"""
+
+        last_day = calendar.monthrange(year, month)[1]
+        return cls.get_plans_in_date_range(
+            "{}-{}-01".format(year, month),
+            "{}-{}-{}".format(year, month, last_day)
+        )
+
+    @classmethod
+    def get_plans_in_week(cls, year, week) -> QuerySet:
+        """Get all plans that overlaps the given week"""
+
+        monday = isoparse("%iW%02i" % (year, week))
+        sunday = monday + timedelta(days=6)
+        return cls.get_plans_in_date_range(
+            monday.strftime("%Y-%m-%d"),
+            sunday.strftime("%Y-%m-%d")
+        )

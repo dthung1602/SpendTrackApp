@@ -1,4 +1,6 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
+from freezegun import freeze_time
 
 from spendtrackapp.models import *
 from .provide_data_models import *
@@ -130,26 +132,90 @@ class TestEntry(TestCase):
     ##############################################################
 
     @data_provider(entry_find_by_date_range_with_category)
-    def test_find_by_date_range_with_category(self, start_date, end_date, category_name, expected_ids):
-        entries = Entry.find_by_date_range(start_date, end_date, category_name)
+    def test_find_by_date_range_with_category(self, start_date, end_date, category_id, expected_ids):
+        try:
+            category = Category.objects.get(id=category_id)
+        except ObjectDoesNotExist:
+            entries = Entry.find_by_date_range(start_date, end_date, category_id)
+            entry_ids = list(entry.id for entry in entries)
+            self.assertSequenceEqual([], entry_ids)
+            return
+
+        entries = Entry.find_by_date_range(start_date, end_date, category.id)
+        entry_ids = list(entry.id for entry in entries)
+        self.assertSequenceEqual(expected_ids, entry_ids)
+
+        entries = Entry.find_by_date_range(start_date, end_date, category.name)
+        entry_ids = list(entry.id for entry in entries)
+        self.assertSequenceEqual(expected_ids, entry_ids)
+
+        entries = Entry.find_by_date_range(start_date, end_date, category)
         entry_ids = list(entry.id for entry in entries)
         self.assertSequenceEqual(expected_ids, entry_ids)
 
     @data_provider(entry_find_by_year_with_category)
-    def test_find_by_year_with_category(self, year, category_name, expected_ids):
-        entries = Entry.find_by_year(year, category_name)
+    def test_find_by_year_with_category(self, year, category_id, expected_ids):
+        try:
+            category = Category.objects.get(id=category_id)
+        except ObjectDoesNotExist:
+            entries = Entry.find_by_year(year, category_id)
+            entry_ids = list(entry.id for entry in entries)
+            self.assertSequenceEqual([], entry_ids)
+            return
+
+        entries = Entry.find_by_year(year, category.id)
+        entry_ids = list(entry.id for entry in entries)
+        self.assertSequenceEqual(expected_ids, entry_ids)
+
+        entries = Entry.find_by_year(year, category.name)
+        entry_ids = list(entry.id for entry in entries)
+        self.assertSequenceEqual(expected_ids, entry_ids)
+
+        entries = Entry.find_by_year(year, category)
         entry_ids = list(entry.id for entry in entries)
         self.assertSequenceEqual(expected_ids, entry_ids)
 
     @data_provider(entry_find_by_month_with_category)
-    def test_find_by_month_with_category(self, year, month, category_name, expected_ids):
-        entries = Entry.find_by_month(year, month, category_name)
+    def test_find_by_month_with_category(self, year, month, category_id, expected_ids):
+        try:
+            category = Category.objects.get(id=category_id)
+        except ObjectDoesNotExist:
+            entries = Entry.find_by_month(year, month, category_id)
+            entry_ids = list(entry.id for entry in entries)
+            self.assertSequenceEqual([], entry_ids)
+            return
+
+        entries = Entry.find_by_month(year, month, category.id)
+        entry_ids = list(entry.id for entry in entries)
+        self.assertSequenceEqual(expected_ids, entry_ids)
+
+        entries = Entry.find_by_month(year, month, category.name)
+        entry_ids = list(entry.id for entry in entries)
+        self.assertSequenceEqual(expected_ids, entry_ids)
+
+        entries = Entry.find_by_month(year, month, category)
         entry_ids = list(entry.id for entry in entries)
         self.assertSequenceEqual(expected_ids, entry_ids)
 
     @data_provider(entry_find_by_week_with_category)
-    def test_find_by_week_with_category(self, year, week, category_name, expected_ids):
-        entries = Entry.find_by_week(year, week, category_name)
+    def test_find_by_week_with_category(self, year, week, category_id, expected_ids):
+        try:
+            category = Category.objects.get(id=category_id)
+        except ObjectDoesNotExist:
+            entries = Entry.find_by_week(year, week, category_id)
+            entry_ids = list(entry.id for entry in entries)
+            self.assertSequenceEqual([], entry_ids)
+            return
+
+        entries = Entry.find_by_week(year, week, category.id)
+        entry_ids = list(entry.id for entry in entries)
+        self.assertSequenceEqual(expected_ids, entry_ids)
+
+        entries = Entry.find_by_week(year, week, category.name)
+        entry_ids = list(entry.id for entry in entries)
+        self.assertSequenceEqual(expected_ids, entry_ids)
+
+        entries = Entry.find_by_week(year, week, category)
         entry_ids = list(entry.id for entry in entries)
         self.assertSequenceEqual(expected_ids, entry_ids)
 
@@ -240,3 +306,78 @@ class TestInfo(TestCase):
         self.assertEqual(expected_value, info.value)
 
     # TODO add test sub, mul, div
+
+
+class TestPlan(TestCase):
+    fixtures = ['test/category.json', 'test/plan.json', 'test/plan_entry.json']
+
+    @data_provider(plan_get_current_plans)
+    def test_get_current_plans(self, time, expected_plan_ids):
+        with freeze_time(time):
+            plans = Plan.get_current_plans()
+            plan_ids = [plan.id for plan in plans]
+            self.assertSequenceEqual(expected_plan_ids, plan_ids)
+
+    @data_provider(plan_get_plans_in_date_range)
+    def test_get_plans_in_date_range(self, start_date, end_date, expected_plan_ids):
+        plans = Plan.get_plans_in_date_range(start_date, end_date)
+        plan_ids = [plan.id for plan in plans]
+        self.assertSequenceEqual(expected_plan_ids, plan_ids)
+
+    @data_provider(plan_get_plans_in_year)
+    def test_get_plans_in_year(self, year, expected_plan_ids):
+        plans = Plan.get_plans_in_year(year)
+        plan_ids = [plan.id for plan in plans]
+        self.assertSequenceEqual(expected_plan_ids, plan_ids)
+
+    @data_provider(plan_get_plans_in_month)
+    def test_get_plans_in_month(self, year, month, expected_plan_ids):
+        plans = Plan.get_plans_in_month(year, month)
+        plan_ids = [plan.id for plan in plans]
+        self.assertSequenceEqual(expected_plan_ids, plan_ids)
+
+    @data_provider(plan_get_plans_in_week)
+    def test_get_plans_in_week(self, year, week, expected_plan_ids):
+        plans = Plan.get_plans_in_week(year, week)
+        plan_ids = [plan.id for plan in plans]
+        self.assertSequenceEqual(expected_plan_ids, plan_ids)
+
+    @data_provider(plan_is_completed)
+    def test_is_completed(self, plan_id, completed):
+        plan = Plan.objects.get(id=plan_id)
+        self.assertEqual(completed, plan.is_completed)
+
+    @data_provider(plan_get_entries)
+    def test_entries(self, plan_id, expected_entry_ids):
+        plan = Plan.objects.get(id=plan_id)
+
+        # test get entries directly
+        entry_ids = [entry.id for entry in plan.entries]
+        self.assertSequenceEqual(expected_entry_ids, entry_ids)
+
+        # test get entries in cache
+        entry_ids = [entry.id for entry in plan.entries]
+        self.assertCountEqual(expected_entry_ids, entry_ids)
+
+    @data_provider(plan_total)
+    def test_total(self, plan_id, expected_total):
+        # test get total directly, without fetching entries
+        plan = Plan.objects.get(id=plan_id)
+        self.assertEqual(expected_total, plan.total)
+
+        # test get total in cache, without fetching entries
+        self.assertEqual(expected_total, plan.total)
+
+        # test get total directly, with entries fetched
+        plan = Plan.objects.get(id=plan_id)
+        _ = plan.entries
+        self.assertEqual(expected_total, plan.total)
+
+        # test get total in cache, with entries fetched
+        self.assertEqual(expected_total, plan.total)
+
+    @data_provider(plan_has_passed)
+    def test_has_passed(self, time, plan_id, has_passed):
+        with freeze_time(time):
+            plan = Plan.objects.get(id=plan_id)
+            self.assertEqual(has_passed, plan.has_passed)

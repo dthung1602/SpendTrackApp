@@ -1,0 +1,146 @@
+[
+  {
+    "model": "spendtrackapp.plan",
+    "pk": 1,
+    "fields": {
+      "name": "plan1",
+      "start_date": "2017-01-01",
+      "end_date": "2019-12-31",
+      "category": null,
+      "planned_total": 50,
+      "compare": "<"
+    }
+  },
+  {
+    "model": "spendtrackapp.plan",
+    "pk": 2,
+    "fields": {
+      "name": "plan2",
+      "start_date": "2018-11-26",
+      "end_date": "2018-12-02",
+      "category": null,
+      "planned_total": 9,
+      "compare": "<"
+    }
+  },
+  {
+    "model": "spendtrackapp.plan",
+    "pk": 3,
+    "fields": {
+      "name": "plan3",
+      "start_date": "2018-12-03",
+      "end_date": "2018-12-09",
+      "category": null,
+      "planned_total": 12,
+      "compare": "<"
+    }
+  },
+  {
+    "model": "spendtrackapp.plan",
+    "pk": 4,
+    "fields": {
+      "name": "plan4",
+      "start_date": "2018-12-10",
+      "end_date": "2018-12-16",
+      "category": null,
+      "planned_total": 5,
+      "compare": "<"
+    }
+  },
+  {
+    "model": "spendtrackapp.plan",
+    "pk": 5,
+    "fields": {
+      "name": "plan5",
+      "start_date": "2018-12-03",
+      "end_date": "2018-12-03",
+      "category": null,
+      "planned_total": 3,
+      "compare": ">"
+    }
+  },
+  {
+    "model": "spendtrackapp.plan",
+    "pk": 6,
+    "fields": {
+      "name": "plan6",
+      "start_date": "2018-12-03",
+      "end_date": "2019-01-31",
+      "category": null,
+      "planned_total": 19,
+      "compare": ">"
+    }
+  },
+  {
+    "model": "spendtrackapp.plan",
+    "pk": 7,
+    "fields": {
+      "name": "plan7",
+      "start_date": "2018-12-20",
+      "end_date": "2019-02-28",
+      "category": 10,
+      "planned_total": 5,
+      "compare": "="
+    }
+  },
+  {
+    "model": "spendtrackapp.plan",
+    "pk": 8,
+    "fields": {
+      "name": "plan8",
+      "start_date": "2018-11-26",
+      "end_date": "2018-12-09",
+      "category": 1,
+      "planned_total": 21,
+      "compare": "="
+    }
+  },
+  {
+    "model": "spendtrackapp.plan",
+    "pk": 9,
+    "fields": {
+      "name": "plan9",
+      "start_date": "2018-11-26",
+      "end_date": "2018-12-09",
+      "category": 2,
+      "planned_total": 21,
+      "compare": "="
+    }
+  },
+  {
+    "model": "spendtrackapp.plan",
+    "pk": 10,
+    "fields": {
+      "name": "plan10",
+      "start_date": "2018-11-26",
+      "end_date": "2018-12-09",
+      "category": 4,
+      "planned_total": 10,
+      "compare": "="
+    }
+  },
+  {
+    "model": "spendtrackapp.plan",
+    "pk": 11,
+    "fields": {
+      "name": "plan11",
+      "start_date": "2018-11-26",
+      "end_date": "2018-12-09",
+      "category": 13,
+      "planned_total": 0.8,
+      "compare": "="
+    }
+  },
+  {
+    "model": "spendtrackapp.plan",
+    "pk": 12,
+    "fields": {
+      "name": "plan12",
+      "start_date": "2018-11-26",
+      "end_date": "2018-12-09",
+      "category": 12,
+      "planned_total": 1,
+      "compare": "="
+    }
+  }
+]
