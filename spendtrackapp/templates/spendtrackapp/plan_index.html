@@ -77,7 +77,6 @@
                         </div>
                         <div id="select-category" class="select-content">
                             {{ category_hierarchy | safe }}
-                            {# TODO add All category option #}
                         </div>
                     </div>
                     <div id="category-error" class="input-error"></div>
@@ -117,13 +116,13 @@
             <!-- Find by -->
             <div class="row">
                 <div class="four columns">
-                    <label for="summarize_type">Find by</label>
-                    <select id="summarize_type" name="summarize_type" autocomplete="off"
+                    <label for="search_type">Find by</label>
+                    <select id="search_type" name="search_type" autocomplete="off"
                             onchange="selectSummarizeType()">
                         <option value="year">Year</option>
                         <option value="month">Month</option>
                         <option value="week">Week</option>
-                        <option value="daterange" selected>Date range</option>
+                        <option value="date_range" selected>Date range</option>
                     </select>
                 </div>
 
@@ -183,7 +182,7 @@
                 </div>
 
                 <!-- Summarize daterange -->
-                <div id="summarize_daterange" class="summarize-group">
+                <div id="summarize_date_range" class="summarize-group">
                     <!-- start date -->
                     <div class="four columns">
                         <label for="start_date">Start date</label>

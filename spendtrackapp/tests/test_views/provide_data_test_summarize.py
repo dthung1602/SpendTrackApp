@@ -3,14 +3,14 @@ def summarize_index_success():
         # all ok
         [
             {
-                'summarize_type': 'year',
+                'search_type': 'year',
                 'year_year': 2017
             },
             '/summarize/2017'
         ],
         [
             {
-                'summarize_type': 'month',
+                'search_type': 'month',
                 'month_year': 2015,
                 'month_month': 'feb'
             },
@@ -18,7 +18,7 @@ def summarize_index_success():
         ],
         [
             {
-                'summarize_type': 'month',
+                'search_type': 'month',
                 'month_year': 2015,
                 'month_month': 'FeB'
             },
@@ -26,7 +26,7 @@ def summarize_index_success():
         ],
         [
             {
-                'summarize_type': 'week',
+                'search_type': 'week',
                 'week_year': 2019,
                 'week_week': 53
             },
@@ -34,7 +34,7 @@ def summarize_index_success():
         ],
         [
             {
-                'summarize_type': 'daterange',
+                'search_type': 'date_range',
                 'start_date': '2015-02-15',
                 'end_date': '2015-12-03',
             },
@@ -54,23 +54,23 @@ def summarize_index_fail():
         ],
         [
             {
-                'summarize_type': 'abc',
+                'search_type': 'abc',
                 'year_year': 2017
             },
-            'Invalid summarize type'
+            'Invalid time type'
         ],
 
         # invalid fields
         [
             {
-                'summarize_type': 'year',
+                'search_type': 'year',
                 'year_year': 20179
             },
             'Invalid year'
         ],
         [
             {
-                'summarize_type': 'month',
+                'search_type': 'month',
                 'month_year': 20159,
                 'month_month': 'feb'
             },
@@ -78,7 +78,7 @@ def summarize_index_fail():
         ],
         [
             {
-                'summarize_type': 'month',
+                'search_type': 'month',
                 'month_year': 2015,
                 'month_month': 'xxx'
             },
@@ -86,15 +86,15 @@ def summarize_index_fail():
         ],
         [
             {
-                'summarize_type': 'week',
+                'search_type': 'week',
                 'week_year': 20199,
                 'week_week': 52
             },
-            'Invalid ISO year and week'
+            'Invalid year or week'
         ],
         [
             {
-                'summarize_type': 'daterange',
+                'search_type': 'date_range',
                 'start_date': '2015-99-15',
                 'end_date': '2015-12-03',
             },
@@ -102,7 +102,7 @@ def summarize_index_fail():
         ],
         [
             {
-                'summarize_type': 'daterange',
+                'search_type': 'date_range',
                 'start_date': '2015-02-15',
                 'end_date': '2015-12-32',
             },
@@ -110,7 +110,7 @@ def summarize_index_fail():
         ],
         [
             {
-                'summarize_type': 'daterange',
+                'search_type': 'date_range',
                 'start_date': '2015-12-15',
                 'end_date': '2015-02-02',
             },
@@ -120,48 +120,48 @@ def summarize_index_fail():
         # missing fields
         [
             {
-                'summarize_type': 'year',
+                'search_type': 'year',
             },
             'Missing field'
         ],
         [
             {
-                'summarize_type': 'month',
+                'search_type': 'month',
                 'month_month': 'feb'
             },
             'Missing field'
         ],
         [
             {
-                'summarize_type': 'month',
+                'search_type': 'month',
                 'month_year': 2015,
             },
             'Missing field'
         ],
         [
             {
-                'summarize_type': 'week',
+                'search_type': 'week',
                 'week_week': 53
             },
             'Missing field'
         ],
         [
             {
-                'summarize_type': 'week',
+                'search_type': 'week',
                 'week_year': 2019,
             },
             'Missing field'
         ],
         [
             {
-                'summarize_type': 'daterange',
+                'search_type': 'date_range',
                 'end_date': '2015-12-03',
             },
             'Missing field'
         ],
         [
             {
-                'summarize_type': 'daterange',
+                'search_type': 'date_range',
                 'start_date': '2015-02-15',
             },
             'Missing field'

@@ -21,4 +21,6 @@ class TestView(TestCase):
     def logIn(self):
         """Let self.client login"""
         user = authenticate(username='dtrump', password='unitedstates')
+        if user is None:
+            raise Exception('Login fails')
         self.client.force_login(user)

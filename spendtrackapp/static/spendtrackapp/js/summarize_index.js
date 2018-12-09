@@ -24,7 +24,7 @@ function fillDefaultValues() {
  * Display correct input fields according to summarize type value
  */
 function selectSummarizeType() {
-    let type = $('#summarize_type').val();
+    let type = $('#search_type').val();
     $('.summarize-group').hide();
     $('#summarize_' + type).show();
 }
@@ -51,7 +51,7 @@ function setEndDateNow() {
  * Return an object contains all submit data
  */
 function getSubmitData() {
-    let f = fields.concat(['summarize_type']);
+    let f = fields.concat(['search_type']);
     let data = {
         csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val()
     };
@@ -71,7 +71,7 @@ function validateForm(data) {
     let errorField = $('.input-error');
     errorField.html('');
 
-    switch (data.summarize_type) {
+    switch (data.search_type) {
         // summarize year
         case 'year':
             if (data.year_year === '') { // check empty

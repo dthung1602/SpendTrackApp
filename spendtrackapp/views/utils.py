@@ -1,48 +1,43 @@
 import datetime as dt
 import re
 from datetime import datetime
+from html import escape as escape_html
 from math import ceil
 
 from dateutil.parser import isoparse
 from django.conf import settings
 from django.shortcuts import render as rd
 
+from spendtrackapp.models import Category
+
+
+##############################################################
+#                        EXCEPTION                           #
+##############################################################
+
+class BadRequestException(Exception):
+    pass
+
+
+##############################################################
+#                        DATE TIME                           #
+##############################################################
+
 month_full_names = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
 ]
 
-
-def render(request, template_name, context=None, content_type=None, status=None, using=None):
-    """Override render function to add information to context for base.html"""
-
-    if context is None:
-        context = {}
-    context['now'] = datetime.now()
-    context['app_version'] = settings.APP_VERSION
-    context['contact_email'] = settings.CONTACT_EMAIL
-    context['contact_github'] = settings.CONTACT_GITHUB
-    context['contact_facebook'] = settings.CONTACT_FACEBOOK
-
-    return rd(request, template_name, context, content_type, status, using)
+month_abr_names = [
+    'jan', 'feb', 'mar', 'apr', 'may', 'jun',
+    'jul', 'aug', 'sep', 'oct', 'nov', 'dec'
+]
 
 
-def group_array(arr, group_size):
-    """Divide arr into groups with size at least group_size"""
+def same_date(date1: datetime, date2: datetime) -> bool:
+    """Check whether two given datetime object are in the same date"""
 
-    arr = list(arr)
-    if group_size > 0:
-        return [arr[i * group_size:i * group_size + group_size] for i in range(ceil(len(arr) / group_size))]
-    return [arr]
-
-
-def arr_to_js_str(arr, converter):
-    """Convert a python array to a string represent Javascript array"""
-
-    result = str([converter(i) for i in arr])
-    if converter is bool:
-        return result.replace('T', 't').replace('F', 'f')
-    return result
+    return date1.day == date2.day and date1.month == date2.month and date1.year == date2.year
 
 
 def daterange(date, to=None, step=dt.timedelta(days=1)):
@@ -92,7 +87,7 @@ def daterange(date, to=None, step=dt.timedelta(days=1)):
             step = dt.timedelta(days=int(step))
         else:
             try:
-                step = strtimedelta(step)
+                step = StrTimeDelta(step)
             except ValueError:
                 pass
 
@@ -105,7 +100,7 @@ def daterange(date, to=None, step=dt.timedelta(days=1)):
         date += step
 
 
-class strtimedelta(object):
+class StrTimeDelta(object):
     """
     Ref: https://github.com/zacharyvoase/daterange/
     Build instances of ``datetime.timedelta`` using short, friendly strings.
@@ -180,3 +175,190 @@ class strtimedelta(object):
             kwargs[unit_cname] = kwargs.get(unit_cname, 0) + number
 
         return dt.timedelta(**kwargs)
+
+
+def is_valid_year(year: str) -> bool:
+    """Check whether the given year is valid"""
+
+    try:
+        year = int(year)
+        return 1000 <= year <= 9999
+    except ValueError:
+        return False
+
+
+def is_valid_month(month: str) -> bool:
+    """Check whether the given month is valid"""
+
+    return month.lower() in [
+        'jan', 'feb', 'mar', 'apr',
+        'may', 'jun', 'jul', 'aug',
+        'sep', 'oct', 'nov', 'dec'
+    ]
+
+
+def is_valid_iso_week(year: str, week: str) -> bool:
+    """Check whether the given ISO week & ISO year is valid"""
+
+    try:
+        isoparse("%iW%02i" % (int(year), int(week)))
+        return True
+    except ValueError:
+        return False
+
+
+def is_valid_dates(start_date: str, end_date: str) -> bool:
+    """Check whether the given start_date and end_date are valid"""
+
+    try:
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        end_date = datetime.strptime(end_date, '%Y-%m-%d')
+        return start_date <= end_date
+    except ValueError:
+        return False
+
+
+def get_search_date(request):
+    if 'search_type' not in request.POST:
+        raise BadRequestException('Missing field')
+    search_type = request.POST['search_type']
+
+    # year
+    if search_type == 'year':
+        if 'year_year' not in request.POST:
+            raise BadRequestException('Missing field')
+        year = request.POST['year_year']
+        if not is_valid_year(year):
+            raise BadRequestException('Invalid year')
+        return search_type, {'year': year}
+
+    # month
+    if search_type == 'month':
+        if 'month_month' not in request.POST \
+                or 'month_year' not in request.POST:
+            raise BadRequestException('Missing field')
+        year = request.POST['month_year']
+        month = request.POST['month_month']
+        if not is_valid_year(year) or not is_valid_month(month):
+            raise BadRequestException('Invalid year or month')
+        return search_type, {'year': year, 'month': month.lower()}
+
+    # week
+    if search_type == 'week':
+        if 'week_week' not in request.POST \
+                or 'week_year' not in request.POST:
+            raise BadRequestException('Missing field')
+        year = request.POST['week_year']
+        week = request.POST['week_week']
+        if not is_valid_iso_week(year, week):
+            raise BadRequestException('Invalid year or week')
+        return search_type, {'year': year, 'week': week}
+
+    # date range
+    if search_type == 'date_range':
+        if 'start_date' not in request.POST \
+                or 'end_date' not in request.POST:
+            raise BadRequestException('Missing field')
+        start_date = request.POST['start_date']
+        end_date = request.POST['end_date']
+        if not is_valid_dates(start_date, end_date):
+            raise BadRequestException('Invalid start date or end date')
+
+        return search_type, {'start_date': start_date, 'end_date': end_date}
+
+    # bad summarize-type
+    raise BadRequestException('Invalid time type')
+
+
+##############################################################
+#                          ARRAY                             #
+##############################################################
+
+def group_array(arr, group_size):
+    """Divide arr into groups with size at least group_size"""
+
+    arr = list(arr)
+    if group_size > 0:
+        return [arr[i * group_size:i * group_size + group_size] for i in range(ceil(len(arr) / group_size))]
+    return [arr]
+
+
+def arr_to_js_str(arr, converter):
+    """Convert a python array to a string represent Javascript array"""
+
+    result = str([converter(i) for i in arr])
+    if converter is bool:
+        return result.replace('T', 't').replace('F', 'f')
+    return result
+
+
+##############################################################
+#                   CATEGORY HIERARCHY                       #
+##############################################################
+
+def category_to_html(category: Category, level: int) -> str:
+    """A recursive function return html of a category and all of its children"""
+
+    # escape html
+    category_name = escape_html(category.name)
+
+    # base case: leaf category i.e. category has no children
+    if category.is_leaf:
+        return "<div class='category leaf' onclick='select({})'><div class='level-{}' id='cat-{}'>{}</div></div>" \
+            .format(category.id, level, category.id, category_name)
+
+    # recursively get html of its children
+    sub_cat = "\n".join([category_to_html(sub_category, level + 1) for sub_category in category.children])
+
+    return "<div class='category'><div class='level-{}'>{}</div></div>".format(level, category_name) + sub_cat
+
+
+def category_hierarchy_html(all_category: bool = False) -> str:
+    """
+    Return category hierarchy in html format
+
+    :param all_category: whether to add All category option
+
+    Example:
+        - Cat 1
+            - Cat 2      *
+            - Cat 3
+                -Cat 5   *
+            - Cat 6      *
+        - Cat 7          *
+
+        * = leaf category
+
+        <div class="category"><div class="level-1"> Cat 1 </div></div>
+            <div class="category leaf" onclick='select(2)'><div class="level-2"> Cat 2 </div></div>
+            <div class="category"><div class="level-2"> Cat 3 </div></div>
+                <div class="category leaf" onclick='select(5)'><div class="level-3"> Cat 5 </div></div>
+            <div class="category leaf" onclick='select(6)'><div class="level-2"> Cat 6 </div></div>
+        <div class="category leaf" onclick='select(7)'><div class="level-1"> Cat 7 </div></div>
+    """
+
+    if all_category:
+        html_text = "<div class='category leaf' onclick='select(null)'><div class='level-1'>All category</div></div>"
+    else:
+        html_text = ""
+    for root_category in Category.get_root_categories():
+        html_text += category_to_html(root_category, 1)
+    return html_text
+
+
+##############################################################
+#                         OTHERS                             #
+##############################################################
+
+def render(request, template_name, context=None, content_type=None, status=None, using=None):
+    """Override render function to add information to context for base.html"""
+
+    if context is None:
+        context = {}
+    context['now'] = datetime.now()
+    context['app_version'] = settings.APP_VERSION
+    context['contact_email'] = settings.CONTACT_EMAIL
+    context['contact_github'] = settings.CONTACT_GITHUB
+    context['contact_facebook'] = settings.CONTACT_FACEBOOK
+
+    return rd(request, template_name, context, content_type, status, using)

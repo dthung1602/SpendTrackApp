@@ -143,6 +143,11 @@ class Plan(models.Model):
     def get_plans_in_month(cls, year, month) -> QuerySet:
         """Get all plans that overlaps the given month"""
 
+        year = int(year)
+        if isinstance(month, str):
+            month = ['jan', 'feb', 'mar', 'apr', 'may', 'jun',
+                     'jul', 'aug', 'sep', 'oct', 'nov', 'dec'].index(month.lower()) + 1
+
         last_day = calendar.monthrange(year, month)[1]
         return cls.get_plans_in_date_range(
             "{}-{}-01".format(year, month),
@@ -153,7 +158,7 @@ class Plan(models.Model):
     def get_plans_in_week(cls, year, week) -> QuerySet:
         """Get all plans that overlaps the given week"""
 
-        monday = isoparse("%iW%02i" % (year, week))
+        monday = isoparse("%iW%02i" % (int(year), int(week)))
         sunday = monday + timedelta(days=6)
         return cls.get_plans_in_date_range(
             monday.strftime("%Y-%m-%d"),

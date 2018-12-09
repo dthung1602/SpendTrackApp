@@ -1,5 +1,3 @@
-from cgi import escape as escape_html
-
 from django.contrib.auth.decorators import login_required
 from django.http.response import JsonResponse
 
@@ -68,52 +66,3 @@ def add_handler(request):
     current_balance.save()
 
     return JsonResponse({})
-
-
-##############################################################
-#                           UTILS                            #
-##############################################################
-
-def category_to_html(category: Category, level: int) -> str:
-    """A recursive function return html of a category and all of its children"""
-
-    # escape html
-    category_name = escape_html(category.name)
-
-    # base case: leaf category i.e. category has no children
-    if category.is_leaf:
-        return "<div class='category leaf' onclick='select({})'><div class='level-{}' id='cat-{}'>{}</div></div>" \
-            .format(category.id, level, category.id, category_name)
-
-    # recursively get html of its children
-    sub_cat = "\n".join([category_to_html(sub_category, level + 1) for sub_category in category.children])
-
-    return "<div class='category'><div class='level-{}'>{}</div></div>".format(level, category_name) + sub_cat
-
-
-def category_hierarchy_html() -> str:
-    """
-    Return category hierarchy in html format
-
-    E.g.
-        - Cat 1
-            - Cat 2      *
-            - Cat 3
-                -Cat 5   *
-            - Cat 6      *
-        - Cat 7          *
-
-        * = leaf category
-
-        <div class="category"><div class="level-1"> Cat 1 </div></div>
-            <div class="category leaf"><div class="level-2"> Cat 2 </div></div>
-            <div class="category"><div class="level-2"> Cat 3 </div></div>
-                <div class="category leaf"><div class="level-3"> Cat 5 </div></div>
-            <div class="category leaf"><div class="level-2"> Cat 6 </div></div>
-        <div class="category leaf"><div class="level-1"> Cat 7 </div></div>
-    """
-
-    html_text = ""
-    for root_category in Category.get_root_categories():
-        html_text += category_to_html(root_category, 1)
-    return html_text

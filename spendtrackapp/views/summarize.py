@@ -7,7 +7,7 @@ from django.http import HttpRequest
 from django.http.response import HttpResponse, JsonResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import reverse
 
-from spendtrackapp.models import Entry, Category
+from spendtrackapp.models import Entry
 from spendtrackapp.views.utils import *
 
 categories = Category.objects.all().order_by('name')
@@ -22,64 +22,13 @@ def index(request):
         return render(request, "spendtrackapp/summarize_index.html")
 
     # POST request => redirect
-
-    if 'summarize_type' not in request.POST:
-        return HttpResponseBadRequest('Missing field')
-    summarize_type = request.POST['summarize_type']
-
-    # year
-    if summarize_type == 'year':
-        if 'year_year' not in request.POST:
-            return HttpResponseBadRequest('Missing field')
-        year = request.POST['year_year']
-        if not is_valid_year(year):
-            return HttpResponseBadRequest('Invalid year')
+    try:
+        search_type, kwargs = get_search_date(request)
         return HttpResponseRedirect(
-            reverse('summarize:year', kwargs={'year': year})
+            reverse("summarize:" + search_type, kwargs=kwargs)
         )
-
-    # month
-    if summarize_type == 'month':
-        if 'month_month' not in request.POST \
-                or 'month_year' not in request.POST:
-            return HttpResponseBadRequest('Missing field')
-        year = request.POST['month_year']
-        month = request.POST['month_month']
-        if not is_valid_year(year) or not is_valid_month(month):
-            return HttpResponseBadRequest('Invalid year or month')
-        return HttpResponseRedirect(
-            reverse('summarize:month', kwargs={'year': year, 'month': month})
-        )
-
-    # week
-    if summarize_type == 'week':
-        if 'week_week' not in request.POST \
-                or 'week_year' not in request.POST:
-            return HttpResponseBadRequest('Missing field')
-        year = request.POST['week_year']
-        week = request.POST['week_week']
-        if not is_valid_iso_week(year, week):
-            return HttpResponseBadRequest('Invalid ISO year and week')
-        return HttpResponseRedirect(
-            reverse('summarize:week', kwargs={'year': year, 'week': week})
-        )
-
-    # date range
-    if summarize_type == 'daterange':
-        if 'start_date' not in request.POST \
-                or 'end_date' not in request.POST:
-            return HttpResponseBadRequest('Missing field')
-        start_date = request.POST['start_date']
-        end_date = request.POST['end_date']
-        if not is_valid_dates(start_date, end_date):
-            return HttpResponseBadRequest('Invalid start date or end date')
-
-        return HttpResponseRedirect(
-            reverse('summarize:date_range', kwargs={'start_date': start_date, 'end_date': end_date})
-        )
-
-    # bad summarize-type
-    return HttpResponseBadRequest('Invalid summarize type')
+    except BadRequestException as e:
+        return HttpResponseBadRequest(str(e))
 
 
 @login_required
@@ -124,7 +73,7 @@ def __period_handler(request: HttpRequest,
                      period_name: str,
                      period: Dict) -> HttpResponse:
     """
-    Generic handler
+    Generic handler for year_handler, month_handler and week_handler
 
     AJAX request: only info of this period is returned in JSON format
     GET request: info of this period and the previous period is returned
@@ -258,52 +207,6 @@ def this_week_handler(request):
 
 
 ##############################################################
-#                       VALIDATORS                           #
-##############################################################
-
-
-def is_valid_year(year: str) -> bool:
-    """Check whether the given year is valid"""
-
-    try:
-        year = int(year)
-        return 1000 <= year <= 9999
-    except ValueError:
-        return False
-
-
-def is_valid_month(month: str) -> bool:
-    """Check whether the given month is valid"""
-
-    return month.lower() in [
-        'jan', 'feb', 'mar', 'apr',
-        'may', 'jun', 'jul', 'aug',
-        'sep', 'oct', 'nov', 'dec'
-    ]
-
-
-def is_valid_iso_week(year: str, week: str) -> bool:
-    """Check whether the given ISO week & ISO year is valid"""
-
-    try:
-        isoparse("%iW%02i" % (int(year), int(week)))
-        return True
-    except ValueError:
-        return False
-
-
-def is_valid_dates(start_date: str, end_date: str) -> bool:
-    """Check whether the given start_date and end_date are valid"""
-
-    try:
-        start_date = datetime.strptime(start_date, '%Y-%m-%d')
-        end_date = datetime.strptime(end_date, '%Y-%m-%d')
-        return start_date <= end_date
-    except ValueError:
-        return False
-
-
-##############################################################
 #                        GET INFO                            #
 ##############################################################
 
@@ -409,14 +312,3 @@ def format_month(year, month):
 
 def format_week(year, week):
     return str(year) + " week " + str(week)
-
-
-##############################################################
-#                          UTILS                             #
-##############################################################
-
-
-def same_date(date1: datetime, date2: datetime) -> bool:
-    """Check whether two given datetime object are in the same date"""
-
-    return date1.day == date2.day and date1.month == date2.month and date1.year == date2.year
