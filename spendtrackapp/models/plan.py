@@ -101,6 +101,15 @@ class Plan(models.Model):
 
         return self.end_date < date.today()
 
+    @property
+    # TODO add test
+    def target(self) -> str:
+        """A string describes the plan"""
+
+        category_name = self.category.name if self.category is not None else "all categories"
+        compare = {"<": "less than", ">": "greater than", "=": "equal to"}[self.compare]
+        return "Total in \"" + category_name + "\" is " + compare + " " + str(self.planned_total)
+
     @classmethod
     def get_current_plans(cls) -> QuerySet:
         """Get all the plans that has not finished"""

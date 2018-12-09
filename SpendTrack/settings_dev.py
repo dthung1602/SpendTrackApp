@@ -1,7 +1,7 @@
 """
 Django DEVELOPMENT settings for SpendTrack project.
 
-The environment must provide the following variable:
+The environment must provide the following variables:
 
     SECRET_KEY
     
@@ -11,7 +11,9 @@ The environment must provide the following variable:
     DB_PASSWORD
     DB_HOST
     DB_PORT
-    
+
+Optional environmental variables:
+
     CONTACT_GITHUB
     CONTACT_EMAIL
     CONTACT_FACEBOOK
@@ -126,9 +128,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# Login
+# Login logout
 
 LOGIN_REDIRECT_URL = '/'
+
+LOGOUT_REDIRECT_URL = '/'
 
 LOGIN_URL = 'login'
 
@@ -138,11 +142,11 @@ LOGIN_URL = 'login'
 
 APP_VERSION = "1.1"
 
-CONTACT_GITHUB = 'https://github.com/' + os.environ['CONTACT_GITHUB']
+CONTACT_GITHUB = 'https://github.com/' + os.getenv('CONTACT_GITHUB', 'someone')
 
-CONTACT_EMAIL = 'mailto:' + os.environ['CONTACT_EMAIL']
+CONTACT_EMAIL = 'mailto:' + os.getenv('CONTACT_EMAIL', 'someone@somewhere')
 
-CONTACT_FACEBOOK = 'https://www.facebook.com/' + os.environ['CONTACT_FACEBOOK']
+CONTACT_FACEBOOK = 'https://www.facebook.com/' + os.getenv('CONTACT_FACEBOOK', 'somebody')
 
 VIEW_SUMMARIZE_DATE_RANGE_DEFAULT_PAGE_SIZE = 10
 

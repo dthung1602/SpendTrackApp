@@ -113,9 +113,11 @@ USE_L10N = True
 
 USE_TZ = True
 
-# Login
+# Login logout
 
 LOGIN_REDIRECT_URL = '/'
+
+LOGOUT_REDIRECT_URL = '/'
 
 LOGIN_URL = 'login'
 

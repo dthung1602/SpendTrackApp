@@ -1,0 +1,222 @@
+{% extends "spendtrackapp/base.html" %}
+
+{% block script %}
+    {% load static %}
+    <script src="{% static "spendtrackapp/js/summarize_index.js" %}"></script>
+    <script src="{% static "spendtrackapp/js/index.js" %}"></script>
+{% endblock %}
+
+{% block main %}
+    <div class="container">
+
+        <!-- current plans -->
+        <div class="box">
+            {% for plan in current_plans %}
+                <div class="row">
+                    <div class="four columns">
+                        <div class="plan-name">{{ plan.name }}</div>
+                        <div class="plan-date">From: {{ plan.start_date }}</div>
+                        <div class="plan-date">To: {{ plan.end_date }}</div>
+                        <div class="plan-target">{{ plan.target }}</div>
+                        <div class="plan-total">Total: {{ plan.total }}</div>
+                    </div>
+                    <div class="eight columns">
+                        <div class="progress-bar-background">
+                            <div class="progress-bar" id="progress-bar-{{ forloop.counter }}"></div>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="row">
+                    <div class="no-data twelve columns">No plan is set!</div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- new plan -->
+        <form class="box" action="{% url "plan:add" %}">
+            {% csrf_token %}
+
+            <div class="row">
+                <!-- Name -->
+                <div class="twelve columns">
+                    <label for="name">Plan name</label>
+                    <input type="text" id="name" name="name" placeholder="No more than $1 on carrots!" maxlength="50">
+                    <div id="name-error" class="input-error"></div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Start date -->
+                <div class="six columns">
+                    <label for="start_date">Start date</label>
+                    <input type="datetime-local" id="start_date" name="start_date" placeholder="yyyy-mm-dd"
+                           autocomplete="off">
+                    <div class="button" onclick="setDateNow()">Now</div>
+                    <div id="start-date-error" class="input-error"></div>
+                </div>
+
+                <!-- End date -->
+                <div class="six columns">
+                    <label for="end_date">End date</label>
+                    <input type="datetime-local" id="end_date" name="end_date" placeholder="yyyy-mm-dd"
+                           autocomplete="off">
+                    <div id="end-date-error" class="input-error"></div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Category -->
+                <div class="three columns">
+                    <label for="category_id">Category</label>
+                    <input type="hidden" name="category_id" id="category_id" value="" autocomplete="off">
+                    <div class="select">
+                        <div onclick="showDropDown()" class="select-btn clickable">
+                            <span id="category-display" class="clickable">Select a category</span>
+                            <span class="clickable" style="float: right">&#x25BC</span>
+                        </div>
+                        <div id="select-category" class="select-content">
+                            {{ category_hierarchy | safe }}
+                            {# TODO add All category option #}
+                        </div>
+                    </div>
+                    <div id="category-error" class="input-error"></div>
+                </div>
+
+                <!-- Compare -->
+                <div class="three columns">
+                    <label for="compare">Compare</label>
+                    <select name="compare" id="compare">
+                        <option value="<">less than</option>
+                        <option value=">">greater than</option>
+                        <option value="=">equal to</option>
+                    </select>
+                    <div id="compare-error" class="input-error"></div>
+                </div>
+
+                <!-- Plan total -->
+                <div class="six columns">
+                    <label for="planned_total">Planned total</label>
+                    <input type="text" id="planned_total" name="planned_total" placeholder="1.25 + 2.3 * 5"
+                           pattern="^[0-9 \+\-\*\/\(\)\.]+$">
+                    <div id="planned-total-error" class="input-error"></div>
+                </div>
+            </div>
+
+            <!-- Submit and clear -->
+            <div class="row submit-row align-left">
+                <div class="button button-primary" onclick="submitForm()">ADD</div>
+                <div class="button" onclick="clearFields()">CLEAR</div>
+            </div>
+        </form>
+
+        <!-- Find Plans -->
+        <form class="box" method="post">
+            {% csrf_token %}
+
+            <!-- Find by -->
+            <div class="row">
+                <div class="four columns">
+                    <label for="summarize_type">Find by</label>
+                    <select id="summarize_type" name="summarize_type" autocomplete="off"
+                            onchange="selectSummarizeType()">
+                        <option value="year">Year</option>
+                        <option value="month">Month</option>
+                        <option value="week">Week</option>
+                        <option value="daterange" selected>Date range</option>
+                    </select>
+                </div>
+
+                <!-- Find year -->
+                <div id="summarize_year" class="summarize-group">
+                    <div class="four columns">
+                        <label for="year_year">Year</label>
+                        <input id="year_year" name="year_year" type="number" autocomplete="off"
+                               min="2000" max="2100" step="1">
+                    </div>
+                </div>
+
+                <!-- Summarize month -->
+                <div id="summarize_month" class="summarize-group">
+                    <!-- year -->
+                    <div class="four columns">
+                        <label for="month_year">Year</label>
+                        <input id="month_year" name="month_year" type="number" autocomplete="off"
+                               min="2000" max="2100" step="1">
+                    </div>
+
+                    <!-- month -->
+                    <div class="four columns">
+                        <label for="month_month">Month</label>
+                        <select id="month_month" name="month_month" autocomplete="off">
+                            <option value="jan">January</option>
+                            <option value="feb">February</option>
+                            <option value="mar">March</option>
+                            <option value="apr">April</option>
+                            <option value="may">May</option>
+                            <option value="jun">June</option>
+                            <option value="jul">July</option>
+                            <option value="aug">August</option>
+                            <option value="sep">September</option>
+                            <option value="oct">October</option>
+                            <option value="nov">November</option>
+                            <option value="dec">December</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Summarize week -->
+                <div id="summarize_week" class="summarize-group">
+                    <!-- year -->
+                    <div class="four columns">
+                        <label for="week_year">ISO Year</label>
+                        <input id="week_year" name="week_year" type="number" autocomplete="off"
+                               min="2000" max="2100" step="1">
+                    </div>
+
+                    <!-- week -->
+                    <div class="four columns">
+                        <label for="week_week">ISO Week</label>
+                        <input id="week_week" name="week_week" type="number" autocomplete="off"
+                               min="1" max="53" step="1">
+                    </div>
+                </div>
+
+                <!-- Summarize daterange -->
+                <div id="summarize_daterange" class="summarize-group">
+                    <!-- start date -->
+                    <div class="four columns">
+                        <label for="start_date">Start date</label>
+                        <input id="start_date" name="start_date" type="date">
+                    </div>
+
+                    <!-- end date -->
+                    <div class="four columns">
+                        <label for="end_date">End date</label>
+                        <input id="end_date" name="end_date" type="date">
+                        <div class="button" onclick="setEndDateNow()">NOW</div>
+                    </div>
+                </div>
+                <script>
+                    selectSummarizeType();
+                    fillDefaultValues();
+                </script>
+            </div>
+
+            <div class="row">
+                <div class="twelve columns input-error"></div>
+            </div>
+
+            <!-- Submit and clear -->
+            <div class="row submit-row">
+                <div class="button button-primary" onclick="submitForm()">FIND</div>
+                <div class="button" onclick="clearFields()">CLEAR</div>
+            </div>
+        </form>
+
+        <div class="row" id="find-result">
+        </div>
+
+    </div>
+
+{% endblock %}
