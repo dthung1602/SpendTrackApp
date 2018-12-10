@@ -1,7 +1,7 @@
 """
 Django DEVELOPMENT settings for SpendTrack project.
 
-The environment must provide the following variables:
+These values can by overriden by the environment:
 
     SECRET_KEY
     
@@ -32,7 +32,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ######################################
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = os.getenv('SECRET_KEY', '5icu55xf=(jv_3tp@@3i02hg9l7(tofd!8@+2uw0ma!4xmqeex')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 ALLOWED_HOSTS = []
@@ -83,12 +83,12 @@ WSGI_APPLICATION = 'SpendTrack.wsgi.application'
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 DATABASES = {
     'default': {
-        'ENGINE': os.environ['DB_ENGINE'],
-        'NAME': os.environ['DB_NAME'],
-        'USER': os.environ['DB_USER'],
-        'PASSWORD': os.environ['DB_PASSWORD'],
-        'HOST': os.environ['DB_HOST'],
-        'PORT': os.environ['DB_PORT']
+        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
+        'NAME': os.getenv('DB_NAME', 'spendtrack'),
+        'USER': os.getenv('DB_USER', 'spendtrackuser'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'r8XBGQK1As9KLDlJKV8g'),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '')
     }
 }
 

@@ -1,8 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.http.response import JsonResponse
 
-from spendtrackapp.forms import *
-from spendtrackapp.models import *
+from spendtrackapp.forms import EntryForm, Entry
+from spendtrackapp.models import Info
 from spendtrackapp.views.utils import *
 
 
@@ -36,6 +36,7 @@ def add_handler(request):
 
     errors = {}
 
+    # TODO move validation to form
     # validate category_id
     if 'category_id' not in request.POST:
         errors.update({'category_id': ['Missing category']})

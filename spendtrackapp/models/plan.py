@@ -34,7 +34,8 @@ class Plan(models.Model):
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
-        null=True
+        null=True,
+        blank=True
     )
     """Category that the plan cares about. 
        This is null if all categories are considered in this plan."""
