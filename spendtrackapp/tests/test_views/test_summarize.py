@@ -5,8 +5,8 @@ from django.shortcuts import reverse
 from freezegun import freeze_time
 
 from spendtrackapp.tests.utils import data_provider
-from .test_view import *
 from .provide_data_test_summarize import *
+from .test_view import *
 
 
 class TestSummarize(TestView):
@@ -26,13 +26,14 @@ class TestSummarize(TestView):
         )
 
     @data_provider(summarize_index_fail)
-    def test_index_fail(self, data, fail_reason):
+    def test_index_fail(self, data, expected_errors):
         response = self.client.post(
             reverse('summarize:index'),
             data=data
         )
+        errors = json.loads(response.content.decode('utf-8')).keys()
         self.assertEqual(400, response.status_code)
-        self.assertEqual(fail_reason, response.content.decode('utf-8'))
+        self.assertCountEqual(expected_errors, errors)
 
     def __test_ajax(self, named_path, expected_dict, **kwargs):
         """

@@ -53,7 +53,7 @@ window.onclick = hideDropDown;
  * @param categoryId
  */
 function select(categoryId) {
-    $('#category_id').val(categoryId);
+    $('#leaf_category').val(categoryId);
     $('#category-display').text($('#cat-' + categoryId).text());
 }
 
@@ -98,7 +98,7 @@ function getSubmitData() {
         csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
         date: $('#date').val().replace('T', ' '),
         content: $('#content').val().trim(),
-        category_id: $('#category_id').val(),
+        leaf_category: $('#leaf_category').val(),
         value: $('#value').val(),
     }
 }
@@ -112,7 +112,7 @@ function getSubmitData() {
 function addError(response, status, error) {
     switch (error) {
         case 'Bad Request':
-            let fields = ['date', 'content', 'category_id', 'value'];
+            let fields = ['date', 'content', 'leaf_category', 'value'];
             let causes = [];
             for (let i = 0; i < fields.length; i++) {
                 let f = fields[i];
@@ -205,7 +205,7 @@ function validateForm(data) {
     }
 
     // category must not be empty
-    if (data.category_id === "") {
+    if (data.leaf_category === "") {
         valid = false;
         $('#category-error').show().html('A category must be selected');
     }

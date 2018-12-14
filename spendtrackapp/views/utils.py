@@ -12,14 +12,6 @@ from spendtrackapp.models import Category
 
 
 ##############################################################
-#                        EXCEPTION                           #
-##############################################################
-
-class BadRequestException(Exception):
-    pass
-
-
-##############################################################
 #                        DATE TIME                           #
 ##############################################################
 
@@ -177,26 +169,6 @@ class StrTimeDelta(object):
         return dt.timedelta(**kwargs)
 
 
-def is_valid_year(year: str) -> bool:
-    """Check whether the given year is valid"""
-
-    try:
-        year = int(year)
-        return 1000 <= year <= 9999
-    except ValueError:
-        return False
-
-
-def is_valid_month(month: str) -> bool:
-    """Check whether the given month is valid"""
-
-    return month.lower() in [
-        'jan', 'feb', 'mar', 'apr',
-        'may', 'jun', 'jul', 'aug',
-        'sep', 'oct', 'nov', 'dec'
-    ]
-
-
 def is_valid_iso_week(year: str, week: str) -> bool:
     """Check whether the given ISO week & ISO year is valid"""
 
@@ -205,69 +177,6 @@ def is_valid_iso_week(year: str, week: str) -> bool:
         return True
     except ValueError:
         return False
-
-
-def is_valid_dates(start_date: str, end_date: str) -> bool:
-    """Check whether the given start_date and end_date are valid"""
-
-    try:
-        start_date = datetime.strptime(start_date, '%Y-%m-%d')
-        end_date = datetime.strptime(end_date, '%Y-%m-%d')
-        return start_date <= end_date
-    except ValueError:
-        return False
-
-
-def get_search_date(request):
-    if 'search_type' not in request.POST:
-        raise BadRequestException('Missing field')
-    search_type = request.POST['search_type']
-
-    # year
-    if search_type == 'year':
-        if 'year_year' not in request.POST:
-            raise BadRequestException('Missing field')
-        year = request.POST['year_year']
-        if not is_valid_year(year):
-            raise BadRequestException('Invalid year')
-        return search_type, {'year': year}
-
-    # month
-    if search_type == 'month':
-        if 'month_month' not in request.POST \
-                or 'month_year' not in request.POST:
-            raise BadRequestException('Missing field')
-        year = request.POST['month_year']
-        month = request.POST['month_month']
-        if not is_valid_year(year) or not is_valid_month(month):
-            raise BadRequestException('Invalid year or month')
-        return search_type, {'year': year, 'month': month.lower()}
-
-    # week
-    if search_type == 'week':
-        if 'week_week' not in request.POST \
-                or 'week_year' not in request.POST:
-            raise BadRequestException('Missing field')
-        year = request.POST['week_year']
-        week = request.POST['week_week']
-        if not is_valid_iso_week(year, week):
-            raise BadRequestException('Invalid year or week')
-        return search_type, {'year': year, 'week': week}
-
-    # date range
-    if search_type == 'date_range':
-        if 'start_date' not in request.POST \
-                or 'end_date' not in request.POST:
-            raise BadRequestException('Missing field')
-        start_date = request.POST['start_date']
-        end_date = request.POST['end_date']
-        if not is_valid_dates(start_date, end_date):
-            raise BadRequestException('Invalid start date or end date')
-
-        return search_type, {'start_date': start_date, 'end_date': end_date}
-
-    # bad summarize-type
-    raise BadRequestException('Invalid time type')
 
 
 ##############################################################

@@ -34,36 +34,14 @@ def add_handler(request):
                         and whose values are list of errors in those fields
     """
 
-    errors = {}
-
-    # TODO move validation to form
-    # validate category_id
-    if 'category_id' not in request.POST:
-        errors.update({'category_id': ['Missing category']})
-    else:
-        category_id = request.POST['category_id']
-        category = Category.get_leaf_category(category_id)
-        if category is None:
-            errors.update({'category_id': ['Invalid category']})
-
-    # validate other fields
     form = EntryForm(request.POST)
     if not form.is_valid():
-        errors.update(form.errors)
-
-    # return errors, if any
-    if errors:
-        return JsonResponse(errors, status=400)
-
-    # save entry
-    entry = form.save()
-    # noinspection PyUnboundLocalVariable
-    entry.change_category(category)
-    entry.save()
+        return JsonResponse(form.errors, status=400)
+    form.save()
 
     # change current balance
     current_balance = Info.get('CURRENT_BALANCE')
-    current_balance += float(entry.value)
+    current_balance += float(form.instance.value)
     current_balance.save()
 
     return JsonResponse({})

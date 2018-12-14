@@ -51,8 +51,7 @@ class Entry(models.Model):
     leaf_category = models.ForeignKey(
         Category,
         on_delete=models.PROTECT,
-        related_name="leaf_category",
-        null=True
+        related_name="leaf_category"
     )
     """The category stands lowest in the hierarchy (has no children) that the entry belongs to"""
 

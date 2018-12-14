@@ -4,31 +4,31 @@ def summarize_index_success():
         [
             {
                 'search_type': 'year',
-                'year_year': 2017
+                'year': 2017
             },
             '/summarize/2017'
         ],
         [
             {
                 'search_type': 'month',
-                'month_year': 2015,
-                'month_month': 'feb'
+                'year': 2015,
+                'month': 2
             },
             '/summarize/2015/feb'
         ],
         [
             {
                 'search_type': 'month',
-                'month_year': 2015,
-                'month_month': 'FeB'
+                'year': 2015,
+                'month': '2'
             },
             '/summarize/2015/feb'
         ],
         [
             {
                 'search_type': 'week',
-                'week_year': 2019,
-                'week_week': 53
+                'year': 2019,
+                'week': 53
             },
             '/summarize/2019/w53'
         ],
@@ -40,65 +40,186 @@ def summarize_index_success():
             },
             '/summarize/2015-02-15/2015-12-03'
         ],
+        # extra fields are sent
+        [
+            {
+                'search_type': 'year',
+                'year': 2017,
+                'month': 5,
+                'week': 6,
+                'start_date': '2015-02-15',
+                'end_date': '2015-12-03',
+                'abc': 'xyz'
+            },
+            '/summarize/2017'
+        ],
+        [
+            {
+                'search_type': 'month',
+                'year': 2015,
+                'month': '2',
+                'week': 52,
+                'start_date': '2015-02-15',
+                'end_date': '2015-12-03',
+                'abc': 'xyz'
+            },
+            '/summarize/2015/feb'
+        ],
+        [
+            {
+                'search_type': 'week',
+                'year': 2019,
+                'week': 53,
+                'month': '2',
+                'start_date': '2015-02-15',
+                'end_date': '2015-12-03',
+                'abc': 'xyz'
+            },
+            '/summarize/2019/w53'
+        ],
+        [
+            {
+                'search_type': 'date_range',
+                'start_date': '2015-02-15',
+                'end_date': '2015-12-03',
+                'year': 2019,
+                'week': 53,
+                'month': '2',
+                'abc': 'xyz'
+            },
+            '/summarize/2015-02-15/2015-12-03'
+        ],
     ]
 
 
 def summarize_index_fail():
     return [
-        # problems with summarize type
+        # problems with search type
         [
             {
-                'year_year': 2017
+                'year': 2017
             },
-            'Missing field'
+            ['search_type']
         ],
         [
             {
                 'search_type': 'abc',
-                'year_year': 2017
+                'year': 2017
             },
-            'Invalid time type'
+            ['search_type']
         ],
 
-        # invalid fields
+        # invalid year
         [
             {
                 'search_type': 'year',
-                'year_year': 20179
+                'year': 20179
             },
-            'Invalid year'
+            ['year']
+        ],
+        [
+            {
+                'search_type': 'year',
+                'year': 179
+            },
+            ['year']
+        ],
+        [
+            {
+                'search_type': 'year',
+                'year': 'abc'
+            },
+            ['year']
+        ],
+
+        # invalid month
+        [
+            {
+                'search_type': 'month',
+                'month': 2
+            },
+            ['year']
         ],
         [
             {
                 'search_type': 'month',
-                'month_year': 20159,
-                'month_month': 'feb'
+                'year': 2015,
             },
-            'Invalid year or month'
+            ['month']
         ],
         [
             {
                 'search_type': 'month',
-                'month_year': 2015,
-                'month_month': 'xxx'
+                'year': 2059,
+                'month': 13
             },
-            'Invalid year or month'
+            ['month']
+        ],
+        [
+            {
+                'search_type': 'month',
+                'year': 2015,
+                'month': 0
+            },
+            ['month']
+        ],
+        [
+            {
+                'search_type': 'month',
+                'year': 2015,
+                'month': 'abc'
+            },
+            ['month']
+        ],
+
+        # invalid week
+        [
+            {
+                'search_type': 'week',
+                'week': 52
+            },
+            ['year']
         ],
         [
             {
                 'search_type': 'week',
-                'week_year': 20199,
-                'week_week': 52
+                'year': 2019,
             },
-            'Invalid year or week'
+            ['week']
         ],
+        [
+            {
+                'search_type': 'week',
+                'year': 2019,
+                'week': 54
+            },
+            ['week']
+        ],
+        [
+            {
+                'search_type': 'week',
+                'year': 2019,
+                'week': 0
+            },
+            ['week']
+        ],
+        [
+            {
+                'search_type': 'week',
+                'year': 2019,
+                'week': 'abc'
+            },
+            ['week']
+        ],
+
+        # invalid date range
         [
             {
                 'search_type': 'date_range',
                 'start_date': '2015-99-15',
                 'end_date': '2015-12-03',
             },
-            'Invalid start date or end date'
+            ['start_date']
         ],
         [
             {
@@ -106,7 +227,7 @@ def summarize_index_fail():
                 'start_date': '2015-02-15',
                 'end_date': '2015-12-32',
             },
-            'Invalid start date or end date'
+            ['end_date']
         ],
         [
             {
@@ -114,57 +235,45 @@ def summarize_index_fail():
                 'start_date': '2015-12-15',
                 'end_date': '2015-02-02',
             },
-            'Invalid start date or end date'
-        ],
-
-        # missing fields
-        [
-            {
-                'search_type': 'year',
-            },
-            'Missing field'
-        ],
-        [
-            {
-                'search_type': 'month',
-                'month_month': 'feb'
-            },
-            'Missing field'
-        ],
-        [
-            {
-                'search_type': 'month',
-                'month_year': 2015,
-            },
-            'Missing field'
-        ],
-        [
-            {
-                'search_type': 'week',
-                'week_week': 53
-            },
-            'Missing field'
-        ],
-        [
-            {
-                'search_type': 'week',
-                'week_year': 2019,
-            },
-            'Missing field'
+            ['end_date']
         ],
         [
             {
                 'search_type': 'date_range',
                 'end_date': '2015-12-03',
             },
-            'Missing field'
+            ['start_date']
         ],
         [
             {
                 'search_type': 'date_range',
                 'start_date': '2015-02-15',
             },
-            'Missing field'
+            ['end_date']
+        ],
+
+        # combine
+        [
+            {
+                'search_type': 'date_range',
+                'start_date': '2015-02-95',
+            },
+            ['start_date', 'end_date']
+        ],
+        [
+            {
+                'search_type': 'month',
+                'year': 20015,
+                'month': 16,
+            },
+            ['year', 'month']
+        ],
+        [
+            {
+                'search_type': 'week',
+                'week': 55,
+            },
+            ['year', 'week']
         ],
     ]
 

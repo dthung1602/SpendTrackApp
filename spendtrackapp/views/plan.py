@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
-from django.http.response import HttpResponseBadRequest, JsonResponse
+from django.http.response import JsonResponse
 
-from spendtrackapp.forms import PlanForm
+from spendtrackapp.forms import SearchTimeForm, PlanForm
 from spendtrackapp.models import Plan
 from spendtrackapp.views.utils import *
 
@@ -20,32 +20,43 @@ def index_handler(request):
 def find_handler(request):
     """Handle find plan requests"""
 
-    try:
-        # parse input
-        search_type, kwargs = get_search_date(request)
+    # parse input
+    form = SearchTimeForm(request.POST)
+    if not form.is_valid():
+        return JsonResponse(form.errors, status=400)
 
-        # get plans in specified time
-        get_plans_func = getattr(Plan, "get_plans_in_" + search_type)
-        plans = get_plans_func(**kwargs)
+    search_type = form.cleaned_data['search_type']
+    year = form.cleaned_data['year']
+    month = form.cleaned_data['month']
+    week = form.cleaned_data['week']
+    start_date = form.cleaned_data['start_date']
+    end_date = form.cleaned_data['end_date']
 
-        # turn plans to dictionaries
-        plan_fields = ['id', 'name', 'start_date', 'end_date', 'category_name', 'planned_total', 'compare',
-                       'is_completed', 'total', 'has_passed']
-        plan_dicts = []
-        for plan in plans:
-            d = {}
-            for field in plan_fields:
-                if field == 'category_name':
-                    d[field] = str(plan.category.name) if plan.category is not None else 'All categories'
-                else:
-                    d[field] = str(getattr(plan, field))
-            plan_dicts.append(d)
+    # get plans in specified time
+    if search_type == 'year':
+        plans = Plan.get_plans_in_year(year)
+    elif search_type == 'month':
+        plans = Plan.get_plans_in_month(year, month)
+    elif search_type == 'week':
+        plans = Plan.get_plans_in_week(year, week)
+    else:
+        plans = Plan.get_plans_in_date_range(start_date, end_date)
 
-        # send plans using JSON
-        return JsonResponse({'plans': plan_dicts})
+    # turn plans to dictionaries
+    plan_fields = ['id', 'name', 'start_date', 'end_date', 'category_name', 'planned_total', 'compare',
+                   'is_completed', 'total', 'has_passed']
+    plan_dicts = []
+    for plan in plans:
+        d = {}
+        for field in plan_fields:
+            if field == 'category_name':
+                d[field] = str(plan.category.name) if plan.category is not None else 'All categories'
+            else:
+                d[field] = str(getattr(plan, field))
+        plan_dicts.append(d)
 
-    except BadRequestException as e:
-        return HttpResponseBadRequest(str(e))
+    # send plans using JSON
+    return JsonResponse({'plans': plan_dicts})
 
 
 @login_required

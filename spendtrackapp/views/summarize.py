@@ -4,9 +4,10 @@ from typing import Tuple, List, Callable, Dict
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest
-from django.http.response import HttpResponse, JsonResponse, HttpResponseBadRequest, HttpResponseRedirect
+from django.http.response import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import reverse
 
+from spendtrackapp.forms import SearchTimeForm
 from spendtrackapp.models import Entry
 from spendtrackapp.views.utils import *
 
@@ -22,13 +23,14 @@ def index(request):
         return render(request, "spendtrackapp/summarize_index.html")
 
     # POST request => redirect
-    try:
-        search_type, kwargs = get_search_date(request)
-        return HttpResponseRedirect(
-            reverse("summarize:" + search_type, kwargs=kwargs)
-        )
-    except BadRequestException as e:
-        return HttpResponseBadRequest(str(e))
+    form = SearchTimeForm(request.POST)
+    if not form.is_valid():
+        return JsonResponse(form.errors, status=400)
+
+    search_type = form.cleaned_data['search_type']
+    kwargs = form.relevant_data_str
+
+    return HttpResponseRedirect(reverse("summarize:" + search_type, kwargs=kwargs))
 
 
 @login_required
@@ -210,6 +212,7 @@ def this_week_handler(request):
 #                        GET INFO                            #
 ##############################################################
 
+# TODO consider move to model
 
 def get_date_range_info(start_date: str,
                         end_date: str) -> Tuple[float, List[float], List[float], List[List[Entry]]]:

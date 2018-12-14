@@ -12,31 +12,31 @@ def plan_test_find_success():
         [
             {
                 'search_type': 'year',
-                'year_year': 2018
+                'year': 2018
             },
             ['1', '2', '8', '9', '10', '11', '12', '5', '3', '6', '4', '7']
         ],
         [
             {
                 'search_type': 'month',
-                'month_year': 2019,
-                'month_month': 'jan'
+                'year': 2019,
+                'month': 1
             },
             ['1', '6', '7']
         ],
         [
             {
                 'search_type': 'month',
-                'month_year': 2018,
-                'month_month': 'NoV'
+                'year': 2018,
+                'month': 11
             },
             ['1', '2', '8', '9', '10', '11', '12']
         ],
         [
             {
                 'search_type': 'week',
-                'week_year': 2018,
-                'week_week': 48
+                'year': 2018,
+                'week': 48
             },
             ['1', '2', '8', '9', '10', '11', '12']
         ],

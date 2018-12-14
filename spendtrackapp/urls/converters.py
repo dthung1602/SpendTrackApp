@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 
 from django.urls import register_converter
 
@@ -57,7 +57,7 @@ class DateConverter:
         return datetime.strptime(value, '%Y-%m-%d')
 
     def to_url(self, value):
-        if isinstance(value, datetime):
+        if isinstance(value, datetime) or isinstance(value, date):
             return value.strftime('%Y-%m-%d')
         elif isinstance(value, str):
             return value
