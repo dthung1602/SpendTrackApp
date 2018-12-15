@@ -3,6 +3,7 @@
 {% block script %}
     {% load static %}
     <script src="{% static "spendtrackapp/js/index.js" %}"></script>
+    <script src="{% static "spendtrackapp/js/category_drop_down.js" %}"></script>
 {% endblock %}
 
 {% block main %}
@@ -31,7 +32,7 @@
                         <th class="align-right">Category</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="entry-container">
                     {% for entries_page in entries_pages %}
                         {% for entry in entries_page %}
                             <tr class="table-page-{{ forloop.parentloop.counter }}">
@@ -71,36 +72,36 @@
 
         </div>
 
-        <div class="row success-panel" style="display: none">
+        <div class="row success-panel" id="new-entry-success-panel" style="display: none">
         </div>
 
         <!-- Add new entry -->
-        <form class="box" action="{% url "add" %}">
+        <form class="box" id="new-entry">
             {% csrf_token %}
 
-            <div class="row">
+            <div class="row" >
                 <!-- Date time -->
                 <div class="five columns">
-                    <label for="date">Datetime</label>
-                    <input type="datetime-local" id="date" name="date" placeholder="yyyy-mm-dd hh:mm"
+                    <label for="entry-date">Datetime</label>
+                    <input type="datetime-local" id="entry-date" placeholder="yyyy-mm-dd hh:mm"
                            autocomplete="off">
-                    <div class="button" onclick="setDatetimeNow()">Now</div>
-                    <div id="date-error" class="input-error"></div>
+                    <div class="button" onclick="setNewEntryDatetimeNow()">Now</div>
+                    <div id="entry-date-error" class="input-error"></div>
                 </div>
 
                 <!-- Content -->
                 <div class="seven columns">
-                    <label for="content">Content</label>
-                    <input type="text" id="content" name="content" placeholder="A carrot and an apple" maxlength="200">
-                    <div id="content-error" class="input-error"></div>
+                    <label for="entry-content">Content</label>
+                    <input type="text" id="entry-content" placeholder="A carrot and an apple" maxlength="200">
+                    <div id="entry-content-error" class="input-error"></div>
                 </div>
             </div>
 
             <div class="row">
                 <!-- Category -->
                 <div class="five columns">
-                    <label for="leaf_category">Category</label>
-                    <input type="hidden" name="leaf_category" id="leaf_category" value="" autocomplete="off">
+                    <label for="category">Category</label>
+                    <input type="hidden" name="category" id="category" value="empty" autocomplete="off">
                     <div class="select">
                         <div onclick="showDropDown()" class="select-btn clickable">
                             <span id="category-display" class="clickable">Select a category</span>
@@ -110,22 +111,22 @@
                             {{ category_hierarchy | safe }}
                         </div>
                     </div>
-                    <div id="category-error" class="input-error"></div>
+                    <div id="entry-category-error" class="input-error"></div>
                 </div>
 
                 <!-- Value -->
                 <div class="seven columns">
-                    <label for="value">Value</label>
-                    <input type="text" id="value" name="value" placeholder="1.25 + 2.3 * 5"
+                    <label for="entry-value">Value</label>
+                    <input type="text" id="entry-value" placeholder="1.25 + 2.3 * 5"
                            pattern="^[0-9 \+\-\*\/\(\)\.]+$">
-                    <div id="value-error" class="input-error"></div>
+                    <div id="entry-value-error" class="input-error"></div>
                 </div>
             </div>
 
             <!-- Submit and clear -->
             <div class="row submit-row align-right">
-                <div class="button" onclick="clearFields()">CLEAR</div>
-                <div class="button button-primary" onclick="submitForm()">ADD</div>
+                <div class="button" onclick="clearNewEntryFields()">CLEAR</div>
+                <div class="button button-primary" onclick="submitNewEntryForm()">ADD</div>
             </div>
         </form>
     </div>

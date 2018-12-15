@@ -22,53 +22,18 @@ function startTime() {
     setTimeout(startTime, 1000)
 }
 
-// ------------- CATEGORY SELECT DROP DOWN----------------
-
-/**
- * Display select category drop down
- */
-function showDropDown() {
-    $("#select-category").toggleClass('show');
-}
-
-/**
- * Hide select category drop down when click outside
- */
-function hideDropDown(event) {
-    if (!event.target.matches('.clickable')) {
-        let dropDowns = document.getElementsByClassName("select-content");
-        for (let i = 0; i < dropDowns.length; i++) {
-            let openDropDown = dropDowns[i];
-            if (openDropDown.classList.contains('show')) {
-                openDropDown.classList.remove('show');
-            }
-        }
-    }
-}
-
-window.onclick = hideDropDown;
-
-/**
- * Select a category
- * @param categoryId
- */
-function select(categoryId) {
-    $('#leaf_category').val(categoryId);
-    $('#category-display').text($('#cat-' + categoryId).text());
-}
-
 // ------------------------ FORM -----------------------
 
 /**
  * Set now to Date field
  */
-function setDatetimeNow() {
+function setNewEntryDatetimeNow() {
     let d = new Date();
     let datetime = [d.getFullYear(), (d.getMonth() + 1).fillZero(), d.getDate().fillZero()].join('-')
         + ' ' + [d.getHours().fillZero(), d.getMinutes().fillZero()].join(':');
 
     // Fire fox
-    let datetimeField = $('#date');
+    let datetimeField = $('#entry-date');
     datetimeField.val(datetime);
 
     // Other browsers
@@ -79,13 +44,11 @@ function setDatetimeNow() {
 /**
  * Clear all input fields in new entry form
  */
-function clearFields() {
-    $('input[name!="csrfmiddlewaretoken"]').each(
-        function (index, element) {
-            element.value = ''
-        }
-    );
+function clearNewEntryFields() {
+    $('#new-entry [id^=entry]').val('');
+    $('#category').val('empty');
     $('#category-display').html('Select a category');
+    $('#new-entry .input-error').hide();
 }
 
 // ------------- SUBMIT FORM ----------------
@@ -93,13 +56,13 @@ function clearFields() {
 /**
  * Return an object contains all submit data
  */
-function getSubmitData() {
+function getNewEntryData() {
     return {
         csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
-        date: $('#date').val().replace('T', ' '),
-        content: $('#content').val().trim(),
-        leaf_category: $('#leaf_category').val(),
-        value: $('#value').val(),
+        date: $('#entry-date').val().replace('T', ' '),
+        content: $('#entry-content').val().trim(),
+        leaf_category: $('#category').val(),
+        value: $('#entry-value').val(),
     }
 }
 
@@ -109,7 +72,7 @@ function getSubmitData() {
  * @param status
  * @param error
  */
-function addError(response, status, error) {
+function addNewEntryFailFunc(response, status, error) {
     switch (error) {
         case 'Bad Request':
             let fields = ['date', 'content', 'leaf_category', 'value'];
@@ -138,10 +101,9 @@ function addError(response, status, error) {
  * @param data: object contain submit data
  * @returns {Function} a function that update page content when a new entry is added successfully
  */
-function addSuccessFunc(data) {
+function addNewEntrySuccessFuncGenerator(data) {
     return function (response) {
         // get elements
-        let row = $('<tr>').appendTo($('tbody'));
         let categoryDisplay = $('#category-display');
         let totalInWeek = $('#total-in-week');
         let currentBalance = $('#current-balance');
@@ -152,10 +114,11 @@ function addSuccessFunc(data) {
 
         // if item is not in this week, inform success
         if (now.getWeekNumber() !== wn || now.getFullYear() !== y) {
-            $('.success-panel').show().html('Item added to week ' + wn + ' of year ' + y);
+            $('#new-entry-success-panel').show().html('Item added to week ' + wn + ' of year ' + y);
 
         } else { // if item in this week, update page
-            $('.success-panel').hide();
+            let row = $('<tr>').appendTo($('#entry-container'));
+            $('#new-entry-success-panel').hide();
 
             // convert data to correct format
             data.value = parseFloat(data.value);
@@ -177,9 +140,8 @@ function addSuccessFunc(data) {
         }
 
         // clear form
-        $('.input-error').hide();
-        $('.no-data').remove();
-        clearFields();
+        $('#entry-container .no-data').remove();
+        clearNewEntryFields();
     }
 }
 
@@ -188,36 +150,36 @@ function addSuccessFunc(data) {
  * @param data
  * @returns {boolean} whether form is valid
  */
-function validateForm(data) {
+function validateNewEntryForm(data) {
     let valid = true;
-    $('.input-error').hide();
+    $('#new-entry .input-error').hide();
 
     // valid date time
     if (isNaN(Date.parse(data.date))) {
         valid = false;
-        $('#date-error').show().html('Datetime must have format yyyy-mm-dd hh:mm');
+        $('#entry-date-error').show().html('Datetime must have format yyyy-mm-dd hh:mm');
     }
 
     // content must not be empty
     if (data.content === "") {
         valid = false;
-        $('#content-error').show().html('Content cannot be empty');
+        $('#entry-content-error').show().html('Content cannot be empty');
     }
 
     // category must not be empty
-    if (data.leaf_category === "") {
+    if (data.leaf_category === "empty") {
         valid = false;
-        $('#category-error').show().html('A category must be selected');
+        $('#entry-category-error').show().html('A category must be selected');
     }
 
     // evaluate arithmetic expression in value fielD
     try {
-        if (!data.value.match('^[0-9 \\+\\-\\*\\/\\(\\)\\.]+$'))
+        if (!data.value.match(/^[0-9 +\-*/().]+$/))
             throw "";
         data.value = eval(data.value).toFixed(2);
     } catch (err) {
         valid = false;
-        $('#value-error').show().html('Invalid arithmetic expression');
+        $('#entry-value-error').show().html('Invalid arithmetic expression');
     }
 
     return valid;
@@ -226,12 +188,12 @@ function validateForm(data) {
 /**
  *  Validate form, submit and handle result
  */
-function submitForm() {
+function submitNewEntryForm() {
     // get values to submit
-    let data = getSubmitData();
+    let data = getNewEntryData();
 
     // validate form
-    if (!validateForm(data)) return;
+    if (!validateNewEntryForm(data)) return;
 
     // send ajax request
     $.ajax({
@@ -239,7 +201,7 @@ function submitForm() {
         type: 'POST',
         dataType: 'json',
         data: data,
-        success: addSuccessFunc(data),
-        error: addError,
+        success: addNewEntrySuccessFuncGenerator(data),
+        error: addNewEntryFailFunc,
     });
 }

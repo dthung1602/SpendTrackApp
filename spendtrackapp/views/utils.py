@@ -247,7 +247,7 @@ def category_hierarchy_html(all_category: bool = False) -> str:
     """
 
     if all_category:
-        html_text = "<div class='category leaf' onclick='select(null)'><div class='level-1'>All category</div></div>"
+        html_text = "<div class='category leaf' onclick='select(\"\")'><div class='level-1'>All category</div></div>"
     else:
         html_text = ""
     for root_category in Category.get_root_categories():

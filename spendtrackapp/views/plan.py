@@ -44,7 +44,7 @@ def find_handler(request):
 
     # turn plans to dictionaries
     plan_fields = ['id', 'name', 'start_date', 'end_date', 'category_name', 'planned_total', 'compare',
-                   'is_completed', 'total', 'has_passed']
+                   'is_completed', 'total', 'has_passed', 'target']
     plan_dicts = []
     for plan in plans:
         d = {}
