@@ -474,3 +474,36 @@ input[type="text"] {
     color: #183f62;
     margin-bottom: 20px;
 }
+
+/*******************************
+ *            PLAN             *
+ *******************************/
+.plan {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.plan-name {
+    text-transform: uppercase;
+    font-weight: bolder;
+    font-size: x-large;
+    color: #183f62;
+}
+
+.plan tr td {
+    border: none;
+    padding: 5px 15px 0 0;
+    vertical-align: text-top;
+}
+
+.plan tr td:first-child {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: small;
+    color: #296a84;
+}
+
+#plan-list {
+    margin-top: 50px;
+    margin-bottom: 35px;
+}

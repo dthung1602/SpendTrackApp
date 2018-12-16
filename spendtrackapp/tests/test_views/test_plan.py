@@ -25,7 +25,7 @@ class TestPlan(TestView):
     @data_provider(plan_test_find_success)
     def test_find_success(self, data, expected_plan_ids):
         response = self.client.post(
-            reverse('plan:find'),
+            reverse('plan:search'),
             HTTP_X_REQUESTED_WITH='XMLHttpRequest',
             data=data
         )
@@ -39,7 +39,7 @@ class TestPlan(TestView):
     # TODO change data
     def test_find_fail(self, data, expect_errors):
         response = self.client.post(
-            reverse('plan:find'),
+            reverse('plan:search'),
             HTTP_X_REQUESTED_WITH='XMLHttpRequest',
             data=data
         )

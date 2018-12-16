@@ -111,6 +111,14 @@ class Plan(models.Model):
         compare = {"<": "less than", ">": "greater than", "=": "equal to"}[self.compare]
         return "Total in \"" + category_name + "\" is " + compare + " " + str(self.planned_total)
 
+    @property
+    def start_date_iso(self):
+        return self.start_date.isoformat()
+
+    @property
+    def end_date_iso(self):
+        return self.end_date.isoformat()
+
     @classmethod
     def get_current_plans(cls) -> QuerySet:
         """Get all the plans that has not finished"""

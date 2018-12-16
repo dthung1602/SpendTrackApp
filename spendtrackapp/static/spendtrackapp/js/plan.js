@@ -1,4 +1,87 @@
 /**
+ * Create a time bar and a progress bar for each plan in #plan-list
+ */
+function createPlansProgressBars() {
+    let n = $('#plan-list').children().length;
+    let today = new Date();
+
+    for (let i = 0; i < n; i++) {
+
+        // get plan info specified in #plan-list
+        let startDate = new Date($('#plan-data-' + i + '-start-date').val());
+        let endDate = new Date($('#plan-data-' + i + '-end-date').val());
+        let total = parseInt($('#plan-data-' + i + '-total').val());
+        let plannedTotal = parseInt($('#plan-data-' + i + '-planned-total').val());
+        let compare = $('#plan-data-' + i + '-compare').val();
+
+        // time bar
+        let totalDays = daysBetween(startDate, endDate);
+        let daysElapsed = daysBetween(startDate, today);
+        let timeRatio = daysElapsed / totalDays * 100;
+        new ProgressBar('#time-progress-' + i, timeRatio, {
+            backgroundColor: '#296a84',
+            foregroundColor: '#183f62',
+            type: 'line'
+        });
+
+        // evaluate plan as good, warning or fail
+        let planEvaluate = '';
+        let planRatio = total / plannedTotal * 100;
+        switch (compare) {
+            case '>':
+                if (planRatio >= timeRatio)
+                    planEvaluate = 'good';
+                else
+                    planEvaluate = 'warning';
+                break;
+            case '<':
+                if (planRatio <= timeRatio)
+                    planEvaluate = 'good';
+                else if (total <= plannedTotal)
+                    planEvaluate = 'warning';
+                else
+                    planEvaluate = 'fail';
+                break;
+            default:
+                let ratio = planRatio / timeRatio;
+                if (ratio < 0.9)
+                    planEvaluate = 'warning';
+                else if (ratio > 1.1) {
+                    if (total > 1.1 * plannedTotal)
+                        planEvaluate = 'fail';
+                    else
+                        planEvaluate = 'warning'
+                } else
+                    planEvaluate = 'good';
+        }
+
+        // set color to plan bar according to plan evaluation
+        let backgroundColor = '';
+        let foregroundColor = '';
+        switch (planEvaluate) {
+            case 'good':
+                backgroundColor = '#00ad17';
+                foregroundColor = 'green';
+                break;
+            case 'warning':
+                backgroundColor = '#ffbd5a';
+                foregroundColor = '#e28d07';
+                break;
+            default:
+                backgroundColor = '#e28986';
+                foregroundColor = 'red';
+        }
+
+        // create plan bar
+        new ProgressBar('#plan-progress-' + i, planRatio, {
+            backgroundColor: backgroundColor,
+            foregroundColor: foregroundColor,
+            type: 'line'
+        });
+    }
+}
+
+/**
  * Set now to start date field
  */
 function setNewPlanStartDateToday() {
@@ -69,7 +152,6 @@ function addNewPlanError(response, status, error) {
 function addNewPlanSuccessFunc(data) {
     return function (response) {
         // get elements
-        let categoryDisplay = $('#category-display');
         let now = new Date();
         let startDate = new Date(data.start_date);
         let endDate = new Date(data.end_date);
@@ -79,7 +161,7 @@ function addNewPlanSuccessFunc(data) {
             $('#plan-add-success-panel').show().html('Plan "' + data.name + '" has been added.');
 
         } else { // if plan starts today, update current plans
-            let currentPlansContainer = $('#current-plans');
+            let currentPlansContainer = $('#plan-list');
 
             // clear 'no-data' div
             currentPlansContainer.find('.no-data').remove();
@@ -197,9 +279,9 @@ function getTarget(data) {
     return "Total in \"" + categoryName + "\" is " + compare + " " + data.planned_total;
 }
 
-function successFindPlanFunc(response) {
+function successSearchPlanFunc(response) {
     // get elements
-    let foundPlansContainer = $('#found-plan-container').html('').show();
+    let foundPlansContainer = $('#plan-list').html('').show();
     let plans = response.plans;
 
     // display found plans
@@ -207,43 +289,75 @@ function successFindPlanFunc(response) {
         for (let i = 0; i < plans.length; i++) {
 
             let plan = $('<div class="row plan">').appendTo(foundPlansContainer);
-            let planInfo = $('<div class="four columns">').appendTo(plan);
-            let planProgress = $('<div class="eight columns">').appendTo(plan);
+            let planInfo = $('<div class="five columns">').appendTo(plan);
+            let planProgress = $('<div class="seven columns">').appendTo(plan);
 
             // Plan info
             $('<div class="plan-name">').text(plans[i].name).appendTo(planInfo);
-            $('<div class="plan-date">').text(plans[i].start_date).appendTo(planInfo);
-            $('<div class="plan-date">').text(plans[i].end_date).appendTo(planInfo);
-            $('<div class="plan-target">').text(plans[i].target).appendTo(planInfo);
-            $('<div class="plan-total">').text(plans[i].total).appendTo(planInfo);
+            let tableInfo = $('<tbody>').appendTo(
+                $('<table>').appendTo(planInfo)
+            );
+            $('<tr>').appendTo(tableInfo).append(
+                $('<td>').text('From')
+            ).append(
+                $('<td>').text(plans[i].start_date)
+            );
+            $('<tr>').appendTo(tableInfo).append(
+                $('<td>').text('To')
+            ).append(
+                $('<td>').text(plans[i].end_date)
+            );
+            $('<tr>').appendTo(tableInfo).append(
+                $('<td>').text('Target')
+            ).append(
+                $('<td>').text(plans[i].target)
+            );
+            $('<tr>').appendTo(tableInfo).append(
+                $('<td>').text('Total')
+            ).append(
+                $('<td>').text(plans[i].total)
+            );
 
-            // TODO something with has_passed, completed
+            // plan hidden data
+            $('<input type="hidden" id="plan-data-' + i + '-start-date">')
+                .appendTo(planProgress).val(plans[i].start_date);
+            $('<input type="hidden" id="plan-data-' + i + '-end-date">')
+                .appendTo(planProgress).val(plans[i].end_date);
+            $('<input type="hidden" id="plan-data-' + i + '-total">')
+                .appendTo(planProgress).val(plans[i].total);
+            $('<input type="hidden" id="plan-data-' + i + '-planned-total">')
+                .appendTo(planProgress).val(plans[i].planned_total);
+            $('<input type="hidden" id="plan-data-' + i + '-compare">')
+                .appendTo(planProgress).val(plans[i].compare);
 
-            // plan progress
-            let progressBar = $('<div class="progress-bar-background">').appendTo(planProgress);
-            $('<div class="progress-bar" id="progress-bar-' + (i + 1) + '">').appendTo(progressBar);
+            // progress bars
+            $('<div class="progress-bar-group">').appendTo(planProgress).append(
+                $('<div id="time-progress-' + i + '">')
+            ).append(
+                $('<div id="plan-progress-' + i + '">')
+            )
         }
 
-        // TODO draw bars
+        createPlansProgressBars();
         return
     }
 
     // nothing found
     foundPlansContainer.append(
-        $('<div class="row">').append(
+        $('<div class="row box">').append(
             $('<div class="no-data twelve columns">').text('No plan is found!')
         )
     );
 }
 
-function failFindPlanFunc(response, status, error) {
+function failSearchPlanFunc(response, status, error) {
     let errorField = $('#search-input-error').show();
     switch (error) {
         case 'Bad Request':
             let errorContent = "";
-            let keys = Object.keys(response.JSONresponse);
+            let keys = Object.keys(response.responseJSON);
             for (let i = 0; i < keys.length; i++) {
-                errorContent += keys[i] + ": " + response.JSONresponse[keys[i]].join('; ') + '<br>';
+                errorContent += keys[i] + ": " + response.responseJSON[keys[i]].join('; ') + '<br>';
             }
             errorField.html(errorContent);
             break;
@@ -258,7 +372,8 @@ function failFindPlanFunc(response, status, error) {
 function submitSearchPlanForm(url) {
     submitSearchFormAJAX(
         url,
-        successFindPlanFunc,
-        failFindPlanFunc
+        successSearchPlanFunc,
+        failSearchPlanFunc
     )
 }
+

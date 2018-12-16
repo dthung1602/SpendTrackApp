@@ -10,15 +10,21 @@ from spendtrackapp.views.utils import *
 def index_handler(request):
     """Handle plan index page"""
 
-    return render(request, "spendtrackapp/plan_index.html", {
+    return render(request, 'spendtrackapp/plan_index.html', {
         'current_plans': Plan.get_current_plans(),
         'category_hierarchy': category_hierarchy_html(all_category=True),
     })
 
 
 @login_required
-def find_handler(request):
+def search_handler(request):
     """Handle find plan requests"""
+
+    # GET request -> render page
+    if request.method == 'GET':
+        return render(request, 'spendtrackapp/plan_search.html')
+
+    # POST request -> return Plans info in JSON format
 
     # parse input
     form = SearchTimeForm(request.POST)

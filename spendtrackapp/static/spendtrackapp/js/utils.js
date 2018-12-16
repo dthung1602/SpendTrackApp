@@ -36,13 +36,17 @@ Number.prototype.fillZero = function () {
  * Return week number in year
  * @returns {number}
  */
-Date.prototype.getWeekNumber = function(){
-  let d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
-  let dayNum = d.getUTCDay() || 7;
-  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-  let yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
-  return Math.ceil((((d - yearStart) / 86400000) + 1)/7)
+Date.prototype.getWeekNumber = function () {
+    let d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
+    let dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    let yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
 };
+
+function daysBetween(date1, date2) {
+    return Math.round((date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24));
+}
 
 /**
  * Send post request and redirect to that page

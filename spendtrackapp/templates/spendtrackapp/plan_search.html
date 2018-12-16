@@ -1,0 +1,126 @@
+{% extends "spendtrackapp/base.html" %}
+
+{% block script %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static "spendtrackapp/css/progress_bar.css" %}">
+    <script src="{% static "spendtrackapp/js/category_drop_down.js" %}"></script>
+    <script src="{% static "spendtrackapp/js/plan.js" %}"></script>
+    <script src="{% static "spendtrackapp/js/progress_bar.js" %}"></script>
+    <script src="{% static "spendtrackapp/js/search_by_year_month_week_daterange.js" %}"></script>
+{% endblock %}
+
+{% block main %}
+    <div class="container">
+        <br><br>
+
+        <!-- search plan  -->
+        <form class="box">
+            {% csrf_token %}
+
+            <!-- Type to search -->
+            <div class="row">
+                <div class="four columns">
+                    <label for="search-type">Search type</label>
+                    <select id="search-type" autocomplete="off"
+                            onchange="selectSearchType()">
+                        <option value="year">Year</option>
+                        <option value="month">Month</option>
+                        <option value="week">Week</option>
+                        <option value="date_range" selected>Date range</option>
+                    </select>
+                </div>
+
+                <!-- Search by year -->
+                <div id="summarize-year" class="search-group">
+                    <div class="four columns">
+                        <label for="search-by-year-year">Year</label>
+                        <input id="search-by-year-year" type="number" autocomplete="off"
+                               min="2000" max="2100" step="1">
+                    </div>
+                </div>
+
+                <!-- Search by month -->
+                <div id="summarize-month" class="search-group">
+                    <!-- year -->
+                    <div class="four columns">
+                        <label for="search-by-month-year">Year</label>
+                        <input id="search-by-month-year" type="number" autocomplete="off"
+                               min="2000" max="2100" step="1">
+                    </div>
+
+                    <!-- month -->
+                    <div class="four columns">
+                        <label for="search-by-month-month">Month</label>
+                        <select id="search-by-month-month" autocomplete="off">
+                            <option value="1">January</option>
+                            <option value="2">February</option>
+                            <option value="3">March</option>
+                            <option value="4">April</option>
+                            <option value="5">May</option>
+                            <option value="6">June</option>
+                            <option value="7">July</option>
+                            <option value="8">August</option>
+                            <option value="9">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Search by week -->
+                <div id="summarize-week" class="search-group">
+                    <!-- year -->
+                    <div class="four columns">
+                        <label for="search-by-week-year">ISO Year</label>
+                        <input id="search-by-week-year" type="number" autocomplete="off"
+                               min="2000" max="2100" step="1">
+                    </div>
+
+                    <!-- week -->
+                    <div class="four columns">
+                        <label for="search-by-week-week">ISO Week</label>
+                        <input id="search-by-week-week" type="number" autocomplete="off"
+                               min="1" max="53" step="1">
+                    </div>
+                </div>
+
+                <!-- Search by daterange -->
+                <div id="summarize-date-range" class="search-group">
+                    <!-- start date -->
+                    <div class="four columns">
+                        <label for="search-by-dr-start-date">Start date</label>
+                        <input id="search-by-dr-start-date" type="date">
+                    </div>
+
+                    <!-- end date -->
+                    <div class="four columns">
+                        <label for="search-by-dr-end-date">End date</label>
+                        <input id="search-by-dr-end-date" name="end-date" type="date">
+                        <div class="button" onclick="setSearchEndDateNow()">NOW</div>
+                    </div>
+                </div>
+                <script>
+                    selectSearchType();
+                    fillDefaultValues();
+                </script>
+            </div>
+
+            <div class="row">
+                <div class="twelve columns input-error" id="search-input-error"></div>
+            </div>
+
+            <!-- Submit and clear -->
+            <div class="row submit-row">
+                <div class="button button-primary" onclick="submitSearchPlanForm('{% url 'plan:search' %}')">SEARCH
+                </div>
+                <div class="button" onclick="clearSearchFields()">CLEAR</div>
+            </div>
+        </form>
+
+        <!-- search result  -->
+        <div id="plan-list">
+        </div>
+
+    </div>
+{% endblock %}

@@ -14,7 +14,7 @@ function fillDefaultValues() {
 
     $('#search-by-year-year').val(now.getFullYear());
     $('#search-by-month-year').val(now.getFullYear());
-    $('#search-by-month-month').val(now.getMonth());
+    $('#search-by-month-month').val(now.getMonth() + 1);
     $('#search-by-week-year').val(ISOCalendar[0]);
     $('#search-by-week-week').val(ISOCalendar[1]);
 }

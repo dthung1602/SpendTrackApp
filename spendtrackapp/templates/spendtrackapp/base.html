@@ -38,10 +38,16 @@
                         <a href="{% url "summarize:index" %}">Others</a>
                     </div>
                 </div>
-                <a href="{% url "plan:index" %}">PLAN</a>
+                <div class="drop-down-menu">
+                    <div class="drop-btn">PLAN</div>
+                    <div class="drop-down-content">
+                        <a href="{% url "plan:index" %}">Current plans</a>
+                        <a href="{% url "plan:search" %}">Search</a>
+                    </div>
+                </div>
                 <div class="drop-down-menu">
                     <div class="drop-btn">
-                        <img src="{% static "spendtrackapp/img/settings-logo.png" %}">
+                        <img src="{% static "spendtrackapp/img/settings-logo.png" %}" alt="SETTINGS">
                     </div>
                     <div class="drop-down-content">
                         {# TODO add link #}
