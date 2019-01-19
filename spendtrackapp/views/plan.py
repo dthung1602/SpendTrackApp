@@ -11,6 +11,7 @@ def index_handler(request):
     """Handle plan index page"""
 
     return render(request, 'spendtrackapp/plan_index.html', {
+        'categories': Category.objects.all(),
         'current_plans': Plan.get_current_plans(),
         'category_hierarchy': category_hierarchy_html(all_category=True),
     })
@@ -22,7 +23,11 @@ def search_handler(request):
 
     # GET request -> render page
     if request.method == 'GET':
-        return render(request, 'spendtrackapp/plan_search.html')
+        return render(
+            request,
+            'spendtrackapp/plan_search.html',
+            {'categories': Category.objects.all()}
+        )
 
     # POST request -> return Plans info in JSON format
 
@@ -74,7 +79,10 @@ def add_handler(request):
         return JsonResponse(form.errors, status=400)
 
     plan = form.save()
-    return JsonResponse({'id': plan.id})
+    return JsonResponse({
+        'id': plan.id,
+        'total': plan.total
+    })
 
 
 @login_required
@@ -95,7 +103,7 @@ def edit_handler(request):
         return JsonResponse(form.errors, status=400)
 
     form.save()
-    return JsonResponse({})
+    return JsonResponse({'total': plan.total})
 
 
 @login_required

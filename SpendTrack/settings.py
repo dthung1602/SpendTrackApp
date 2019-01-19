@@ -71,6 +71,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'SpendTrack.wsgi.application'
 
+SECURE_SSL_REDIRECT = True
+
 # Database
 # This configurations is the default and will be overridden if environment variable $DATABASE_URL exists
 DATABASES = {

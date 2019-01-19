@@ -3,7 +3,7 @@
 {% block script %}
     {% load static %}
     <link rel="stylesheet" href="{% static "spendtrackapp/css/progress_bar.css" %}">
-    <script src="{% static "spendtrackapp/js/category_drop_down.js" %}"></script>
+    <script src="{% static "spendtrackapp/js/category.js" %}"></script>
     <script src="{% static "spendtrackapp/js/plan.js" %}"></script>
     <script src="{% static "spendtrackapp/js/progress_bar.js" %}"></script>
 {% endblock %}
@@ -13,40 +13,63 @@
 
         <!-- current plans -->
         <div id="plan-list">
+            {% csrf_token %}
             {% for plan in current_plans %}
-                <div class="row plan">
-                    <div class="five columns">
-                        <div class="plan-name">{{ plan.name }}</div>
-                        <table>
-                            <tbody>
-                            <tr>
-                                <td>From</td>
-                                <td> {{ plan.start_date_iso }}</td>
-                            </tr>
-                            <tr>
-                                <td>To</td>
-                                <td> {{ plan.end_date_iso }}</td>
-                            </tr>
-                            <tr>
-                                <td>Target</td>
-                                <td>{{ plan.target }}</td>
-                            </tr>
-                            <tr>
-                                <td>Total</td>
-                                <td>{{ plan.total }}</td>
-                            </tr>
-                            </tbody>
-                        </table>
+                <div id="plan-row-{{ plan.id }}" class="plan">
+                    <div>
+                        <span class="plan-name">{{ plan.name }}</span>
+                        <span class="align-right plan-edit-icon">
+                            <img src="{% static "spendtrackapp/img/edit-icon.png" %}" alt="edit"
+                                 onclick="editPlan({{ plan.id }})">
+                        </span>
                     </div>
-                    <div class="seven columns">
-                        <input type="hidden" id="plan-data-{{ forloop.counter0 }}-start-date" value="{{ plan.start_date_iso }}">
-                        <input type="hidden" id="plan-data-{{ forloop.counter0 }}-end-date" value="{{ plan.end_date_iso }}">
-                        <input type="hidden" id="plan-data-{{ forloop.counter0 }}-total" value="{{ plan.total}}">
-                        <input type="hidden" id="plan-data-{{ forloop.counter0 }}-planned-total" value="{{ plan.planned_total }}">
-                        <input type="hidden" id="plan-data-{{ forloop.counter0 }}-compare" value="{{ plan.compare}}">
-                        <div class="progress-bar-group">
-                            <div id="time-progress-{{ forloop.counter0 }}"></div>
-                            <div id="plan-progress-{{ forloop.counter0 }}"></div>
+                    <div class="row">
+                        <div class="five columns">
+                            <table>
+                                <tbody>
+                                <tr>
+                                    <td>From</td>
+                                    <td>{{ plan.start_date_iso }}</td>
+                                </tr>
+                                <tr>
+                                    <td>To</td>
+                                    <td>{{ plan.end_date_iso }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Target</td>
+                                    <td>{{ plan.target }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Total</td>
+                                    <td>{{ plan.total }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="seven columns test">
+                            <input type="hidden" id="plan-data-{{ plan.id }}-id"
+                                   value="{{ plan.id }}">
+                            <input type="hidden" id="plan-data-{{ plan.id }}-name"
+                                   value="{{ plan.name }}">
+                            <input type="hidden" id="plan-data-{{ plan.id }}-category"
+                                   value="{% if plan.category_id %}{{ plan.category_id }}{% endif %}">
+                            <input type="hidden" id="plan-data-{{ plan.id }}-category-name"
+                                   value="{% if plan.category_id %}{{ plan.category.name }}{% else %}All category{% endif %}">
+                            <input type="hidden" id="plan-data-{{ plan.id }}-start-date"
+                                   value="{{ plan.start_date_iso }}">
+                            <input type="hidden" id="plan-data-{{ plan.id }}-end-date"
+                                   value="{{ plan.end_date_iso }}">
+                            <input type="hidden" id="plan-data-{{ plan.id }}-total"
+                                   value="{{ plan.total }}">
+                            <input type="hidden" id="plan-data-{{ plan.id }}-planned-total"
+                                   value="{{ plan.planned_total }}">
+                            <input type="hidden" id="plan-data-{{ plan.id }}-compare"
+                                   value="{{ plan.compare }}">
+
+                            <div class="progress-bar-group">
+                                <div id="time-progress-{{ plan.id }}"></div>
+                                <div id="plan-progress-{{ plan.id }}"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -55,8 +78,9 @@
                     <div class="no-data twelve columns">No plan is set!</div>
                 </div>
             {% endfor %}
+
             <script>
-                createPlansProgressBars();
+                createAllProgressBars({{ current_plans | length }});
             </script>
         </div>
 
@@ -99,16 +123,15 @@
                 <!-- Category -->
                 <div class="three columns">
                     <label for="category">Category</label>
-                    <input type="hidden" id="category" value="empty" autocomplete="off">
-                    <div class="select">
-                        <div onclick="showDropDown()" class="select-btn clickable">
-                            <span id="category-display" class="clickable">Select a category</span>
-                            <span class="clickable" style="float: right">&#x25BC</span>
-                        </div>
-                        <div id="select-category" class="select-content">
-                            {{ category_hierarchy | safe }}
-                        </div>
-                    </div>
+                    <div id="category-dropdown-container"></div>
+                    <script>
+                        // name of the hidden input to store category id
+                        const planCatFieldId = 'plan-category';
+                        // insert drop down button to the above div
+                        $('#category-dropdown-container').html(Category.toDropdownMenu(planCatFieldId, true));
+                        // set category value to null
+                        Category.clearSelectCategoryField(planCatFieldId);
+                    </script>
                     <div id="plan-category-error" class="input-error"></div>
                 </div>
 

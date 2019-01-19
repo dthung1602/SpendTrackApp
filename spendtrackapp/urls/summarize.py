@@ -13,6 +13,7 @@ urlpatterns = [
     path('<yyyy:year>/w<ww:week>', week_handler, name='week'),
     path('<date:start_date>/<date:end_date>', date_range_handler, name='date_range'),
 
+    path('today', today_handler, name='today'),
     path('this-week', this_week_handler, name='this_week'),
     path('this-month', this_month_handler, name='this_month'),
     path('this-year', this_year_handler, name='this_year')

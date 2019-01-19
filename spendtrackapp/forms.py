@@ -80,8 +80,8 @@ class PlanForm(ModelForm):
                 self.add_error('end_date', 'End date must be after start date')
 
             # start date can't be in the past
-            if start_date < date.today().isoformat():
-                self.add_error('start_date', 'Start date cannot be in the past')
+            # if start_date < date.today().isoformat():
+            #     self.add_error('start_date', 'Start date cannot be in the past')
 
         # validate planned_total
         if 'planned_total' in self.cleaned_data:

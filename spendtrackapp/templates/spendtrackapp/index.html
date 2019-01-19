@@ -3,7 +3,7 @@
 {% block script %}
     {% load static %}
     <script src="{% static "spendtrackapp/js/index.js" %}"></script>
-    <script src="{% static "spendtrackapp/js/category_drop_down.js" %}"></script>
+    <script src="{% static "spendtrackapp/js/category.js" %}"></script>
 {% endblock %}
 
 {% block main %}
@@ -79,7 +79,7 @@
         <form class="box" id="new-entry">
             {% csrf_token %}
 
-            <div class="row" >
+            <div class="row">
                 <!-- Date time -->
                 <div class="five columns">
                     <label for="entry-date">Datetime</label>
@@ -101,16 +101,15 @@
                 <!-- Category -->
                 <div class="five columns">
                     <label for="category">Category</label>
-                    <input type="hidden" name="category" id="category" value="empty" autocomplete="off">
-                    <div class="select">
-                        <div onclick="showDropDown()" class="select-btn clickable">
-                            <span id="category-display" class="clickable">Select a category</span>
-                            <span class="clickable" style="float: right">&#x25BC</span>
-                        </div>
-                        <div id="select-category" class="select-content">
-                            {{ category_hierarchy | safe }}
-                        </div>
-                    </div>
+                    <div id="category-dropdown-container"></div>
+                    <script>
+                        // name of the hidden input to store category id
+                        const entryCatFieldId = 'entry-category';
+                        // insert drop down button to the above div
+                        $('#category-dropdown-container').html(Category.toDropdownMenu(entryCatFieldId, false));
+                        // set category value to null
+                        Category.clearSelectCategoryField(entryCatFieldId);
+                    </script>
                     <div id="entry-category-error" class="input-error"></div>
                 </div>
 

@@ -1,3 +1,4 @@
+from datetime import date
 from datetime import timedelta
 from typing import Tuple, List, Callable, Dict
 
@@ -54,8 +55,14 @@ def date_range_handler(request, start_date, end_date):
     # GET request
     str_start_date = start_date.strftime('%Y-%m-%d')
     str_end_date = end_date.strftime('%Y-%m-%d')
+    if str_start_date != str_end_date:
+        page_title = "From " + str_start_date + " to " + str_end_date
+    elif str_start_date == date.today().isoformat():
+        page_title = "Today"
+    else:
+        page_title = str_start_date
     context = {
-        'page_title': "From " + str_start_date + " to " + str_end_date,
+        'page_title': page_title,
         'categories_names': arr_to_js_str([category.name for category in categories], str),
         'is_leaf': arr_to_js_str([category.is_leaf for category in categories], bool),
         'start_date': str_start_date,
@@ -206,6 +213,14 @@ def this_week_handler(request):
 
     isoyear, week, _ = datetime.now().isocalendar()
     return week_handler(request, isoyear, week)
+
+
+@login_required
+def today_handler(request):
+    """Handle summarize today page"""
+
+    today = datetime.now()
+    return date_range_handler(request, today, today)
 
 
 ##############################################################

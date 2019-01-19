@@ -32,6 +32,7 @@
                 <div class="drop-down-menu">
                     <div class="drop-btn">SUMMARIZE</div>
                     <div class="drop-down-content">
+                        <a href="{% url "summarize:today" %}">Today</a>
                         <a href="{% url "summarize:this_week" %}">This week</a>
                         <a href="{% url "summarize:this_month" %}">This month</a>
                         <a href="{% url "summarize:this_year" %}">This year</a>
@@ -62,7 +63,21 @@
     {% endblock %}
 </nav>
 
+
 <main>
+    {% block hidden_data %}
+        <!-- hidden category data -->
+        {% if categories %}
+            <script>
+                const categoryHiddenData = {
+                    id: [{% for cat in categories %}"{{ cat.id }}",{% endfor %} "", "empty"],
+                    name: [{% for cat in categories %}"{{ cat.name | safe }}",{% endfor %} "All category", "Select a category"],
+                    pid: [{% for cat in categories %}"{{ cat.parent_id }}",{% endfor %} null, null],
+                };
+            </script>
+        {% endif %}
+    {% endblock %}
+
     {% block main %}
         <div class="container">
             <p>Advertisse id ac deveniatur consistere mo voluptatem ad facultates. Ii fide ad jure illa visu inde nudi.

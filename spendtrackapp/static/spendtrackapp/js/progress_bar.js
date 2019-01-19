@@ -27,6 +27,8 @@ function ProgressBar(selector, percent, options) {
         return this.options[value] || this.defaultOptions[value];
     };
 
+    percent = Math.max(0, percent);
+
     this.container = $(selector);
     this.options = options;
     this.percent = percent;
@@ -74,7 +76,7 @@ function ProgressBar(selector, percent, options) {
         if (this.percent < 0)
             this.overflow.css('left', -h / 2);
         else if (this.percent > 100)
-            this.overflow.css('left', w - h);
+            this.overflow.css('float', 'right');
         else
             this.overflow.css('display', 'none')
     } else if (type === 'bar') {

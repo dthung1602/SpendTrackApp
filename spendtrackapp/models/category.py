@@ -18,6 +18,9 @@ class Category(models.Model):
         - Each Entry belongs only to one tree
     """
 
+    class Meta:
+        verbose_name_plural = "Categories"
+
     name = models.CharField(
         max_length=25,
         unique=True

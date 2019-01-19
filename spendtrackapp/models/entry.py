@@ -28,6 +28,9 @@ CategoryIdentifier = TypeVar('CategoryIdentifier', Optional[str], Category, int)
 class Entry(models.Model):
     """A class represents all changes in the balance"""
 
+    class Meta:
+        verbose_name_plural = "Entries"
+
     date = models.DateTimeField()
     """When the item is bought"""
 

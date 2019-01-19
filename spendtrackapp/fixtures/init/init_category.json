@@ -129,7 +129,7 @@
   },
   {
     "model": "spendtrackapp.category",
-    "pk": 19,
+    "pk": 20,
     "fields": {
       "name": "Other",
       "parent": null
@@ -137,7 +137,7 @@
   },
   {
     "model": "spendtrackapp.category",
-    "pk": 20,
+    "pk": 21,
     "fields": {
       "name": "Personal care & health",
       "parent": null

@@ -198,6 +198,10 @@ input[type="text"] {
     box-sizing: border-box;
 }
 
+.select-btn span:last-child {
+    float: right;
+}
+
 .select {
     position: relative;
     display: inline-block;
@@ -479,8 +483,19 @@ input[type="text"] {
  *            PLAN             *
  *******************************/
 .plan {
-    margin-top: 15px;
-    margin-bottom: 15px;
+    padding: 10px 30px;
+    margin: 10px 0;
+}
+
+.plan > div:first-child {
+    margin-top: 25px;
+    margin-bottom: 10px;
+}
+
+.editing {
+    background-color: #fafafd;
+    border-radius: 15px;
+    border: 1px dotted rgba(41, 106, 132, 0.7);
 }
 
 .plan-name {
@@ -504,6 +519,26 @@ input[type="text"] {
 }
 
 #plan-list {
-    margin-top: 50px;
+    margin-top: 30px;
     margin-bottom: 35px;
 }
+
+.plan-edit-icon {
+    padding: 0;
+    margin: 20px 0;
+    float: right;
+}
+
+.plan-edit-icon img {
+    cursor: pointer;
+}
+
+.edit-button-group {
+    margin: 20px 0;
+}
+
+.edit-button-group button {
+    margin: 2px;
+}
+
+

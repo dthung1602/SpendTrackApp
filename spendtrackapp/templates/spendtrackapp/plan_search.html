@@ -3,7 +3,7 @@
 {% block script %}
     {% load static %}
     <link rel="stylesheet" href="{% static "spendtrackapp/css/progress_bar.css" %}">
-    <script src="{% static "spendtrackapp/js/category_drop_down.js" %}"></script>
+    <script src="{% static "spendtrackapp/js/category.js" %}"></script>
     <script src="{% static "spendtrackapp/js/plan.js" %}"></script>
     <script src="{% static "spendtrackapp/js/progress_bar.js" %}"></script>
     <script src="{% static "spendtrackapp/js/search_by_year_month_week_daterange.js" %}"></script>
@@ -91,6 +91,7 @@
                     <div class="four columns">
                         <label for="search-by-dr-start-date">Start date</label>
                         <input id="search-by-dr-start-date" type="date">
+                        <div class="button" onclick="setSearchStartDateNow()">NOW</div>
                     </div>
 
                     <!-- end date -->

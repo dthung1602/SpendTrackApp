@@ -14,6 +14,7 @@ def index_handler(request):
     isoyear, week, week_day = datetime.now().isocalendar()
     entries_in_week = group_array(Entry.find_by_week(isoyear, week), settings.VIEW_SUMMARIZE_WEEK_DEFAULT_PAGE_SIZE)
     total_in_week = Entry.total_by_week(isoyear, week)
+    categories = Category.objects.all()
 
     context = {
         'page_title': 'SpendTrackApp',
@@ -21,6 +22,7 @@ def index_handler(request):
         'category_hierarchy': category_hierarchy_html(),
         'entries_pages': entries_in_week,
         'total_in_week': total_in_week,
+        'categories': categories
     }
     return render(request, 'spendtrackapp/index.html', context)
 

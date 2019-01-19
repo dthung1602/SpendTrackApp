@@ -23,6 +23,17 @@ monthNamesAbr = [
 ];
 
 /**
+ * Check if the object is empty
+ * @returns {boolean}
+ */
+function isEmpty(obj) {
+    for (let key in obj)
+        if (obj.hasOwnProperty(key))
+            return false;
+    return true;
+}
+
+/**
  * Fill a leading zero if integer n < 9
  */
 Number.prototype.fillZero = function () {
@@ -42,6 +53,13 @@ Date.prototype.getWeekNumber = function () {
     d.setUTCDate(d.getUTCDate() + 4 - dayNum);
     let yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
     return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
+};
+/**
+ * Return week number in year
+ * @returns {string}
+ */
+Date.prototype.toISODateString = function () {
+    return this.toISOString().substr(0, 10);
 };
 
 function daysBetween(date1, date2) {

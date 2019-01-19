@@ -46,8 +46,7 @@ function setNewEntryDatetimeNow() {
  */
 function clearNewEntryFields() {
     $('#new-entry [id^=entry]').val('');
-    $('#category').val('empty');
-    $('#category-display').html('Select a category');
+    Category.clearSelectCategoryField(entryCatFieldId);
     $('#new-entry .input-error').hide();
 }
 
@@ -61,7 +60,7 @@ function getNewEntryData() {
         csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
         date: $('#entry-date').val().replace('T', ' '),
         content: $('#entry-content').val().trim(),
-        leaf_category: $('#category').val(),
+        leaf_category: $('#entry-category').val(),
         value: $('#entry-value').val(),
     }
 }
@@ -79,8 +78,8 @@ function addNewEntryFailFunc(response, status, error) {
             let causes = [];
             for (let i = 0; i < fields.length; i++) {
                 let f = fields[i];
-                if (response.responseJSON.hasOwnProperty(f)) {
-                    let r = response.responseJSON[f];
+                if (response['responseJSON'].hasOwnProperty(f)) {
+                    let r = response['responseJSON'][f];
                     for (let j = 0; j < r.length; j++) {
                         causes.push(r[j])
                     }
@@ -91,7 +90,7 @@ function addNewEntryFailFunc(response, status, error) {
         case 'Internal Server Error':
             alert("Internal Server Error\nPlease try again later");
             break;
-        default :
+        default:
             alert("Unknown error\nPlease try again later");
     }
 }
@@ -102,9 +101,9 @@ function addNewEntryFailFunc(response, status, error) {
  * @returns {Function} a function that update page content when a new entry is added successfully
  */
 function addNewEntrySuccessFuncGenerator(data) {
-    return function (response) {
+    return function () {
         // get elements
-        let categoryDisplay = $('#category-display');
+        let categoryDisplay = $('#display-entry-category');
         let totalInWeek = $('#total-in-week');
         let currentBalance = $('#current-balance');
         let now = new Date();
@@ -167,7 +166,7 @@ function validateNewEntryForm(data) {
     }
 
     // category must not be empty
-    if (data.leaf_category === "empty") {
+    if (data.leaf_category === "") {
         valid = false;
         $('#entry-category-error').show().html('A category must be selected');
     }
