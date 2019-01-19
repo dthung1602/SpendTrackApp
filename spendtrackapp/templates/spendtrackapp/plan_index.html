@@ -54,7 +54,7 @@
                             <input type="hidden" id="plan-data-{{ plan.id }}-category"
                                    value="{% if plan.category_id %}{{ plan.category_id }}{% endif %}">
                             <input type="hidden" id="plan-data-{{ plan.id }}-category-name"
-                                   value="{% if plan.category_id %}{{ plan.category.name }}{% else %}All category{% endif %}">
+                                   value="{% if plan.category_id %}{{ plan.category.name }}{% else %}All categories{% endif %}">
                             <input type="hidden" id="plan-data-{{ plan.id }}-start-date"
                                    value="{{ plan.start_date_iso }}">
                             <input type="hidden" id="plan-data-{{ plan.id }}-end-date"
@@ -88,7 +88,7 @@
         <div id="plan-add-success-panel" class="success-panel" style="display: none"></div>
 
         <!-- new plan -->
-        <form class="box" id="new-plan">
+        <div class="box" id="new-plan">
             {% csrf_token %}
 
             <div class="row">
@@ -157,10 +157,10 @@
 
             <!-- Submit and clear -->
             <div class="row submit-row align-left">
-                <div class="button button-primary" onclick="submitNewPlanForm()">ADD</div>
+                <div class="button button-primary" id="submit-plan-button">ADD</div>
                 <div class="button" onclick="clearNewPlanFields()">CLEAR</div>
             </div>
-        </form>
+        </div>
 
     </div>
 

@@ -1,3 +1,10 @@
+$(document).ready(function () {
+    $('#submit-entry-button').click(submitNewEntryForm);
+    startTime();
+    if ($(".no-data").length === 0)
+        viewTablePage(1);
+});
+
 // ------------------- CLOCK --------------------
 
 /**
@@ -72,6 +79,10 @@ function getNewEntryData() {
  * @param error
  */
 function addNewEntryFailFunc(response, status, error) {
+    // enable submit button again
+    enableAddEntryButton();
+
+    // display error
     switch (error) {
         case 'Bad Request':
             let fields = ['date', 'content', 'leaf_category', 'value'];
@@ -141,6 +152,9 @@ function addNewEntrySuccessFuncGenerator(data) {
         // clear form
         $('#entry-container .no-data').remove();
         clearNewEntryFields();
+
+        // enable submit button again
+        enableAddEntryButton();
     }
 }
 
@@ -194,6 +208,9 @@ function submitNewEntryForm() {
     // validate form
     if (!validateNewEntryForm(data)) return;
 
+    // disable button until a response is received
+    disableAddEntryButton();
+
     // send ajax request
     $.ajax({
         url: '/add/',
@@ -203,4 +220,18 @@ function submitNewEntryForm() {
         success: addNewEntrySuccessFuncGenerator(data),
         error: addNewEntryFailFunc,
     });
+}
+
+function disableAddEntryButton() {
+    $('#submit-entry-button')
+        .html('ADDING...')
+        .addClass('disable')
+        .off('click');
+}
+
+function enableAddEntryButton() {
+    $('#submit-entry-button')
+        .html('ADD')
+        .removeClass('disable')
+        .click(submitNewEntryForm);
 }

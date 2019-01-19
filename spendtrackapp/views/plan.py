@@ -13,7 +13,6 @@ def index_handler(request):
     return render(request, 'spendtrackapp/plan_index.html', {
         'categories': Category.objects.all(),
         'current_plans': Plan.get_current_plans(),
-        'category_hierarchy': category_hierarchy_html(all_category=True),
     })
 
 
@@ -58,10 +57,11 @@ def search_handler(request):
                    'is_completed', 'total', 'has_passed', 'target']
     plan_dicts = []
     for plan in plans:
-        d = {}
+        cat = plan.category
+        d = {'category': '' if cat is None else str(cat.id)}
         for field in plan_fields:
             if field == 'category_name':
-                d[field] = str(plan.category.name) if plan.category is not None else 'All categories'
+                d[field] = str(cat.name) if cat is not None else 'all categories'
             else:
                 d[field] = str(getattr(plan, field))
         plan_dicts.append(d)

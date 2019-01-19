@@ -110,7 +110,7 @@ class Plan(models.Model):
     def target(self) -> str:
         """A string describes the plan"""
 
-        category_name = f'"{self.category.name}"' if self.category is not None else "all category"
+        category_name = f'"{self.category.name}"' if self.category is not None else "all categories"
         compare = {"<": "less than", ">": "greater than", "=": "equal to"}[self.compare]
         return "Total in " + category_name + " is " + compare + " " + str(self.planned_total)
 

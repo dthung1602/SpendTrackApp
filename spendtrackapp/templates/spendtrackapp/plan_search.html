@@ -14,7 +14,7 @@
         <br><br>
 
         <!-- search plan  -->
-        <form class="box">
+        <div class="box">
             {% csrf_token %}
 
             <!-- Type to search -->
@@ -113,11 +113,10 @@
 
             <!-- Submit and clear -->
             <div class="row submit-row">
-                <div class="button button-primary" onclick="submitSearchPlanForm('{% url 'plan:search' %}')">SEARCH
-                </div>
+                <div class="button button-primary" id="search-plan-button">SEARCH</div>
                 <div class="button" onclick="clearSearchFields()">CLEAR</div>
             </div>
-        </form>
+        </div>
 
         <!-- search result  -->
         <div id="plan-list">

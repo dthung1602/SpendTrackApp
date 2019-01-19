@@ -19,7 +19,6 @@ def index_handler(request):
     context = {
         'page_title': 'SpendTrackApp',
         'current_balance': current_balance,
-        'category_hierarchy': category_hierarchy_html(),
         'entries_pages': entries_in_week,
         'total_in_week': total_in_week,
         'categories': categories

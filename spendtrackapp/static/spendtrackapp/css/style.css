@@ -28,6 +28,17 @@ input[type="text"] {
     width: 100%;
 }
 
+button.button-primary.disable:hover,
+.button.button-primary.disable:hover,
+input[type='submit'].disable:hover,
+button.button-primary.disable,
+.button.button-primary.disable,
+input[type='submit'].disable {
+    background: #dedee2;
+    color: #7d7d80;
+    border-color: #7d7d80;
+    cursor: wait;
+}
 
 /*******************************
  *           HEADER            *

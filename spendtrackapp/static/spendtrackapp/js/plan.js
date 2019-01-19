@@ -1,3 +1,8 @@
+$(document).ready(function () {
+    $('#submit-plan-button').click(submitNewPlanForm);
+    $('#search-plan-button').click(submitSearchPlanForm);
+});
+
 // ------------- PLAN OBJECT ----------------
 
 class Plan {
@@ -22,7 +27,7 @@ class Plan {
      */
     getTarget() {
         let compare = {"<": "less than", ">": "greater than", "=": "equal to"}[this.compare];
-        let catName = (this.category === "") ? "all category" : "\"" + this.category_name + "\"";
+        let catName = (this.category === "") ? "all categories" : "\"" + this.category_name + "\"";
         return "Total in " + catName + " is " + compare + " " + this.planned_total;
     }
 
@@ -328,6 +333,8 @@ function getNewPlanData() {
  * @param error
  */
 function addNewPlanError(response, status, error) {
+    enableAddPlanButton();
+
     switch (error) {
         case 'Bad Request':
             let fields = ['name', 'start_date', 'end_date', 'category', 'compare', 'planned_total'];
@@ -379,9 +386,9 @@ function addNewPlanSuccessFunc(plan) {
 
         // clear form
         clearNewPlanFields();
+        enableAddPlanButton();
     }
 }
-
 
 /**
  *  Validate new plan form, submit and handle result
@@ -393,6 +400,9 @@ function submitNewPlanForm() {
     $('[id^="plan-"][id$="-error"]').html('');
 
     if (plan.isValid()) {
+        // temporarily disable submit button till a response is received
+        disableAddPlanButton();
+
         // valid -> send AJAX
         $.ajax({
             url: '/plan/add/',
@@ -415,6 +425,20 @@ function submitNewPlanForm() {
     }
 }
 
+function disableAddPlanButton() {
+    $('#submit-plan-button')
+        .html('ADDING...')
+        .addClass('disable')
+        .off('click');
+}
+
+function enableAddPlanButton() {
+    $('#submit-plan-button')
+        .html('ADD')
+        .removeClass('disable')
+        .click(submitNewPlanForm);
+}
+
 // ------------- SEARCH PLAN FORM ----------------
 
 /**
@@ -422,6 +446,8 @@ function submitNewPlanForm() {
  * @param response
  */
 function successSearchPlanFunc(response) {
+    enableSearchPlanButton();
+
     // get elements
     let foundPlansContainer = $('#plan-list').html('').show();
     let plans = response['plans'];
@@ -448,6 +474,7 @@ function successSearchPlanFunc(response) {
  * @param error
  */
 function failSearchPlanFunc(response, status, error) {
+    enableSearchPlanButton();
     let errorField = $('#search-input-error').show();
     switch (error) {
         case 'Bad Request':
@@ -468,14 +495,28 @@ function failSearchPlanFunc(response, status, error) {
 
 /**
  * Validate and submit search plan form
- * @param url
  */
-function submitSearchPlanForm(url) {
+function submitSearchPlanForm() {
+    disableSearchPlanButton();
     submitSearchFormAJAX(
-        url,
+        '/plan/search/',
         successSearchPlanFunc,
         failSearchPlanFunc
     )
+}
+
+function disableSearchPlanButton() {
+    $('#search-plan-button')
+        .html('SEARCHING...')
+        .addClass('disable')
+        .off('click');
+}
+
+function enableSearchPlanButton() {
+    $('#search-plan-button')
+        .html('SEARCH')
+        .removeClass('disable')
+        .click(submitSearchPlanForm);
 }
 
 // ------------- EDIT PLAN FORM ----------------
@@ -551,7 +592,9 @@ function editPlan(planId) {
     // add save, cancel, delete buttons
     $('<div class="align-right edit-button-group">')
         .appendTo(rightPane)
-        .append($('<button class="button-primary" onclick="savePlan(' + planId + ')">').text('SAVE'))
+        .append($('<button class="button-primary" id="save-plan-button-' + planId + '">')
+            .text('SAVE')
+            .click(savePlanGenerator(planId)))
         .append($('<button onclick="cancelPlanEdit(' + planId + ')">').text('CANCEL'))
         .append($('<button onclick="deletePlan(' + planId + ')">').text('DELETE'));
 
@@ -579,6 +622,8 @@ function savePlan(planId) {
     let plan = new Plan(getEditPlanData(planId));
 
     if (plan.isValid()) {
+        disableSavePlanButton(planId);
+
         // send ajax request
         $.ajax({
             url: '/plan/edit/',
@@ -586,7 +631,7 @@ function savePlan(planId) {
             dataType: 'json',
             data: plan.getSubmitData(),
             success: editPlanSuccessFunc(plan),
-            error: editPlanError,
+            error: editPlanErrorFuncGenerator(planId),
         });
         // hide error
         $('#plan-row-' + planId + ' .input-error').hide();
@@ -614,22 +659,45 @@ function editPlanSuccessFunc(plan) {
     }
 }
 
-function editPlanError(response, status, error) {
-    switch (error) {
-        case 'Bad Request':
-            let errorMessages = [];
-            response = response.responseJSON;
-            for (let e in response)
-                if (response.hasOwnProperty(e))
-                    errorMessages.push(response[e].join(','));
-            alert(errorMessages.join('\n'));
-            break;
-        case 'Internal Server Error':
-            alert("Internal Server Error\nPlease try again later");
-            break;
-        default :
-            alert("Unknown error\nPlease try again later");
+function editPlanErrorFuncGenerator(planId) {
+    return function (response, status, error) {
+        enableSavePlanButton(planId);
+        switch (error) {
+            case 'Bad Request':
+                let errorMessages = [];
+                response = response.responseJSON;
+                for (let e in response)
+                    if (response.hasOwnProperty(e))
+                        errorMessages.push(response[e].join(','));
+                alert(errorMessages.join('\n'));
+                break;
+            case 'Internal Server Error':
+                alert("Internal Server Error\nPlease try again later");
+                break;
+            default :
+                alert("Unknown error\nPlease try again later");
+        }
     }
+}
+
+function savePlanGenerator(planId) {
+    return function () {
+        savePlan(planId)
+    }
+}
+
+function disableSavePlanButton(planId) {
+    $('#save-plan-button-' + planId)
+        .html('SAVING...')
+        .addClass('disable')
+        .off('click');
+}
+
+function enableSavePlanButton(planId) {
+    $('#save-plan-button-' + planId)
+        .html('SAVE')
+        .removeClass('disable')
+        .click(savePlanGenerator(planId));
 }
 
 // ------------- CANCEL EDIT PLAN ----------------

@@ -63,7 +63,7 @@ Date.prototype.toISODateString = function () {
 };
 
 function daysBetween(date1, date2) {
-    return Math.round((date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24));
+    return Math.floor((date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 }
 
 /**

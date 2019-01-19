@@ -17,7 +17,6 @@
                 <div>Balance</div>
                 <div id="current-balance">{{ current_balance | floatformat:2 }}</div>
             </div>
-            <script>startTime()</script>
         </div>
 
         <!-- Entries in this week -->
@@ -66,7 +65,6 @@
                                  onclick="viewTablePage({{ forloop.counter }})">{{ forloop.counter }}</div>
                         {% endfor %}
                     </div>
-                    <script>viewTablePage(1)</script>
                 </div>
             {% endif %}
 
@@ -76,7 +74,7 @@
         </div>
 
         <!-- Add new entry -->
-        <form class="box" id="new-entry">
+        <div class="box" id="new-entry">
             {% csrf_token %}
 
             <div class="row">
@@ -125,9 +123,9 @@
             <!-- Submit and clear -->
             <div class="row submit-row align-right">
                 <div class="button" onclick="clearNewEntryFields()">CLEAR</div>
-                <div class="button button-primary" onclick="submitNewEntryForm()">ADD</div>
+                <div class="button button-primary" id="submit-entry-button">ADD</div>
             </div>
-        </form>
+        </div>
     </div>
 
 {% endblock %}

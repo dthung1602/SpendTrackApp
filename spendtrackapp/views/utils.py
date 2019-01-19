@@ -202,60 +202,6 @@ def arr_to_js_str(arr, converter):
 
 
 ##############################################################
-#                   CATEGORY HIERARCHY                       #
-##############################################################
-
-def category_to_html(category: Category, level: int) -> str:
-    """A recursive function return html of a category and all of its children"""
-
-    # escape html
-    category_name = escape_html(category.name)
-
-    # base case: leaf category i.e. category has no children
-    if category.is_leaf:
-        return "<div class='category leaf' onclick='select({})'><div class='level-{}' id='cat-{}'>{}</div></div>" \
-            .format(category.id, level, category.id, category_name)
-
-    # recursively get html of its children
-    sub_cat = "\n".join([category_to_html(sub_category, level + 1) for sub_category in category.children])
-
-    return "<div class='category'><div class='level-{}'>{}</div></div>".format(level, category_name) + sub_cat
-
-
-def category_hierarchy_html(all_category: bool = False) -> str:
-    """
-    Return category hierarchy in html format
-
-    :param all_category: whether to add All category option
-
-    Example:
-        - Cat 1
-            - Cat 2      *
-            - Cat 3
-                -Cat 5   *
-            - Cat 6      *
-        - Cat 7          *
-
-        * = leaf category
-
-        <div class="category"><div class="level-1"> Cat 1 </div></div>
-            <div class="category leaf" onclick='select(2)'><div class="level-2"> Cat 2 </div></div>
-            <div class="category"><div class="level-2"> Cat 3 </div></div>
-                <div class="category leaf" onclick='select(5)'><div class="level-3"> Cat 5 </div></div>
-            <div class="category leaf" onclick='select(6)'><div class="level-2"> Cat 6 </div></div>
-        <div class="category leaf" onclick='select(7)'><div class="level-1"> Cat 7 </div></div>
-    """
-
-    if all_category:
-        html_text = "<div class='category leaf' onclick='select(\"\")'><div class='level-1'>All category</div></div>"
-    else:
-        html_text = ""
-    for root_category in Category.get_root_categories():
-        html_text += category_to_html(root_category, 1)
-    return html_text
-
-
-##############################################################
 #                         OTHERS                             #
 ##############################################################
 

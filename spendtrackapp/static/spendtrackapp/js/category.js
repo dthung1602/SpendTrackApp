@@ -60,7 +60,7 @@ class Category {
      * @returns {Category}
      */
     static allCategoryOption() {
-        return new Category(null, 'All category', null);
+        return new Category(null, 'All categories', null);
     }
 
     /**
