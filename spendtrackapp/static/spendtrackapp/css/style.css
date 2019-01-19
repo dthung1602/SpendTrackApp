@@ -2,6 +2,10 @@
  *           GENERAL           *
  *******************************/
 
+.container {
+    min-width: 320px;
+}
+
 /* make date and datetime-local look like other Skeleton input fields*/
 input[type="datetime-local"],
 input[type="date"] {
@@ -23,6 +27,7 @@ input[type="date"]:focus {
 input[type="text"] {
     width: 100%;
 }
+
 
 /*******************************
  *           HEADER            *
@@ -541,4 +546,62 @@ input[type="text"] {
     margin: 2px;
 }
 
+/*******************************
+ *       MEDIA QUERY           *
+ *******************************/
 
+@media screen and (max-width: 720px) {
+    th,
+    td {
+        padding: 5px 8px
+    }
+
+    .box {
+        padding: 15px;
+    }
+
+    .navbar a {
+        padding: 10px 12px;
+    }
+
+    .drop-down-menu .drop-btn {
+        padding: 10px 12px;
+    }
+
+    #clock {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 350px) {
+    .box {
+        border-radius: 0;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        border-bottom: rgba(120, 200, 208, 0.47) solid 3px;
+        padding: 10px;
+        margin: 5px 0 15px 0;
+    }
+
+    .drop-down-menu .drop-btn {
+        padding: 8px 8px;
+    }
+
+    .logo {
+        width: 157px;
+        height: 46px;
+    }
+
+    .badge {
+        display: inline-block;
+        float: right;
+        top: 350px;
+        color: #155a7c;
+        background: white;
+        font-size: xx-small;
+        padding: 1px 8px;
+        margin-top: 30px;
+        margin-bottom: 20px;
+    }
+}

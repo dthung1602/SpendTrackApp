@@ -224,26 +224,13 @@ class Plan {
 
         // --- right pane ---
         let rightPane = $('<div class="seven columns">').appendTo(bodyPane);
-        // plan hidden this
-        // TODO clean this
-        $('<input type="hidden" id="plan-data-' + this.id + '-id">')
-            .appendTo(rightPane).val(this.id);
-        $('<input type="hidden" id="plan-data-' + this.id + '-name">')
-            .appendTo(rightPane).val(this.name);
-        $('<input type="hidden" id="plan-data-' + this.id + '-category">')
-            .appendTo(rightPane).val(this.category);
-        $('<input type="hidden" id="plan-data-' + this.id + '-category-name">')
-            .appendTo(rightPane).val(this.category_name);
-        $('<input type="hidden" id="plan-data-' + this.id + '-start-date">')
-            .appendTo(rightPane).val(this.start_date);
-        $('<input type="hidden" id="plan-data-' + this.id + '-end-date">')
-            .appendTo(rightPane).val(this.end_date);
-        $('<input type="hidden" id="plan-data-' + this.id + '-total">')
-            .appendTo(rightPane).val(this.total);
-        $('<input type="hidden" id="plan-data-' + this.id + '-planned-total">')
-            .appendTo(rightPane).val(this.planned_total);
-        $('<input type="hidden" id="plan-data-' + this.id + '-compare">')
-            .appendTo(rightPane).val(this.compare);
+
+        // plan hidden inputs fields
+        for (let i = 0; i < this.fields.length; i++) {
+            let f = this.fields[i];
+            $('<input type="hidden" id="plan-data-' + this.id + '-' + f.replace('_', '-') + '">')
+                .appendTo(rightPane).val(this[f]);
+        }
 
         // progress bars
         rightPane.append(this.createProgressBars(this.id));
