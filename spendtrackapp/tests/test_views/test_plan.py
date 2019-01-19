@@ -48,7 +48,7 @@ class TestPlan(TestView):
         self.assertCountEqual(expect_errors, errors)
 
     @data_provider(plan_test_add_success)
-    def test_add_success(self, time, data, expected_new_plan_id):
+    def test_add_success(self, time, data, expected_new_plan_id, expected_total):
         with freeze_time(time):
             init_count = int(Plan.objects.all().count())
             response = self.client.post(
@@ -57,12 +57,16 @@ class TestPlan(TestView):
                 data=data
             )
             count = int(Plan.objects.all().count())
-            plan_id = json.loads(response.content.decode('utf-8'))['id']
+            response_object = json.loads(response.content.decode('utf-8'))
+            plan_id = response_object['id']
+            plan_total = response_object['total']
             plan = Plan.objects.get(id=expected_new_plan_id)
 
             self.assertEqual(init_count + 1, count)
             self.assertEqual(response.status_code, 200)
             self.assertEqual(expected_new_plan_id, plan_id)
+            self.assertEqual(expected_total, float(plan_total))
+            self.assertEqual(expected_total, float(plan.total))
 
             for key in ['start_date', 'end_date']:
                 self.assertEqual(data[key], getattr(plan, key).strftime("%Y-%m-%d"))
@@ -88,7 +92,7 @@ class TestPlan(TestView):
             self.assertCountEqual(expected_errors, errors)
 
     @data_provider(plan_test_edit_success)
-    def test_edit_success(self, time, data):
+    def test_edit_success(self, time, data, expected_total):
         with freeze_time(time):
             init_count = int(Plan.objects.all().count())
             response = self.client.post(
@@ -98,7 +102,9 @@ class TestPlan(TestView):
             )
             count = int(Plan.objects.all().count())
             plan = Plan.objects.get(id=data['id'])
+            total = float(json.loads(response.content.decode('utf-8'))['total'])
 
+            self.assertEqual(expected_total, total)
             self.assertEqual(init_count, count)
             self.assertEqual(response.status_code, 200)
 
@@ -110,7 +116,7 @@ class TestPlan(TestView):
             self.assertAlmostEqual(data['planned_total'], float(plan.planned_total), delta=0.01)
 
     @data_provider(plan_test_edit_fail)
-    # TODO simmilar to test add fail
+    # TODO similar to test add fail
     def test_edit_fail(self, time, data, expected_errors):
         with freeze_time(time):
             init_count = int(Plan.objects.all().count())

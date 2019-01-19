@@ -67,7 +67,8 @@ def plan_test_add_success():
                 'planned_total': 10.58,
                 'compare': '<'
             },
-            13
+            13,
+            0
         ],
         [
             '2018-12-11',
@@ -75,11 +76,11 @@ def plan_test_add_success():
                 'name': 'def',
                 'start_date': '2018-12-15',
                 'end_date': '2019-11-19',
-                # 'category': None,
                 'planned_total': 2.5,
                 'compare': '>'
             },
-            14
+            14,
+            15
         ],
         [
             '2018-12-12',
@@ -91,7 +92,8 @@ def plan_test_add_success():
                 'planned_total': 1000000000.58,
                 'compare': '='
             },
-            15
+            15,
+            0
         ],
     ]
 
@@ -256,18 +258,6 @@ def plan_test_add_fail():
             },
             ['end_date']
         ],
-        [
-            '2018-12-10',
-            {
-                'name': 'abc',
-                'start_date': '2018-12-09',
-                'end_date': '2019-12-10',
-                'category': 3,
-                'planned_total': 10.58,
-                'compare': '='
-            },
-            ['start_date']
-        ],
 
         # invalid category
         [
@@ -389,7 +379,8 @@ def plan_test_edit_success():
                 'category': 3,
                 'planned_total': 10.58,
                 'compare': '<'
-            }
+            },
+            0
         ],
         [
             '2018-12-11',
@@ -401,7 +392,8 @@ def plan_test_edit_success():
                 # 'category': None,
                 'planned_total': 2.5,
                 'compare': '>'
-            }
+            },
+            15
         ],
         [
             '2018-12-12',
@@ -413,7 +405,8 @@ def plan_test_edit_success():
                 'category': 1,
                 'planned_total': 1000000000.58,
                 'compare': '='
-            }
+            },
+            0
         ],
     ]
 
