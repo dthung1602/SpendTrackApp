@@ -7,7 +7,7 @@
             <div class="four columns">&nbsp;</div>
             <div class="four columns">
                 <div class="login-notice">
-                    {% if form.errors %}
+                    {% if errors %}
                         <p>Your username and password didn't match. Please try again.</p>
                     {% endif %}
 
@@ -20,27 +20,26 @@
                         {% endif %}
                     {% endif %}
                 </div>
-                <form method="post" action="{% url 'login' %}" class="login-form">
+                <form method="post" action="{% url 'account:login' %}" class="login-form">
                     {% csrf_token %}
 
                     <div>
-                        {{ form.username.label_tag }}
-                        {{ form.username }}
+                        <label for="username">Username:</label>
+                        <input type="text" name="username" autofocus required id="username">
                     </div>
                     <div>
-                        {{ form.password.label_tag }}
-                        {{ form.password }}
+                        <label for="password">Password:</label>
+                        <input type="password" name="password" required id="password">
                     </div>
-
                     <br>
                     <div>
-                        <input type="submit" value="login" class="button-primary"/>
+                        <input type="submit" class="button-primary"/>
                         <input type="hidden" name="next" value="{{ next }}"/>
                     </div>
                 </form>
 
                 {# Assumes you setup the password_reset view in your URLconf #}
-                <p class="align-right"><a href="{% url 'password_reset' %}">Lost password?</a></p>
+                <p class="align-right"><a href="{% url 'account:password_reset' %}">Lost password?</a></p>
             </div>
             <div class="four columns">&nbsp;</div>
         </div>

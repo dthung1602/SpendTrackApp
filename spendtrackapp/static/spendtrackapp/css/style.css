@@ -558,6 +558,48 @@ input[type='submit'].disable {
 }
 
 /*******************************
+ *          ACCOUNT            *
+ *******************************/
+.account table {
+    width: 100%;
+    max-width: 550px;
+}
+
+.account th {
+    color: #616161;
+}
+
+.button-danger {
+    color: white;
+    background: #d00000;
+    border-color: #d00000;
+}
+
+.button-danger:hover {
+    color: white;
+    background: #990000;
+    border-color: #990000;
+}
+
+.password-change h5 {
+    margin-bottom: 30px;
+}
+
+.password-change label {
+    color: #616161;
+}
+
+.password-change p {
+    font-size: small;
+    color: grey;
+    margin-bottom: 10px;
+}
+
+.password-change .row {
+    margin-bottom: 15px;
+}
+
+/*******************************
  *       MEDIA QUERY           *
  *******************************/
 
@@ -581,6 +623,10 @@ input[type='submit'].disable {
 
     #clock {
         display: none;
+    }
+
+    .drop-down-content {
+        min-width: min-content;
     }
 }
 

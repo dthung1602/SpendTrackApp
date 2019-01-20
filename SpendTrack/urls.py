@@ -17,14 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from spendtrackapp.views import index
+from spendtrackapp.views import index, account
 
 urlpatterns = [
     path('', index.index_handler, name='index'),
     path('add/', index.add_handler, name='add'),
 
     path('admin/', admin.site.urls, name='admin'),
-    path('auth/', include('django.contrib.auth.urls')),
+    path('account/', include('spendtrackapp.urls.account')),
 
     path('summarize/', include('spendtrackapp.urls.summarize')),
     path('plan/', include('spendtrackapp.urls.plan')),

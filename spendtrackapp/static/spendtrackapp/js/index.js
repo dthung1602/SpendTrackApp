@@ -3,6 +3,12 @@ $(document).ready(function () {
     startTime();
     if ($(".no-data").length === 0)
         viewTablePage(1);
+    const entryCatFieldId = 'entry-category';
+
+    // insert drop down button to the above div
+    $('#category-dropdown-container').html(Category.toDropdownMenu(entryCatFieldId, false));
+    // set category value to null
+    Category.clearSelectCategoryField(entryCatFieldId);
 });
 
 // ------------------- CLOCK --------------------

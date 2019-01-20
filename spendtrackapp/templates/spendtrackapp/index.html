@@ -100,14 +100,6 @@
                 <div class="five columns">
                     <label for="category">Category</label>
                     <div id="category-dropdown-container"></div>
-                    <script>
-                        // name of the hidden input to store category id
-                        const entryCatFieldId = 'entry-category';
-                        // insert drop down button to the above div
-                        $('#category-dropdown-container').html(Category.toDropdownMenu(entryCatFieldId, false));
-                        // set category value to null
-                        Category.clearSelectCategoryField(entryCatFieldId);
-                    </script>
                     <div id="entry-category-error" class="input-error"></div>
                 </div>
 
