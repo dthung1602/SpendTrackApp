@@ -570,9 +570,9 @@ input[type='submit'].disable {
 }
 
 .button-danger {
-    color: white;
-    background: #d00000;
-    border-color: #d00000;
+    color: #990000;
+    background: white;
+    border-color: #990000;
 }
 
 .button-danger:hover {

@@ -136,6 +136,8 @@ function getAccountInfo() {
     return data;
 }
 
+// ---------- SUBMIT EDIT ---------------
+
 function editAccountSuccessFunc(account) {
     return function () {
         cancelEditAccount();
@@ -147,25 +149,10 @@ function editAccountSuccessFunc(account) {
     }
 }
 
-function editAccountFail() {
+function editAccountFailFunc() {
     return function (response, status, error) {
         enableSaveAccountButton();
-
-        switch (error) {
-            case 'Bad Request':
-                let errorMessages = [];
-                response = response.responseJSON;
-                for (let e in response)
-                    if (response.hasOwnProperty(e))
-                        errorMessages.push(response[e].join(','));
-                alert(errorMessages.join('\n'));
-                break;
-            case 'Internal Server Error':
-                alert("Internal Server Error\nPlease try again later");
-                break;
-            default :
-                alert("Unknown error\nPlease try again later");
-        }
+        displayError(response, status, error)
     }
 }
 
@@ -182,7 +169,7 @@ function submitEditAccountForm() {
             dataType: 'json',
             data: account.getSubmitData(),
             success: editAccountSuccessFunc(account),
-            error: editAccountFail
+            error: editAccountFailFunc
         });
         // hide error
         $('.input-error').hide();
@@ -216,11 +203,104 @@ function enableSaveAccountButton() {
 // ---------- DELETE ---------------
 
 function deleteAccountForm() {
+    if (!confirm("Are you sure to delete this account?"))
+        return;
+    if (!confirm("Are you REALLY sure?"))
+        return;
+    if (!confirm("Are you REALLY REALLY sure?"))
+        return;
+    let account = new Account(getAccountInfo());
+    $.ajax({
+        url: '/account/delete/',
+        type: 'POST',
+        dataType: 'json',
+        data: account.getSubmitData(),
+        success: deleteAccountSuccess,
+        error: displayError
+    });
+}
 
+function deleteAccountSuccess() {
+    deleteAllCookies(); // logout
+    window.location.replace("/");
+}
+
+function displayError(response, status, error) {
+    switch (error) {
+        case 'Bad Request':
+            let errorMessages = [];
+            response = response.responseJSON;
+            for (let e in response)
+                if (response.hasOwnProperty(e))
+                    errorMessages.push(response[e].join(','));
+            alert(errorMessages.join('\n'));
+            break;
+        case 'Internal Server Error':
+            alert("Internal Server Error\nPlease try again later");
+            break;
+        default :
+            alert("Unknown error\nPlease try again later");
+    }
 }
 
 // ---------- CHANGE PASSWORD ---------------
 
-function submitChangePasswordForm() {
+function changePasswordSuccess() {
+    $('.password-change input').val('');
+    $('#password-change-success')
+        .removeClass('hidden')
+        .html('Password has been changed successfully at ' + new Date());
+    enableChangePasswordButton();
+}
 
+function changePasswordFail() {
+    return function (response, status, error) {
+        enableChangePasswordButton();
+        $('#password-change-success').addClass('hidden');
+        displayError(response, status, error)
+    }
+}
+
+function submitChangePasswordForm() {
+    let account = new Account(getAccountInfo());
+
+    if (account.isValid()) {
+        disableChangePasswordButton();
+
+        // send ajax request
+        $.ajax({
+            url: '/account/password_change/',
+            type: 'POST',
+            dataType: 'json',
+            data: account.getSubmitData(),
+            success: changePasswordSuccess,
+            error: changePasswordFail
+        });
+        // hide error
+        $('.input-error').hide();
+
+    } else {
+        // display errors
+        for (let i = 0; i < Account.fields.length; i++) {
+            let f = Account.fields[i];
+            if (account.errors.hasOwnProperty(f))
+                $('#error_' + f)
+                    .show()
+                    .html(account.errors[f].join("<br>"))
+        }
+    }
+}
+
+function disableChangePasswordButton() {
+    $('#change-password-button')
+        .html('CHANGING...')
+        .addClass('disable')
+        .off('click');
+}
+
+function enableChangePasswordButton() {
+    $('#change-password-button')
+        .html('CHANGE MY PASSWORD')
+        .removeClass('disable')
+        .click(submitChangePasswordForm);
 }

@@ -141,3 +141,20 @@ function viewTablePage(page) {
     $('.page-control .button').removeClass('selected');
     $('.page-control .button:nth-child(' + page + ')').addClass('selected');
 }
+
+/**
+ * Delete all cookies
+ * Exception:
+ *      - Cookies with HttpOnly flag set
+ *      - Cookies that have been set with a Path value
+ */
+function deleteAllCookies() {
+    let cookies = document.cookie.split(";");
+
+    for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i];
+        const eqPos = cookie.indexOf("=");
+        const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    }
+}
