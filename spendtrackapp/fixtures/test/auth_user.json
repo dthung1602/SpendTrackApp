@@ -16,5 +16,23 @@
       "groups": [],
       "user_permissions": []
     }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$120000$wJfN3Zq6IR0w$7YuMx7vfwLPwLR4Ibcbyyq+lFdhyHu77HqW1dP2bs+g=",
+      "last_login": "2018-10-16T13:00:35Z",
+      "is_superuser": false,
+      "username": "hclinton",
+      "first_name": "Hillary",
+      "last_name": "Clinton",
+      "email": "clinton@white-house.gov",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-10-16T13:00:23Z",
+      "groups": [],
+      "user_permissions": []
+    }
   }
 ]

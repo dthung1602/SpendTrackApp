@@ -1,42 +1,48 @@
+from django.contrib.auth.models import User
 from django.test import TestCase
 from freezegun import freeze_time
 
-from spendtrackapp.models import *
+from spendtrackapp.models import Plan
 from spendtrackapp.tests.utils import data_provider
 from .provide_data_test_plan import *
 
 
 class TestPlan(TestCase):
-    fixtures = ['test/category.json', 'test/plan.json', 'test/plan_entry.json']
+    fixtures = ['test/auth_user.json', 'test/category.json', 'test/plan.json', 'test/plan_entry.json']
 
     @data_provider(plan_get_current_plans)
-    def test_get_current_plans(self, time, expected_plan_ids):
+    def test_get_current_plans(self, user_id, time, expected_plan_ids):
+        user = User.objects.get(id=user_id)
         with freeze_time(time):
-            plans = Plan.get_current_plans()
+            plans = Plan.get_current_plans(user)
             plan_ids = [plan.id for plan in plans]
             self.assertSequenceEqual(expected_plan_ids, plan_ids)
 
     @data_provider(plan_get_plans_in_date_range)
-    def test_get_plans_in_date_range(self, start_date, end_date, expected_plan_ids):
-        plans = Plan.get_plans_in_date_range(start_date, end_date)
+    def test_get_plans_in_date_range(self, user_id, start_date, end_date, expected_plan_ids):
+        user = User.objects.get(id=user_id)
+        plans = Plan.get_plans_in_date_range(user, start_date, end_date)
         plan_ids = [plan.id for plan in plans]
         self.assertSequenceEqual(expected_plan_ids, plan_ids)
 
     @data_provider(plan_get_plans_in_year)
-    def test_get_plans_in_year(self, year, expected_plan_ids):
-        plans = Plan.get_plans_in_year(year)
+    def test_get_plans_in_year(self, user_id, year, expected_plan_ids):
+        user = User.objects.get(id=user_id)
+        plans = Plan.get_plans_in_year(user, year)
         plan_ids = [plan.id for plan in plans]
         self.assertSequenceEqual(expected_plan_ids, plan_ids)
 
     @data_provider(plan_get_plans_in_month)
-    def test_get_plans_in_month(self, year, month, expected_plan_ids):
-        plans = Plan.get_plans_in_month(year, month)
+    def test_get_plans_in_month(self, user_id, year, month, expected_plan_ids):
+        user = User.objects.get(id=user_id)
+        plans = Plan.get_plans_in_month(user, year, month)
         plan_ids = [plan.id for plan in plans]
         self.assertSequenceEqual(expected_plan_ids, plan_ids)
 
     @data_provider(plan_get_plans_in_week)
-    def test_get_plans_in_week(self, year, week, expected_plan_ids):
-        plans = Plan.get_plans_in_week(year, week)
+    def test_get_plans_in_week(self, user_id, year, week, expected_plan_ids):
+        user = User.objects.get(id=user_id)
+        plans = Plan.get_plans_in_week(user, year, week)
         plan_ids = [plan.id for plan in plans]
         self.assertSequenceEqual(expected_plan_ids, plan_ids)
 

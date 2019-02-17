@@ -422,5 +422,29 @@
       "entry": 26,
       "category": 12
     }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 54,
+    "fields": {
+      "entry": 27,
+      "category": 10
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 55,
+    "fields": {
+      "entry": 27,
+      "category": 11
+    }
+  },
+  {
+    "model": "spendtrackapp.entry_categories",
+    "pk": 56,
+    "fields": {
+      "entry": 28,
+      "category": 12
+    }
   }
 ]

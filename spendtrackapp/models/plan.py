@@ -6,6 +6,7 @@ from math import fabs
 
 from dateutil.parser import isoparse
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q
 from django.db.models import QuerySet
@@ -18,6 +19,12 @@ class Plan(models.Model):
     """
     A class to save plans
     """
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+    """Who this plan belongs to"""
 
     name = models.CharField(
         max_length=50,
@@ -77,6 +84,7 @@ class Plan(models.Model):
     def entries(self) -> QuerySet:
         if self._entries is None:
             self._entries = Entry.find_by_date_range(
+                self.user,
                 self.start_date,
                 self.end_date,
                 self.category
@@ -93,6 +101,7 @@ class Plan(models.Model):
             else:
                 # no -> calculate
                 self._total = Entry.total_by_date_range(
+                    self.user,
                     self.start_date,
                     self.end_date,
                     self.category
@@ -123,36 +132,38 @@ class Plan(models.Model):
         return self.end_date.isoformat()
 
     @classmethod
-    def get_current_plans(cls) -> QuerySet:
+    def get_current_plans(cls, user: User) -> QuerySet:
         """Get all the plans that has not finished"""
 
         today = date.today()
         return Plan.objects.filter(
+            user=user,
             start_date__lte=today,
             end_date__gte=today
         ).order_by("start_date", "end_date", "id")
 
     @classmethod
-    def get_plans_in_date_range(cls, start_date, end_date) -> QuerySet:
+    def get_plans_in_date_range(cls, user: User, start_date, end_date) -> QuerySet:
         """Get all plans that overlaps the time range"""
 
         return Plan.objects.filter(
             Q(start_date__lte=end_date) &
             Q(end_date__gte=start_date)
-        ).order_by("start_date", "end_date", "id")
+        ).filter(user=user).order_by("start_date", "end_date", "id")
 
     @classmethod
-    def get_plans_in_year(cls, year) -> QuerySet:
+    def get_plans_in_year(cls, user: User, year) -> QuerySet:
         """Get all plans that overlaps the given year"""
 
         year = str(year)
         return cls.get_plans_in_date_range(
+            user,
             year + "-01-01",
             year + "-12-31"
         )
 
     @classmethod
-    def get_plans_in_month(cls, year, month) -> QuerySet:
+    def get_plans_in_month(cls, user: User, year, month) -> QuerySet:
         """Get all plans that overlaps the given month"""
 
         year = int(year)
@@ -162,17 +173,19 @@ class Plan(models.Model):
 
         last_day = calendar.monthrange(year, month)[1]
         return cls.get_plans_in_date_range(
+            user,
             "{}-{}-01".format(year, month),
             "{}-{}-{}".format(year, month, last_day)
         )
 
     @classmethod
-    def get_plans_in_week(cls, year, week) -> QuerySet:
+    def get_plans_in_week(cls, user: User, year, week) -> QuerySet:
         """Get all plans that overlaps the given week"""
 
         monday = isoparse("%iW%02i" % (int(year), int(week)))
         sunday = monday + timedelta(days=6)
         return cls.get_plans_in_date_range(
+            user,
             monday.strftime("%Y-%m-%d"),
             sunday.strftime("%Y-%m-%d")
         )

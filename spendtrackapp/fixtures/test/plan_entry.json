@@ -11,7 +11,8 @@
         2,
         4
       ],
-      "leaf_category": 4
+      "leaf_category": 4,
+      "user": 1
     }
   },
   {
@@ -26,7 +27,8 @@
         2,
         4
       ],
-      "leaf_category": 4
+      "leaf_category": 4,
+      "user": 1
     }
   },
   {
@@ -41,7 +43,8 @@
         2,
         4
       ],
-      "leaf_category": 4
+      "leaf_category": 4,
+      "user": 1
     }
   },
   {
@@ -57,7 +60,8 @@
         5,
         7
       ],
-      "leaf_category": 7
+      "leaf_category": 7,
+      "user": 1
     }
   },
   {
@@ -73,7 +77,8 @@
         5,
         8
       ],
-      "leaf_category": 8
+      "leaf_category": 8,
+      "user": 1
     }
   },
   {
@@ -89,7 +94,8 @@
         5,
         8
       ],
-      "leaf_category": 8
+      "leaf_category": 8,
+      "user": 1
     }
   },
   {
@@ -104,7 +110,8 @@
         3,
         13
       ],
-      "leaf_category": 13
+      "leaf_category": 13,
+      "user": 1
     }
   },
   {
@@ -118,7 +125,8 @@
         10,
         11
       ],
-      "leaf_category": 11
+      "leaf_category": 11,
+      "user": 1
     }
   },
   {
@@ -132,7 +140,8 @@
         10,
         14
       ],
-      "leaf_category": 14
+      "leaf_category": 14,
+      "user": 1
     }
   },
   {
@@ -145,7 +154,37 @@
       "categories": [
         12
       ],
-      "leaf_category": 12
+      "leaf_category": 12,
+      "user": 1
+    }
+  },
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 27,
+    "fields": {
+      "date": "2018-12-05T03:02:13.924Z",
+      "content": "entry27",
+      "value": "5",
+      "categories": [
+        10,
+        11
+      ],
+      "leaf_category": 11,
+      "user": 2
+    }
+  },
+  {
+    "model": "spendtrackapp.entry",
+    "pk": 28,
+    "fields": {
+      "date": "2018-12-15T03:02:13.924Z",
+      "content": "entry28",
+      "value": "15",
+      "categories": [
+        12
+      ],
+      "leaf_category": 12,
+      "user": 2
     }
   }
 ]

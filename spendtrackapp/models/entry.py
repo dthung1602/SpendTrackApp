@@ -4,6 +4,7 @@ from datetime import datetime, date
 from typing import Optional
 from typing import Union, TypeVar
 
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import QuerySet
 from django.db.models import Sum
@@ -30,6 +31,12 @@ class Entry(models.Model):
 
     class Meta:
         verbose_name_plural = "Entries"
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+    """Who this entry belongs to"""
 
     date = models.DateTimeField()
     """When the item is bought"""
@@ -85,6 +92,7 @@ class Entry(models.Model):
 
     @classmethod
     def find_by_date_range(cls,
+                           user: User,
                            start_date: NullableDate = None,
                            end_date: NullableDate = None,
                            category: CategoryIdentifier = None,
@@ -93,6 +101,7 @@ class Entry(models.Model):
         """
         Find entries between start_date and end_date (inclusive) which belong to the given category name
 
+        :param user: who this entry belongs to
         :param start_date:
         :param end_date:
             - can be None, datetime objects or a string 'YYYY-mm-dd'
@@ -106,7 +115,7 @@ class Entry(models.Model):
         start_date = cls.__modify_start_date(start_date)
         end_date = cls.__modify_end_date(end_date)
 
-        result = cls.objects.filter(date__range=(start_date, end_date)).order_by('date')
+        result = cls.objects.filter(user=user, date__range=(start_date, end_date)).order_by('date')
         result = cls.__filter_category(result, category)
         result = cls.__prefetch(result, prefetch)
 
@@ -114,6 +123,7 @@ class Entry(models.Model):
 
     @classmethod
     def find_by_year(cls,
+                     user: User,
                      year: int,
                      category: CategoryIdentifier = None,
                      limit: int = -1,
@@ -121,13 +131,14 @@ class Entry(models.Model):
         """
         Find entries in the given year
 
+        :param user: who this entry belongs to
         :param year: four-digits year
         :param category: category object or its name or id. If not given, all categories are selected
         :param limit: maximum number of entries to return. No limit is set if -1 is given
         :param prefetch: whether to prefetch associated categories
         """
 
-        result = cls.objects.filter(date__year=year).order_by('date')
+        result = cls.objects.filter(user=user, date__year=year).order_by('date')
         result = cls.__filter_category(result, category)
         result = cls.__prefetch(result, prefetch)
 
@@ -135,6 +146,7 @@ class Entry(models.Model):
 
     @classmethod
     def find_by_month(cls,
+                      user: User,
                       year: int,
                       month: int,
                       category: CategoryIdentifier = None,
@@ -143,6 +155,7 @@ class Entry(models.Model):
         """
         Find entries in the given month in year
 
+        :param user: who this entry belongs to
         :param year: four-digits year
         :param month: 1, 2, ... 12
         :param category: category object or its name or id. If not given, all categories are selected
@@ -150,7 +163,7 @@ class Entry(models.Model):
         :param prefetch: whether to prefetch associated categories
         """
 
-        result = cls.objects.filter(date__year=year, date__month=month).order_by('date')
+        result = cls.objects.filter(user=user, date__year=year, date__month=month).order_by('date')
         result = cls.__filter_category(result, category)
         result = cls.__prefetch(result, prefetch)
 
@@ -158,6 +171,7 @@ class Entry(models.Model):
 
     @classmethod
     def find_by_week(cls,
+                     user: User,
                      isoyear: int,
                      week: int,
                      category: CategoryIdentifier = None,
@@ -166,6 +180,7 @@ class Entry(models.Model):
         """
         Find entries in the given week in year
 
+        :param user: who this entry belongs to
         :param isoyear: four-digits ISO8601 year of the actual datetime object
         :param week: ISO8601 week in year
         :param category: category object or its name or id. If not given, all categories are selected
@@ -173,7 +188,7 @@ class Entry(models.Model):
         :param prefetch: whether to prefetch associated categories
         """
 
-        result = cls.objects.filter(date__isoyear=isoyear, date__week=week).order_by('date')
+        result = cls.objects.filter(user=user, date__isoyear=isoyear, date__week=week).order_by('date')
         result = cls.__filter_category(result, category)
         result = cls.__prefetch(result, prefetch)
 
@@ -185,12 +200,14 @@ class Entry(models.Model):
 
     @classmethod
     def total_by_date_range(cls,
+                            user: User,
                             start_date: NullableDate = None,
                             end_date: NullableDate = None,
                             category: CategoryIdentifier = None) -> float:
         """
         Find total value of entries between start_date and end_date (inclusive) which belong to the given category name
 
+        :param user: who this entry belongs to
         :param start_date:
         :param end_date:
             - can be None, datetime objects or a string 'YYYY-mm-dd'
@@ -199,56 +216,62 @@ class Entry(models.Model):
         :param category: category object or its name or id. If not given, all categories are selected
          """
 
-        result = cls.find_by_date_range(start_date, end_date, category, -1, False).order_by()
+        result = cls.find_by_date_range(user, start_date, end_date, category, -1, False).order_by()
         result = cls.__sum(result)
         return result if result is not None else 0
 
     @classmethod
     def total_by_year(cls,
+                      user: User,
                       year: int,
                       category: CategoryIdentifier = None) -> float:
         """
         Find total value of entries in the given year
 
+        :param user: who this entry belongs to
         :param year: four-digits year
         :param category: category object or its name or id. If not given, all categories are selected
         """
 
-        result = cls.find_by_year(year, category, -1, False).order_by()
+        result = cls.find_by_year(user, year, category, -1, False).order_by()
         result = cls.__sum(result)
         return result if result is not None else 0
 
     @classmethod
     def total_by_month(cls,
+                       user: User,
                        year: int,
                        month: int,
                        category: CategoryIdentifier = None) -> float:
         """
         Find total value of entries in the given month in year
 
+        :param user: who this entry belongs to
         :param year: four-digits year
         :param month: 1, 2, ... 12
         :param category: category object or its name or id. If not given, all categories are selected
         """
 
-        result = cls.find_by_month(year, month, category, -1, False).order_by()
+        result = cls.find_by_month(user, year, month, category, -1, False).order_by()
         result = cls.__sum(result)
         return result if result is not None else 0
 
     @classmethod
     def total_by_week(cls,
+                      user: User,
                       isoyear: int,
                       week: int,
                       category: CategoryIdentifier = None) -> float:
         """
         Find total value of entries in the given week in year
 
+        :param user: who this entry belongs to
         :param isoyear: four-digits ISO8601 year of the actual datetime object
         :param week: ISO8601 week in year
         :param category: category object or its name or id. If not given, all categories are selected
         """
 
-        result = cls.find_by_week(isoyear, week, category, -1, False).order_by()
+        result = cls.find_by_week(user, isoyear, week, category, -1, False).order_by()
         result = cls.__sum(result)
         return result if result is not None else 0
 

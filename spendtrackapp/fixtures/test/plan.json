@@ -8,7 +8,8 @@
       "end_date": "2019-12-31",
       "category": null,
       "planned_total": 50,
-      "compare": "<"
+      "compare": "<",
+      "user": 1
     }
   },
   {
@@ -20,7 +21,8 @@
       "end_date": "2018-12-02",
       "category": null,
       "planned_total": 9,
-      "compare": "<"
+      "compare": "<",
+      "user": 1
     }
   },
   {
@@ -32,7 +34,8 @@
       "end_date": "2018-12-09",
       "category": null,
       "planned_total": 12,
-      "compare": "<"
+      "compare": "<",
+      "user": 1
     }
   },
   {
@@ -44,7 +47,8 @@
       "end_date": "2018-12-16",
       "category": null,
       "planned_total": 5,
-      "compare": "<"
+      "compare": "<",
+      "user": 1
     }
   },
   {
@@ -56,7 +60,8 @@
       "end_date": "2018-12-03",
       "category": null,
       "planned_total": 3,
-      "compare": ">"
+      "compare": ">",
+      "user": 1
     }
   },
   {
@@ -68,7 +73,8 @@
       "end_date": "2019-01-31",
       "category": null,
       "planned_total": 19,
-      "compare": ">"
+      "compare": ">",
+      "user": 1
     }
   },
   {
@@ -80,7 +86,8 @@
       "end_date": "2019-02-28",
       "category": 10,
       "planned_total": 5,
-      "compare": "="
+      "compare": "=",
+      "user": 1
     }
   },
   {
@@ -92,7 +99,8 @@
       "end_date": "2018-12-09",
       "category": 1,
       "planned_total": 21,
-      "compare": "="
+      "compare": "=",
+      "user": 1
     }
   },
   {
@@ -104,7 +112,8 @@
       "end_date": "2018-12-09",
       "category": 2,
       "planned_total": 21,
-      "compare": "="
+      "compare": "=",
+      "user": 1
     }
   },
   {
@@ -116,7 +125,8 @@
       "end_date": "2018-12-09",
       "category": 4,
       "planned_total": 10,
-      "compare": "="
+      "compare": "=",
+      "user": 1
     }
   },
   {
@@ -128,7 +138,8 @@
       "end_date": "2018-12-09",
       "category": 13,
       "planned_total": 0.8,
-      "compare": "="
+      "compare": "=",
+      "user": 1
     }
   },
   {
@@ -140,7 +151,34 @@
       "end_date": "2018-12-09",
       "category": 12,
       "planned_total": 1,
-      "compare": "="
+      "compare": "=",
+      "user": 1
+    }
+  },
+  {
+    "model": "spendtrackapp.plan",
+    "pk": 13,
+    "fields": {
+      "name": "plan13",
+      "start_date": "2018-11-26",
+      "end_date": "2018-12-09",
+      "category": 10,
+      "planned_total": 6,
+      "compare": "<",
+      "user": 2
+    }
+  },
+  {
+    "model": "spendtrackapp.plan",
+    "pk": 14,
+    "fields": {
+      "name": "plan14",
+      "start_date": "2018-12-01",
+      "end_date": "2018-12-31",
+      "category": null,
+      "planned_total": 15,
+      "compare": "=",
+      "user": 2
     }
   }
 ]
