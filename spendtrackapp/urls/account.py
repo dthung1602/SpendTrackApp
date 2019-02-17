@@ -5,6 +5,7 @@ from spendtrackapp.views.account import *
 app_name = 'account'
 urlpatterns = [
     path('', index, name='index'),
+    path('register/', register_handler, name='register'),
     path('login/', login_handler, name='login'),
     path('logout/', logout_handler, name='logout'),
     path('edit/', edit_handler, name='edit'),

@@ -1,7 +1,9 @@
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.forms import UserChangeForm
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UsernameField
 from django.contrib.auth.models import User
-from django.forms import ModelForm, Form, ChoiceField, IntegerField, DateField
+from django.forms import ModelForm, Form, ChoiceField, IntegerField, DateField, EmailField
 
 from spendtrackapp.models import Entry, Plan, Category
 from spendtrackapp.urls.converters import *
@@ -205,3 +207,19 @@ class CustomPasswordResetForm(PasswordResetForm):
                 self.user = User.objects.get(email=self.cleaned_data['email'])
             except User.DoesNotExist:
                 self.add_error('email', 'Invalid email')
+
+
+class RegisterForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ("username", "email")
+        field_classes = {'username': UsernameField, 'email': EmailField}
+    # email = EmailField()
+    #
+    # def save(self, commit=True):
+    #     user = super().save(commit=False)
+    #     user.email = self.cleaned_data['email']
+    #     if commit:
+    #         user.save()
+    #     return user
+    #     return super().save(commit)

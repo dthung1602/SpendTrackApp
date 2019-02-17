@@ -1,0 +1,68 @@
+{% extends "spendtrackapp/base.html" %}
+
+{% block main %}
+    <br>
+    <div class="container">
+        <div class="row">
+            <div class="three columns">&nbsp;</div>
+            <div class="six columns">
+                <form class="login-form" method="post" action="{% url "account:register" %}">
+                    {% csrf_token %}
+                    <h3>Register</h3>
+                    <br>
+                    <div>
+                        <label for="username">Username:</label>
+                        <input type="text" name="username" autofocus required id="username"
+                               value="{{ old_data.username }}">
+                        {% if errors.username %}
+                            <div class="input-error">{{ errors.username | striptags }}</div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="email">Email:</label>
+                        <input type="email" name="email" autofocus required id="email" value="{{ old_data.email }}">
+                        {% if errors.email %}
+                            <div class="input-error">{{ errors.email | striptags }}</div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="password1">Password:</label>
+                        <input type="password" name="password1" required id="password1"
+                               value="{{ old_data.password1 }}">
+                        {% if errors.password1 %}
+                            <div class="input-error">{{ errors.password1 | striptags }}</div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="password2">Confirm you password:</label>
+                        <input type="password" name="password2" required id="password2"
+                               value="{{ old_data.password2 }}">
+                        {% if errors.password2 %}
+                            <div class="input-error">{{ errors.password2 | striptags }}</div>
+                        {% endif %}
+                        {% if errors.password_mismatch %}
+                            <div class="input-error">{{ errors.password_mismatch | striptags }}</div>
+                        {% endif %}
+                    </div>
+                    <br>
+                    <div class="align-right">
+                        <button class="button-primary">Register</button>
+                        <div class="button" id="clear-button">Clear</div>
+                        <script>
+                            $(document).ready(function () {
+                                $('#clear-button').click(function () {
+                                    let fields = ['username', 'email', 'password1', 'password2'];
+                                    for (let i = 0; i < fields.length; i++)
+                                        $('#' + fields[i]).val('');
+                                    $('.input-error').remove();
+                                })
+                            });
+                        </script>
+                    </div>
+                </form>
+            </div>
+            <div class="three columns">&nbsp;</div>
+        </div>
+    </div>
+
+{% endblock %}

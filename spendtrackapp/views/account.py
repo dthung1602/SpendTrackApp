@@ -7,7 +7,7 @@ from django.http.response import HttpResponseRedirect, JsonResponse, HttpRespons
 from django.shortcuts import reverse
 from django.utils.http import urlsafe_base64_decode
 
-from spendtrackapp.forms import UserEditForm, CustomPasswordResetForm
+from spendtrackapp.forms import UserEditForm, CustomPasswordResetForm, RegisterForm
 from spendtrackapp.views.utils import *
 
 
@@ -17,6 +17,24 @@ def index(request):
         'user': request.user
     }
     return render(request, 'spendtrackapp/account.html', context)
+
+
+def register_handler(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return HttpResponseRedirect(reverse('index'))
+        else:
+            context = {
+                'errors': form.errors,
+                'old_data': request.POST
+            }
+            return render(request, 'spendtrackapp/register.html', context)
+
+    return render(request, 'spendtrackapp/register.html')
 
 
 def login_handler(request):
