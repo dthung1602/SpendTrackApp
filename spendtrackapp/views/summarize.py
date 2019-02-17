@@ -1,15 +1,17 @@
+import copy
 from datetime import date
 from datetime import timedelta
 from typing import Tuple, List, Callable, Dict
 
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.http import HttpRequest
 from django.http.response import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import reverse
 
 from spendtrackapp.forms import SearchTimeForm
-from spendtrackapp.models import Entry
+from spendtrackapp.models import Entry, Category
 from spendtrackapp.views.utils import *
 
 categories = Category.objects.all().order_by('name')
@@ -43,7 +45,7 @@ def date_range_handler(request, start_date, end_date):
     """
 
     # AJAX request
-    date_range_info = get_date_range_info(start_date, end_date)
+    date_range_info = get_date_range_info(request.user, start_date, end_date)
     context = {
         'total': date_range_info[0],
         'category_total': date_range_info[1],
@@ -94,7 +96,9 @@ def __period_handler(request: HttpRequest,
     """
 
     # AJAX request
-    this_period_info = get_info_func(**period)
+    period_with_user = copy.deepcopy(period)
+    period_with_user['user'] = request.user
+    this_period_info = get_info_func(**period_with_user)
     context = {
         'total': this_period_info[0],
         'category_total': this_period_info[1],
@@ -105,7 +109,9 @@ def __period_handler(request: HttpRequest,
 
     # GET request
     last_period, next_period = get_adjacent_periods(**period)
-    last_period_info = get_info_func(**last_period)
+    last_period_with_user = copy.deepcopy(last_period)
+    last_period_with_user['user'] = request.user
+    last_period_info = get_info_func(**last_period_with_user)
 
     named_url = "summarize:" + period_name
     template_name = "spendtrackapp/summarize_" + period_name + ".html"
@@ -229,49 +235,53 @@ def today_handler(request):
 
 # TODO consider move to model
 
-def get_date_range_info(start_date: str,
+def get_date_range_info(user: User,
+                        start_date: str,
                         end_date: str) -> Tuple[float, List[float], List[float], List[List[Entry]]]:
     """Get grand total and total of each category in the given date range"""
 
-    entries = list(Entry.find_by_date_range(start_date, end_date))
+    entries = list(Entry.find_by_date_range(user, start_date, end_date))
     total = sum([entry.value for entry in entries])
-    total_by_category = [Entry.total_by_date_range(start_date, end_date, category=cat.name) for cat in categories]
+    total_by_category = [Entry.total_by_date_range(user, start_date, end_date, category=cat.name) for cat in categories]
     total_by_day = [sum([entry.value for entry in entries if same_date(entry.date, d)])
                     for d in daterange(start_date, end_date)]
     entries_pages = group_array(entries, settings.VIEW_SUMMARIZE_DATE_RANGE_DEFAULT_PAGE_SIZE)
     return total, total_by_category, total_by_day, entries_pages
 
 
-def get_year_info(year: int) -> Tuple[float, List[float], List[float], List[List[Entry]]]:
+def get_year_info(user: User,
+                  year: int) -> Tuple[float, List[float], List[float], List[List[Entry]]]:
     """Get grand total, total of each category, total of each month and entries (group into pages) in the given year"""
 
-    entries = list(Entry.find_by_year(year))
+    entries = list(Entry.find_by_year(user, year))
     total = sum([entry.value for entry in entries])
-    total_by_category = [Entry.total_by_year(year, category=cat.name) for cat in categories]
+    total_by_category = [Entry.total_by_year(user, year, category=cat.name) for cat in categories]
     total_by_month = [sum([entry.value for entry in entries if entry.date.month == m]) for m in range(1, 13)]
     entries_pages = group_array(entries, settings.VIEW_SUMMARIZE_YEAR_DEFAULT_PAGE_SIZE)
     return total, total_by_category, total_by_month, entries_pages
 
 
-def get_month_info(year: int,
+def get_month_info(user: User,
+                   year: int,
                    month: int) -> Tuple[float, List[float], List[float], List[List[Entry]]]:
     """Get grand total, total of each category, total of each month and entries (group into pages) in the given month"""
 
-    entries = list(Entry.find_by_month(year, month))
+    entries = list(Entry.find_by_month(user, year, month))
     total = sum([entry.value for entry in entries])
-    total_by_category = [Entry.total_by_month(year, month, category=cat.name) for cat in categories]
+    total_by_category = [Entry.total_by_month(user, year, month, category=cat.name) for cat in categories]
     total_by_day = [sum([entry.value for entry in entries if entry.date.day == d]) for d in range(1, 32)]
     entries_pages = group_array(entries, settings.VIEW_SUMMARIZE_MONTH_DEFAULT_PAGE_SIZE)
     return total, total_by_category, total_by_day, entries_pages
 
 
-def get_week_info(year: int,
+def get_week_info(user: User,
+                  year: int,
                   week: int) -> Tuple[float, List[float], List[float], List[List[Entry]]]:
     """Get grand total, total of each category, total of each month and entries (group into pages) in the given month"""
 
-    entries = list(Entry.find_by_week(year, week))
+    entries = list(Entry.find_by_week(user, year, week))
     total = sum([entry.value for entry in entries])
-    total_by_category = [Entry.total_by_week(year, week, category=cat.name) for cat in categories]
+    total_by_category = [Entry.total_by_week(user, year, week, category=cat.name) for cat in categories]
     monday = isoparse("%iW%02i" % (year, week))
     total_by_weekday = [sum([entry.value for entry in entries if same_date(entry.date, d)])
                         for d in daterange(monday, monday + timedelta(days=6))]

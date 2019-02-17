@@ -18,25 +18,25 @@ def index_add_success():
         [
             '2015-11-1',
             {'date': '2015-11-1', 'content': 'blah', 'value': 6, 'leaf_category': 6},
-            [27],
+            [29],
             6,
         ],
         [
             '2015-11-2',
             {'date': '2015-11-2', 'content': 'blah', 'value': 16, 'leaf_category': 6},
-            [16, 5, 21, 28],
+            [16, 5, 21, 30],
             105,
         ],
         [
             '2015-11-8',
             {'date': '2015-11-8', 'content': 'blah', 'value': -9, 'leaf_category': 12},
-            [16, 5, 21, 28, 29],
+            [16, 5, 21, 30, 31],
             96,
         ],
         [
             '2015-11-9',
             {'date': '2015-11-9', 'content': 'blah', 'value': 99, 'leaf_category': 11},
-            [30],
+            [32],
             99,
         ],
     ]

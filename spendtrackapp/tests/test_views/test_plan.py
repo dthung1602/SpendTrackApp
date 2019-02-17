@@ -155,9 +155,9 @@ class TestPlan(TestView):
             HTTP_X_REQUESTED_WITH='XMLHttpRequest',
             data=data
         )
-        errors = json.loads(response.content.decode('utf-8')).keys()
+        errors = list(json.loads(response.content.decode('utf-8')).keys())
         count = int(Plan.objects.all().count())
 
         self.assertEqual(init_count, count)
         self.assertEqual(response.status_code, 400)
-        self.assertSequenceEqual({'id'}, errors)
+        self.assertSequenceEqual(['id'], errors)

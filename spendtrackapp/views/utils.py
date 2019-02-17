@@ -1,15 +1,11 @@
 import datetime as dt
 import re
 from datetime import datetime
-from html import escape as escape_html
 from math import ceil
 
 from dateutil.parser import isoparse
 from django.conf import settings
 from django.shortcuts import render as rd
-
-from spendtrackapp.models import Category
-
 
 ##############################################################
 #                        DATE TIME                           #
@@ -217,3 +213,9 @@ def render(request, template_name, context=None, content_type=None, status=None,
     context['contact_facebook'] = settings.CONTACT_FACEBOOK
 
     return rd(request, template_name, context, content_type, status, using)
+
+
+def get_post(request):
+    post = request.POST.copy()
+    post['user'] = request.user.id
+    return post

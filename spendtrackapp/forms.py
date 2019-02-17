@@ -35,7 +35,7 @@ class EntryForm(ModelForm):
 
     class Meta:
         model = Entry
-        fields = ['date', 'content', 'value', 'leaf_category']
+        fields = ['date', 'content', 'value', 'leaf_category', 'user']
 
     def clean(self):
         super().clean()
@@ -68,7 +68,7 @@ class PlanForm(ModelForm):
     class Meta:
         model = Plan
         fields = ['name', 'start_date', 'end_date',
-                  'planned_total', 'compare', 'category']
+                  'planned_total', 'compare', 'category', 'user']
 
     def clean(self):
         super().clean()

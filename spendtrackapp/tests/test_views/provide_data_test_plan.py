@@ -2,8 +2,12 @@ from spendtrackapp.tests.test_models.provide_data_test_plan import plan_get_curr
 from spendtrackapp.tests.test_views.provide_data_test_summarize import summarize_index_fail
 
 
+def remove_first_param(data):
+    return [d[1:] for d in data if d[0] == 1]
+
+
 def plan_test_index():
-    return plan_get_current_plans()
+    return remove_first_param(plan_get_current_plans())
 
 
 def plan_test_find_success():
@@ -52,7 +56,7 @@ def plan_test_find_success():
 
 
 def plan_test_find_fail():
-    return summarize_index_fail()
+    return remove_first_param(summarize_index_fail())
 
 
 def plan_test_add_success():
@@ -67,7 +71,7 @@ def plan_test_add_success():
                 'planned_total': 10.58,
                 'compare': '<'
             },
-            13,
+            15,
             0
         ],
         [
@@ -79,7 +83,7 @@ def plan_test_add_success():
                 'planned_total': 2.5,
                 'compare': '>'
             },
-            14,
+            16,
             15
         ],
         [
@@ -92,7 +96,7 @@ def plan_test_add_success():
                 'planned_total': 1000000000.58,
                 'compare': '='
             },
-            15,
+            17,
             0
         ],
     ]
@@ -471,6 +475,7 @@ def plan_test_edit_fail():
     return data
 
 
+# noinspection PyTypeChecker
 def plan_test_delete_success():
     return [[{'id': i}] for i in range(1, 7)] + \
            [[{'id': str(i)}] for i in range(7, 13)]

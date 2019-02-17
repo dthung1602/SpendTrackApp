@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.http.response import JsonResponse
 
 from spendtrackapp.forms import SearchTimeForm, PlanForm
-from spendtrackapp.models import Plan
+from spendtrackapp.models import Plan, Category
 from spendtrackapp.views.utils import *
 
 
@@ -12,7 +12,7 @@ def index_handler(request):
 
     return render(request, 'spendtrackapp/plan_index.html', {
         'categories': Category.objects.all(),
-        'current_plans': Plan.get_current_plans(),
+        'current_plans': Plan.get_current_plans(request.user),
     })
 
 
@@ -44,13 +44,13 @@ def search_handler(request):
 
     # get plans in specified time
     if search_type == 'year':
-        plans = Plan.get_plans_in_year(year)
+        plans = Plan.get_plans_in_year(request.user, year)
     elif search_type == 'month':
-        plans = Plan.get_plans_in_month(year, month)
+        plans = Plan.get_plans_in_month(request.user, year, month)
     elif search_type == 'week':
-        plans = Plan.get_plans_in_week(year, week)
+        plans = Plan.get_plans_in_week(request.user, year, week)
     else:
-        plans = Plan.get_plans_in_date_range(start_date, end_date)
+        plans = Plan.get_plans_in_date_range(request.user, start_date, end_date)
 
     # turn plans to dictionaries
     plan_fields = ['id', 'name', 'start_date', 'end_date', 'category_name', 'planned_total', 'compare',
@@ -74,7 +74,7 @@ def search_handler(request):
 def add_handler(request):
     """Handle add new plan requests"""
 
-    form = PlanForm(request.POST)
+    form = PlanForm(get_post(request))
     if not form.is_valid():
         return JsonResponse(form.errors, status=400)
 
@@ -91,14 +91,14 @@ def edit_handler(request):
 
     # TODO prevent editing has_passed plans?
 
-    plan = get_plan(request.POST)
+    plan = get_plan(request)
 
     # return errors, if any
     if isinstance(plan, dict):
         return JsonResponse(plan, status=400)
 
     # noinspection PyUnboundLocalVariable
-    form = PlanForm(request.POST, instance=plan)
+    form = PlanForm(get_post(request), instance=plan)
     if not form.is_valid():
         return JsonResponse(form.errors, status=400)
 
@@ -110,7 +110,7 @@ def edit_handler(request):
 def delete_handler(request):
     """Handle delete plan requests"""
 
-    plan = get_plan(request.POST)
+    plan = get_plan(request)
 
     if isinstance(plan, dict):
         return JsonResponse(plan, status=400)
@@ -119,13 +119,15 @@ def delete_handler(request):
     return JsonResponse({})
 
 
-def get_plan(data: dict):
-    if 'id' not in data:
+def get_plan(request):
+    if 'id' not in request.POST:
         errors = 'Missing plan'
     else:
         try:
-            plan_id = int(data['id'])
+            plan_id = int(request.POST['id'])
             plan = Plan.objects.get(id=plan_id)
+            if plan.user_id != request.user.id:
+                raise ValueError
             return plan
         except (Plan.DoesNotExist, ValueError):
             errors = 'Invalid plan id'

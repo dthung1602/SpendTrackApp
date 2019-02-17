@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http.response import JsonResponse
 
-from spendtrackapp.forms import EntryForm, Entry
+from spendtrackapp.forms import EntryForm, Entry, Category
 from spendtrackapp.models import Info
 from spendtrackapp.views.utils import *
 
@@ -12,8 +12,9 @@ def index_handler(request):
 
     current_balance = Info.get('CURRENT_BALANCE').value
     isoyear, week, week_day = datetime.now().isocalendar()
-    entries_in_week = group_array(Entry.find_by_week(isoyear, week), settings.VIEW_SUMMARIZE_WEEK_DEFAULT_PAGE_SIZE)
-    total_in_week = Entry.total_by_week(isoyear, week)
+    entries_in_week = group_array(
+        Entry.find_by_week(request.user, isoyear, week), settings.VIEW_SUMMARIZE_WEEK_DEFAULT_PAGE_SIZE)
+    total_in_week = Entry.total_by_week(request.user, isoyear, week)
     categories = Category.objects.all()
 
     context = {
@@ -35,7 +36,7 @@ def add_handler(request):
                         and whose values are list of errors in those fields
     """
 
-    form = EntryForm(request.POST)
+    form = EntryForm(get_post(request))
     if not form.is_valid():
         return JsonResponse(form.errors, status=400)
     form.save()
