@@ -4,15 +4,13 @@ $(document).ready(function () {
     $('#save-account-button').click(submitEditAccountForm).hide();
     $('#cancel-edit-account-button').click(cancelEditAccount).hide();
     $('#change-password-button').click(submitChangePasswordForm);
+    $('.input-error').hide();
+    $('#password-change-success').hide();
 });
 
 class Account {
     constructor(data) {
-        this.id = data.id;
         this.username = data.username;
-        this.current_password = data.current_password;
-        this.password1 = data.password1;
-        this.password2 = data.password2;
         this.email = data.email;
         this.first_name = data.first_name;
         this.last_name = data.last_name;
@@ -38,15 +36,6 @@ class Account {
         const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if (this.email.length > 0 && !this.email.match(emailRegex))
             this.addError('email', 'Invalid email');
-
-        // validate password
-        if (this.password1 !== undefined) {
-            const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-            if (this.password1 !== this.password2)
-                this.addError('password2', 'Passwords do not match');
-            if (!this.password1.match(passwordRegex))
-                this.addError('password1', 'Password too week');
-        }
     }
 
     /**
@@ -84,10 +73,9 @@ class Account {
     }
 }
 
-Account.prototype.fields = ['id', 'username', 'current_password', 'password1', 'password2',
-    'email', 'first_name', 'last_name'];
+Account.prototype.fields = ['username', 'email', 'first_name', 'last_name'];
 
-// ---------- EDIT ---------------
+// ---------- ENABLE EDITING ---------------
 
 function editAccount() {
     let rootNode = $('.account table');
@@ -141,6 +129,7 @@ function getAccountInfo() {
 function editAccountSuccessFunc(account) {
     return function () {
         cancelEditAccount();
+        enableSaveAccountButton();
 
         let fields = ['username', 'email', 'first_name', 'last_name'];
         for (let i = 0; i < fields.length; i++) {
@@ -169,15 +158,15 @@ function submitEditAccountForm() {
             dataType: 'json',
             data: account.getSubmitData(),
             success: editAccountSuccessFunc(account),
-            error: editAccountFailFunc
+            error: editAccountFailFunc()
         });
         // hide error
         $('.input-error').hide();
 
     } else {
         // display errors
-        for (let i = 0; i < Account.fields.length; i++) {
-            let f = Account.fields[i];
+        for (let i = 0; i < Account.prototype.fields.length; i++) {
+            let f = Account.prototype.fields[i];
             if (account.errors.hasOwnProperty(f))
                 $('#error_' + f)
                     .show()
@@ -197,7 +186,7 @@ function enableSaveAccountButton() {
     $('#save-account-button')
         .html('SAVE')
         .removeClass('disable')
-        .click(submitChangePasswordForm);
+        .click(submitEditAccountForm);
 }
 
 // ---------- DELETE ---------------
@@ -209,12 +198,11 @@ function deleteAccountForm() {
         return;
     if (!confirm("Are you REALLY REALLY sure?"))
         return;
-    let account = new Account(getAccountInfo());
     $.ajax({
         url: '/account/delete/',
         type: 'POST',
         dataType: 'json',
-        data: account.getSubmitData(),
+        data: {csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val()},
         success: deleteAccountSuccess,
         error: displayError
     });
@@ -223,84 +211,4 @@ function deleteAccountForm() {
 function deleteAccountSuccess() {
     deleteAllCookies(); // logout
     window.location.replace("/");
-}
-
-function displayError(response, status, error) {
-    switch (error) {
-        case 'Bad Request':
-            let errorMessages = [];
-            response = response.responseJSON;
-            for (let e in response)
-                if (response.hasOwnProperty(e))
-                    errorMessages.push(response[e].join(','));
-            alert(errorMessages.join('\n'));
-            break;
-        case 'Internal Server Error':
-            alert("Internal Server Error\nPlease try again later");
-            break;
-        default :
-            alert("Unknown error\nPlease try again later");
-    }
-}
-
-// ---------- CHANGE PASSWORD ---------------
-
-function changePasswordSuccess() {
-    $('.password-change input').val('');
-    $('#password-change-success')
-        .removeClass('hidden')
-        .html('Password has been changed successfully at ' + new Date());
-    enableChangePasswordButton();
-}
-
-function changePasswordFail() {
-    return function (response, status, error) {
-        enableChangePasswordButton();
-        $('#password-change-success').addClass('hidden');
-        displayError(response, status, error)
-    }
-}
-
-function submitChangePasswordForm() {
-    let account = new Account(getAccountInfo());
-
-    if (account.isValid()) {
-        disableChangePasswordButton();
-
-        // send ajax request
-        $.ajax({
-            url: '/account/password_change/',
-            type: 'POST',
-            dataType: 'json',
-            data: account.getSubmitData(),
-            success: changePasswordSuccess,
-            error: changePasswordFail
-        });
-        // hide error
-        $('.input-error').hide();
-
-    } else {
-        // display errors
-        for (let i = 0; i < Account.fields.length; i++) {
-            let f = Account.fields[i];
-            if (account.errors.hasOwnProperty(f))
-                $('#error_' + f)
-                    .show()
-                    .html(account.errors[f].join("<br>"))
-        }
-    }
-}
-
-function disableChangePasswordButton() {
-    $('#change-password-button')
-        .html('CHANGING...')
-        .addClass('disable')
-        .off('click');
-}
-
-function enableChangePasswordButton() {
-    $('#change-password-button')
-        .html('CHANGE MY PASSWORD')
-        .removeClass('disable')
-        .click(submitChangePasswordForm);
 }

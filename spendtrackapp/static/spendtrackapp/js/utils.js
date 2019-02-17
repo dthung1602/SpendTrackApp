@@ -158,3 +158,27 @@ function deleteAllCookies() {
         document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
     }
 }
+
+/**
+ * Display ajax request errors
+ * @param response
+ * @param status
+ * @param error
+ */
+function displayError(response, status, error) {
+    switch (error) {
+        case 'Bad Request':
+            let errorMessages = [];
+            response = response.responseJSON;
+            for (let e in response)
+                if (response.hasOwnProperty(e))
+                    errorMessages.push(e + ': ' + response[e].join(','));
+            alert(errorMessages.join('\n'));
+            break;
+        case 'Internal Server Error':
+            alert("Internal Server Error\nPlease try again later");
+            break;
+        default :
+            alert("Unknown error\nPlease try again later");
+    }
+}

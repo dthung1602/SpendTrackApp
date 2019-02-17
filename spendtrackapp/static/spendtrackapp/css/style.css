@@ -599,6 +599,23 @@ input[type='submit'].disable {
     margin-bottom: 15px;
 }
 
+#password-change-success {
+    color: green;
+    margin: 10px 0 30px 0;
+    font-style: italic;
+}
+
+.user-email {
+    color: #183f62;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+#send-email-countdown {
+    font-weight: bolder;
+    font-style: italic;
+}
+
 /*******************************
  *       MEDIA QUERY           *
  *******************************/

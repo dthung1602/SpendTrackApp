@@ -3,6 +3,7 @@
 {% block script %}
     {% load static %}
     <script src="{% static "spendtrackapp/js/account.js" %}"></script>
+    <script src="{% static "spendtrackapp/js/reset_password.js" %}"></script>
 {% endblock %}
 
 {% block main %}
@@ -33,7 +34,8 @@
                 </tr>
                 <tr>
                     <th>Date joined</th>
-                    <td>{{ user.date_joined }}</td>
+                    <td>{{ user.date_joined }}
+                        <input type="hidden" id="account_date_joined" value="{{ user.date_joined }}"></td>
                 </tr>
                 <tr>
                     <th>Last login</th>
@@ -52,23 +54,25 @@
         <!-- Change password -->
         <div class="box password-change">
             <h5>Change password</h5>
-            <div class="row hidden password-change-success">
+            <div class="row" id="password-change-success">
 
             </div>
             <div class="row">
                 <div class="three columns">
-                    <label for="account_current_password">Current password</label>
+                    <label for="old_password">Current password</label>
                 </div>
                 <div class="eight columns">
-                    <input type="password" id="account_current_password">
+                    <input type="password" id="old_password">
+                    <span class="input-error" id="old_password_error"></span>
                 </div>
             </div>
             <div class="row">
                 <div class="three columns">
-                    <label for="account_password1">New password</label>
+                    <label for="new_password1">New password</label>
                 </div>
                 <div class="eight columns">
-                    <input type="password" id="account_password1">
+                    <input type="password" id="new_password1">
+                    <span class="input-error" id="new_password1_error"></span>
                     <p>Your password can't be too similar to your other personal information.</p>
                     <p>Your password must contain at least 8 characters.</p>
                     <p>Your password can't be a commonly used password.</p>
@@ -77,10 +81,11 @@
             </div>
             <div class="row">
                 <div class="three columns">
-                    <label for="account_password2">Confirm new password</label>
+                    <label for="new_password2">Confirm new password</label>
                 </div>
                 <div class="eight columns">
-                    <input type="password" id="account_password2">
+                    <input type="password" id="new_password2">
+                    <span class="input-error" id="new_password2_error"></span>
                 </div>
             </div>
             <div class="align-right">

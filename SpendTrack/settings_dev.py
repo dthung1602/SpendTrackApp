@@ -136,6 +136,11 @@ LOGOUT_REDIRECT_URL = '/'
 
 LOGIN_URL = 'account:login'
 
+# Email
+
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sentemails")
+
 ######################################
 #             APP CONFIG             #
 ######################################

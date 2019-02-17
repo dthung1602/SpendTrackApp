@@ -123,6 +123,8 @@ LOGOUT_REDIRECT_URL = '/'
 
 LOGIN_URL = 'login'
 
+# TODO add email config
+
 ######################################
 #             APP CONFIG             #
 ######################################

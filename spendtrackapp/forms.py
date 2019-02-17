@@ -1,3 +1,6 @@
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.forms import UserChangeForm
+from django.contrib.auth.models import User
 from django.forms import ModelForm, Form, ChoiceField, IntegerField, DateField
 
 from spendtrackapp.models import Entry, Plan, Category
@@ -185,3 +188,20 @@ class SearchTimeForm(Form):
                 }
 
         return self._relevant_data_str
+
+
+class UserEditForm(UserChangeForm):
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email']
+
+
+class CustomPasswordResetForm(PasswordResetForm):
+    def clean(self):
+        super().clean()
+
+        if self.errors == {}:
+            try:
+                self.user = User.objects.get(email=self.cleaned_data['email'])
+            except User.DoesNotExist:
+                self.add_error('email', 'Invalid email')

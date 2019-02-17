@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from spendtrackapp.views import index, account
+from spendtrackapp.views import index
 
 urlpatterns = [
     path('', index.index_handler, name='index'),
