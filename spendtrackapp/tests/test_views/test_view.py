@@ -1,6 +1,6 @@
 import sys
 
-from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 from django.test import TestCase
 
 from spendtrackapp.tests.utils import UnbufferedStream
@@ -8,6 +8,8 @@ from spendtrackapp.tests.utils import UnbufferedStream
 
 class TestView(TestCase):
     """Base class for view test cases"""
+
+    default_user_id = 1
 
     @classmethod
     def setUpClass(cls):
@@ -20,7 +22,7 @@ class TestView(TestCase):
 
     def logIn(self):
         """Let self.client login"""
-        user = authenticate(username='dtrump', password='unitedstates')
+        user = User.objects.get(id=self.default_user_id)
         if user is None:
             raise Exception('Login fails')
         self.client.force_login(user)

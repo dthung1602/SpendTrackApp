@@ -197,6 +197,14 @@ class UserEditForm(UserChangeForm):
         model = User
         fields = ['username', 'first_name', 'last_name', 'email']
 
+    def clean(self):
+        super().clean()
+
+        if 'email' in self.data and self.data['email'].strip() == '':
+            self.add_error('email', 'Email cannot be empty.')
+
+        return self.cleaned_data
+
 
 class CustomPasswordResetForm(PasswordResetForm):
     def clean(self):
@@ -214,12 +222,9 @@ class RegisterForm(UserCreationForm):
         model = User
         fields = ("username", "email")
         field_classes = {'username': UsernameField, 'email': EmailField}
-    # email = EmailField()
-    #
-    # def save(self, commit=True):
-    #     user = super().save(commit=False)
-    #     user.email = self.cleaned_data['email']
-    #     if commit:
-    #         user.save()
-    #     return user
-    #     return super().save(commit)
+
+    def clean(self):
+        super().clean()
+        if 'email' in self.cleaned_data and self.cleaned_data['email'] == '':
+            self.add_error('email', 'Email cannot be empty')
+        return self.cleaned_data
