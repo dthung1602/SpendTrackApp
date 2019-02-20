@@ -1,9 +1,10 @@
+const entryCatFieldId = 'entry-category';
+
 $(document).ready(function () {
     $('#submit-entry-button').click(submitNewEntryForm);
     startTime();
     if ($(".no-data").length === 0)
         viewTablePage(1);
-    const entryCatFieldId = 'entry-category';
 
     // insert drop down button to the above div
     $('#category-dropdown-container').html(Category.toDropdownMenu(entryCatFieldId, false));
@@ -122,11 +123,13 @@ function addNewEntrySuccessFuncGenerator(data) {
         // get elements
         let categoryDisplay = $('#display-entry-category');
         let totalInWeek = $('#total-in-week');
-        let currentBalance = $('#current-balance');
+        let totalInMonth = $('#total-in-month');
         let now = new Date();
         let submitDate = new Date(data.date);
         let wn = submitDate.getWeekNumber();
+        let m = submitDate.getMonth();
         let y = submitDate.getFullYear();
+        let value = parseFloat(data.value);
 
         // if item is not in this week, inform success
         if (now.getWeekNumber() !== wn || now.getFullYear() !== y) {
@@ -137,7 +140,6 @@ function addNewEntrySuccessFuncGenerator(data) {
             $('#new-entry-success-panel').hide();
 
             // convert data to correct format
-            data.value = parseFloat(data.value);
             data.date = daysInWeekNamesS[submitDate.getDay()].substr(0, 3) + " "
                 + monthNames[submitDate.getMonth()].substr(0, 3) + " "
                 + submitDate.getDate().fillZero() + ", "
@@ -147,13 +149,16 @@ function addNewEntrySuccessFuncGenerator(data) {
             // add new row to table
             $('<td>').text(data.date).appendTo(row);
             $('<td>').text(data.content).appendTo(row);
-            $('<td class="align-right">').text(data.value.toFixed(2)).appendTo(row);
+            $('<td class="align-right">').text(value.toFixed(2)).appendTo(row);
             $('<td class="align-right">').text(categoryDisplay.text()).appendTo(row);
 
-            // change total in week and balance
-            totalInWeek.text((parseFloat(totalInWeek.text()) + data.value).toFixed(2));
-            currentBalance.text((parseFloat(currentBalance.text()) + data.value).toFixed(2));
+            // change total in week
+            totalInWeek.text((parseFloat(totalInWeek.text()) + value).toFixed(2));
         }
+
+        // change total in week
+        if (now.getMonth() === m && now.getFullYear() === y)
+            totalInMonth.text((parseFloat(totalInMonth.text()) + value).toFixed(2));
 
         // clear form
         $('#entry-container .no-data').remove();

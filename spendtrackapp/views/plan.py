@@ -11,6 +11,7 @@ def index_handler(request):
     """Handle plan index page"""
 
     return render(request, 'spendtrackapp/plan_index.html', {
+        'page_title': 'Plan',
         'categories': Category.objects.all(),
         'current_plans': Plan.get_current_plans(request.user),
     })
@@ -25,7 +26,10 @@ def search_handler(request):
         return render(
             request,
             'spendtrackapp/plan_search.html',
-            {'categories': Category.objects.all()}
+            {
+                'page_title': 'Plan search',
+                'categories': Category.objects.all()
+            }
         )
 
     # POST request -> return Plans info in JSON format

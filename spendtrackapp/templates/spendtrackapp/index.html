@@ -14,8 +14,8 @@
         <div class="row info">
             <div class="seven columns box" id="clock"></div>
             <div class="five columns box">
-                <div>Balance</div>
-                <div id="current-balance">{{ current_balance | floatformat:2 }}</div>
+                <div>This month</div>
+                <div id="total-in-month">{{ total_in_month | floatformat:2 }}</div>
             </div>
         </div>
 
@@ -52,7 +52,7 @@
 
             <!-- Total in week -->
             <div class="row info">
-                <div class="one-third column">TOTAL</div>
+                <div class="one-third column">THIS WEEK</div>
                 <div id="total-in-week" class="two-thirds column">{{ total_in_week }}</div>
             </div>
 

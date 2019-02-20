@@ -19,11 +19,14 @@ The environment must provide the following variable:
 """
 
 import os
+import socket
 
 DEBUG = False
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+HOST_NAME = socket.gethostname()
 
 ######################################
 #          DJANGO CONFIG             #
@@ -121,15 +124,25 @@ LOGIN_REDIRECT_URL = '/'
 
 LOGOUT_REDIRECT_URL = '/'
 
-LOGIN_URL = 'login'
+LOGIN_URL = 'account:login'
 
-# TODO add email config
+# Email
+
+EMAIL_USE_TLS = True
+
+EMAIL_HOST = os.environ.get('MAILGUN_SMTP_SERVER')
+
+EMAIL_PORT = os.environ.get('MAILGUN_SMTP_PORT')
+
+EMAIL_HOST_USER = os.environ.get('MAILGUN_SMTP_LOGIN')
+
+EMAIL_HOST_PASSWORD = os.environ.get('MAILGUN_SMTP_PASSWORD')
 
 ######################################
 #             APP CONFIG             #
 ######################################
 
-APP_VERSION = "1.2"
+APP_VERSION = "1.3"
 
 CONTACT_GITHUB = 'https://github.com/' + os.environ.get('CONTACT_GITHUB')
 
@@ -148,6 +161,8 @@ VIEW_SUMMARIZE_WEEK_DEFAULT_PAGE_SIZE = os.getenv('VIEW_SUMMARIZE_WEEK_DEFAULT_P
 MODEL_CATEGORY_HIERARCHY_MAX_DEPTH = os.getenv('MODEL_CATEGORY_HIERARCHY_MAX_DEPTH', 3)
 
 MODEL_PLAN_COMPARE_EQUAL_EPSILON = os.getenv('MODEL_PLAN_COMPARE_EQUAL_EPSILON', 0.1)
+
+EMAIL_RESET_PASSWORD_SENDER_NAME = 'no-reply@' + HOST_NAME
 
 ######################################
 #     HEROKU DEPLOYMENT CONFIG       #

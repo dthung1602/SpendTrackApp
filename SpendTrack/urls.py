@@ -28,5 +28,4 @@ urlpatterns = [
 
     path('summarize/', include('spendtrackapp.urls.summarize')),
     path('plan/', include('spendtrackapp.urls.plan')),
-    path('settings/', include('spendtrackapp.urls.settings')),
 ]

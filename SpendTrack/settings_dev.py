@@ -27,6 +27,8 @@ DEBUG = True
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+HOST_NAME = 'localhost'
+
 ######################################
 #          DJANGO CONFIG             #
 ######################################
@@ -164,3 +166,5 @@ VIEW_SUMMARIZE_WEEK_DEFAULT_PAGE_SIZE = 10
 MODEL_CATEGORY_HIERARCHY_MAX_DEPTH = 3
 
 MODEL_PLAN_COMPARE_EQUAL_EPSILON = 0.1
+
+EMAIL_RESET_PASSWORD_SENDER_NAME = 'no-reply@' + HOST_NAME

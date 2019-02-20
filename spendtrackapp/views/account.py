@@ -14,6 +14,7 @@ from spendtrackapp.views.utils import *
 @login_required
 def index(request):
     context = {
+        'page_title': 'My account',
         'user': request.user
     }
     return render(request, 'spendtrackapp/account.html', context)
@@ -29,17 +30,19 @@ def register_handler(request):
             return HttpResponseRedirect(reverse('index'))
         else:
             context = {
+                'page_title': 'Register',
                 'errors': form.errors,
                 'old_data': request.POST
             }
             return render(request, 'spendtrackapp/register.html', context)
 
-    return render(request, 'spendtrackapp/register.html')
+    return render(request, 'spendtrackapp/register.html', {'page_title': 'Register'})
 
 
 def login_handler(request):
     if request.method == 'GET':
         context = {
+            'page_title': 'Login',
             'next': request.GET.get('next'),
             'user': request.user
         }
@@ -52,6 +55,7 @@ def login_handler(request):
 
     if not user:
         context = {
+            'page_title': 'Login',
             'next': next_page,
             'errors': True
         }
@@ -97,7 +101,7 @@ def password_change_handler(request):
 
 def password_reset_handler(request):
     if request.method == 'GET':
-        return render(request, "spendtrackapp/reset_password.html")
+        return render(request, "spendtrackapp/reset_password.html", {'page_title': 'Password reset'})
 
     form = CustomPasswordResetForm(request.POST)
     if form.is_valid():
@@ -105,16 +109,27 @@ def password_reset_handler(request):
             subject_template_name='spendtrackapp/email/reset_password_title.txt',
             email_template_name='spendtrackapp/email/reset_password.txt',
             html_email_template_name='spendtrackapp/email/reset_password.html',
+            from_email=settings.EMAIL_RESET_PASSWORD_SENDER_NAME,
             use_https=not settings.DEBUG,
             request=request
         )
         if request.is_ajax():
             return JsonResponse({})
-        return render(request, "spendtrackapp/reset_password_done.html", context={'email': form.cleaned_data['email']})
+
+        context = {
+            'page_title': 'Password reset',
+            'email': form.cleaned_data['email']
+        }
+        return render(request, "spendtrackapp/reset_password_done.html", context)
 
     if request.is_ajax():
         return JsonResponse(form.errors, status=400)
-    return render(request, "spendtrackapp/reset_password.html", {'errors': form.errors['email']})
+
+    context = {
+        'page_title': 'Password reset',
+        'errors': form.errors['email']
+    }
+    return render(request, "spendtrackapp/reset_password.html", context)
 
 
 def password_reset_confirm_handler(request, uidb64, token):
@@ -133,6 +148,7 @@ def password_reset_confirm_handler(request, uidb64, token):
         # login and render form
         login(request, user)
         context = {
+            'page_title': 'Password reset',
             'old_password': password,
         }
         return render(request, "spendtrackapp/reset_password_confirm.html", context=context)

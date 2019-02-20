@@ -2,7 +2,6 @@ from django.contrib.auth.decorators import login_required
 from django.http.response import JsonResponse
 
 from spendtrackapp.forms import EntryForm, Entry, Category
-from spendtrackapp.models import Info
 from spendtrackapp.views.utils import *
 
 
@@ -10,18 +9,20 @@ from spendtrackapp.views.utils import *
 def index_handler(request):
     """Handle home page get request"""
 
-    current_balance = Info.get('CURRENT_BALANCE').value
-    isoyear, week, week_day = datetime.now().isocalendar()
+    now = datetime.now()
+    isoyear, week, week_day = now.isocalendar()
+    year, month = now.year, now.month
     entries_in_week = group_array(
         Entry.find_by_week(request.user, isoyear, week), settings.VIEW_SUMMARIZE_WEEK_DEFAULT_PAGE_SIZE)
     total_in_week = Entry.total_by_week(request.user, isoyear, week)
+    total_in_month = Entry.total_by_month(request.user, year, month)
     categories = Category.objects.all()
 
     context = {
         'page_title': 'SpendTrackApp',
-        'current_balance': current_balance,
         'entries_pages': entries_in_week,
         'total_in_week': total_in_week,
+        'total_in_month': total_in_month,
         'categories': categories
     }
     return render(request, 'spendtrackapp/index.html', context)
@@ -40,10 +41,5 @@ def add_handler(request):
     if not form.is_valid():
         return JsonResponse(form.errors, status=400)
     form.save()
-
-    # change current balance
-    current_balance = Info.get('CURRENT_BALANCE')
-    current_balance += float(form.instance.value)
-    current_balance.save()
 
     return JsonResponse({})

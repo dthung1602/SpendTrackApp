@@ -19,7 +19,7 @@
 <header>
     {% block header %}
         <div class="container">
-            <img src="{% static "spendtrackapp/img/logo.png" %}" alt="Logo SpendTrackApp" class="logo">
+            <a href="{% url "index" %}"><img src="{% static "spendtrackapp/img/logo.png" %}" alt="Logo SpendTrackApp" class="logo"></a>
             <span class="badge">VERSION {{ app_version }}</span>
         </div>
     {% endblock %}
@@ -52,10 +52,9 @@
                         <img src="{% static "spendtrackapp/img/settings-logo.png" %}" alt="SETTINGS">
                     </div>
                     <div class="drop-down-content">
+                        <a href="{% url "admin:index" %}">Admin page</a>
                         <a href="{% url "account:index" %}">My account</a>
                         <a href="{% url "account:logout" %}">Logout</a>
-                        <a href="{% url "admin:index" %}">Admin page</a>
-                        <a href="{% url "settings:index" %}">More settings</a>
                     </div>
                 </div>
             </div>
@@ -129,8 +128,9 @@
                 <a href="{% url "index" %}">HOME</a>
                 <a href="{% url "summarize:index" %}">SUMMARIZES</a>
                 <a href="{% url "plan:index" %}">PLANS</a>
-                <a href="{% url "settings:index" %}">SETTINGS</a>
                 <a href="{% url "admin:index" %}">ADMIN</a>
+                <a href="{% url "account:index" %}">ACCOUNT</a>
+                <a href="{% url "account:logout" %}">LOGOUT</a>
             </div>
 
             <!-- Other info -->
