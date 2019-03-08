@@ -41,7 +41,11 @@
                             <div class="input-error">{{ errors.password2 | striptags }}</div>
                         {% endif %}
                     </div>
-                    <br>
+                    <div>
+                        By clicking "Register", you confirm that you have read and agreed with SpendTrackApp
+                        <a target="_blank" href="{% url "legalnotice" %}">term & condition and privacy policy </a>
+                    </div>
+                    <br><br><br>
                     <div class="align-right">
                         <button class="button-primary">Register</button>
                         <div class="button" id="clear-button">Clear</div>

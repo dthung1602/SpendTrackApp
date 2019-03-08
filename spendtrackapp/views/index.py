@@ -43,3 +43,11 @@ def add_handler(request):
     form.save()
 
     return JsonResponse({})
+
+
+def legal_notice_handler(request):
+    """
+    Handle term and condition, privacy page
+    """
+
+    return render(request, 'spendtrackapp/legal_notice.html', {"page_title": "Legal notice"})
