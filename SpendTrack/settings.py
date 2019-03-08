@@ -142,7 +142,7 @@ EMAIL_HOST_PASSWORD = os.environ.get('MAILGUN_SMTP_PASSWORD')
 #             APP CONFIG             #
 ######################################
 
-APP_VERSION = "1.3"
+APP_VERSION = "1.3.1"
 
 CONTACT_GITHUB = 'https://github.com/' + os.environ.get('CONTACT_GITHUB')
 
