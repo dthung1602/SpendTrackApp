@@ -1,4 +1,5 @@
-const COUNT_DOWN_TIME = 3;
+const COUNT_DOWN_TIME = 120;
+
 $(document).ready(function () {
     $("#resend-email-button").hide().click(resendEmail);
     countDown(COUNT_DOWN_TIME);

@@ -360,7 +360,7 @@
                                 <tr>
                                     {% load static %}
                                     <td>
-                                        <img src="{% static "spendtrackapp/img/logo.png" %}"
+                                        <img src="{{ protocol }}://{{ domain }}{% static "spendtrackapp/img/logo.png" %}"
                                              alt="SpendTrackApp">
                                     </td>
                                 </tr>
@@ -378,8 +378,8 @@
                     <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                         <tr>
                             <td class="content-block">
-                                <span class="apple-link">SpendTrackApp <a
-                                        href="{{ protocol }}://{{ domain }}.{{ site_name }}/">website</a></span>
+                                <span class="apple-link"> <a href="{{ protocol }}://{{ domain }}.{{ site_name }}/">
+                                    SpendTrackApp website</a></span>
                                 <br>
                                 <span class="apple-link">This is an auto-generated email, please don't reply</span>
                             </td>

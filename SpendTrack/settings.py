@@ -19,14 +19,11 @@ The environment must provide the following variable:
 """
 
 import os
-import socket
 
 DEBUG = False
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-HOST_NAME = socket.gethostname()
 
 ######################################
 #          DJANGO CONFIG             #
@@ -162,7 +159,9 @@ MODEL_CATEGORY_HIERARCHY_MAX_DEPTH = os.getenv('MODEL_CATEGORY_HIERARCHY_MAX_DEP
 
 MODEL_PLAN_COMPARE_EQUAL_EPSILON = os.getenv('MODEL_PLAN_COMPARE_EQUAL_EPSILON', 0.1)
 
-EMAIL_RESET_PASSWORD_SENDER_NAME = 'no-reply@' + HOST_NAME
+EMAIL_DOMAIN_NAME = os.getenv('MAILGUN_DOMAIN', '')
+
+EMAIL_RESET_PASSWORD_SENDER_NAME = 'master@' + EMAIL_DOMAIN_NAME
 
 ######################################
 #     HEROKU DEPLOYMENT CONFIG       #
