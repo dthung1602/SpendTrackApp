@@ -42,7 +42,7 @@
                         {% endif %}
                     </div>
                     <div>
-                        By clicking "Register", you confirm that you have read and agreed with SpendTrackApp
+                        <input type="checkbox" id="agree" required> I have read and agree with SpendTrackApp's
                         <a target="_blank" href="{% url "legalnotice" %}">term & condition and privacy policy </a>
                     </div>
                     <br><br><br>
@@ -55,6 +55,7 @@
                                     let fields = ['username', 'email', 'password1', 'password2'];
                                     for (let i = 0; i < fields.length; i++)
                                         $('#' + fields[i]).val('');
+                                    $('#agree').prop('checked', false);
                                     $('.input-error').remove();
                                 })
                             });

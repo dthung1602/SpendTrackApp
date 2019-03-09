@@ -139,7 +139,7 @@ EMAIL_HOST_PASSWORD = os.environ.get('MAILGUN_SMTP_PASSWORD')
 #             APP CONFIG             #
 ######################################
 
-APP_VERSION = "1.3.1"
+APP_VERSION = "1.3.2"
 
 CONTACT_GITHUB = 'https://github.com/' + os.environ.get('CONTACT_GITHUB')
 
@@ -161,7 +161,7 @@ MODEL_PLAN_COMPARE_EQUAL_EPSILON = os.getenv('MODEL_PLAN_COMPARE_EQUAL_EPSILON',
 
 EMAIL_DOMAIN_NAME = os.getenv('MAILGUN_DOMAIN', '')
 
-EMAIL_RESET_PASSWORD_SENDER_NAME = 'master@' + EMAIL_DOMAIN_NAME
+EMAIL_RESET_PASSWORD_SENDER_NAME = 'service@' + EMAIL_DOMAIN_NAME
 
 ######################################
 #     HEROKU DEPLOYMENT CONFIG       #
