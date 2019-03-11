@@ -21,8 +21,11 @@ from spendtrackapp.views import index
 
 urlpatterns = [
     path('', index.index_handler, name='index'),
-    path('add/', index.add_handler, name='add'),
+    path('about/', index.about_handler, name='about'),
     path('legalnotice/', index.legal_notice_handler, name='legalnotice'),
+
+    path('home/', index.home_handler, name='home'),
+    path('add/', index.add_handler, name='add'),
 
     path('admin/', admin.site.urls, name='admin'),
     path('account/', include('spendtrackapp.urls.account')),

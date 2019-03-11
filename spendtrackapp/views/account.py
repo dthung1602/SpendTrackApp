@@ -27,7 +27,7 @@ def register_handler(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return HttpResponseRedirect(reverse('index'))
+            return HttpResponseRedirect(reverse('home'))
         else:
             context = {
                 'page_title': 'Register',
@@ -69,7 +69,7 @@ def login_handler(request):
 @login_required
 def logout_handler(request):
     logout(request)
-    return HttpResponseRedirect(reverse('index'))
+    return HttpResponseRedirect(reverse('home'))
 
 
 @login_required

@@ -47,6 +47,8 @@ input[type='submit'].disable {
 .logo {
     display: inline-block;
     float: left;
+    height: 60px;
+    margin: 5px 0;
 }
 
 .badge {

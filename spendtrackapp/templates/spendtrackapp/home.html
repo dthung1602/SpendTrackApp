@@ -1,0 +1,123 @@
+{% extends "spendtrackapp/base.html" %}
+
+{% block script %}
+    {% load static %}
+    <script src="{% static "spendtrackapp/js/index.js" %}"></script>
+    <script src="{% static "spendtrackapp/js/category.js" %}"></script>
+{% endblock %}
+
+{% block main %}
+
+    <div class="container">
+
+        <!-- Clock and Balance -->
+        <div class="row info">
+            <div class="seven columns box" id="clock"></div>
+            <div class="five columns box">
+                <div>This month</div>
+                <div id="total-in-month">{{ total_in_month | floatformat:2 }}</div>
+            </div>
+        </div>
+
+        <!-- Entries in this week -->
+        <div class="box">
+            <div class="row">
+                <table class="twelve columns">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Content</th>
+                        <th class="align-right">Value</th>
+                        <th class="align-right">Category</th>
+                    </tr>
+                    </thead>
+                    <tbody id="entry-container">
+                    {% for entries_page in entries_pages %}
+                        {% for entry in entries_page %}
+                            <tr class="table-page-{{ forloop.parentloop.counter }}">
+                                <td>{{ entry.formatted_date }}</td>
+                                <td>{{ entry.content }}</td>
+                                <td class="align-right">{{ entry.value }}</td>
+                                <td class="align-right">{{ entry.leaf_category }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% empty %}
+                        <tr>
+                            <td class="no-data">No data to display</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Total in week -->
+            <div class="row info">
+                <div class="one-third column">THIS WEEK</div>
+                <div id="total-in-week" class="two-thirds column">{{ total_in_week }}</div>
+            </div>
+
+            <!-- page control -->
+            {% if entries_pages|length > 1 %}
+                <div class="row">
+                    <div class="twelve columns group-btn page-control align-right">
+                        {% for ep in entries_pages %}
+                            <div class="button"
+                                 onclick="viewTablePage({{ forloop.counter }})">{{ forloop.counter }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+        </div>
+
+        <div class="row success-panel" id="new-entry-success-panel" style="display: none">
+        </div>
+
+        <!-- Add new entry -->
+        <div class="box" id="new-entry">
+            {% csrf_token %}
+
+            <div class="row">
+                <!-- Date time -->
+                <div class="five columns">
+                    <label for="entry-date">Datetime</label>
+                    <input type="datetime-local" id="entry-date" placeholder="yyyy-mm-dd hh:mm"
+                           autocomplete="off">
+                    <div class="button" onclick="setNewEntryDatetimeNow()">Now</div>
+                    <div id="entry-date-error" class="input-error"></div>
+                </div>
+
+                <!-- Content -->
+                <div class="seven columns">
+                    <label for="entry-content">Content</label>
+                    <input type="text" id="entry-content" placeholder="A carrot and an apple" maxlength="200">
+                    <div id="entry-content-error" class="input-error"></div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Category -->
+                <div class="five columns">
+                    <label for="category">Category</label>
+                    <div id="category-dropdown-container"></div>
+                    <div id="entry-category-error" class="input-error"></div>
+                </div>
+
+                <!-- Value -->
+                <div class="seven columns">
+                    <label for="entry-value">Value</label>
+                    <input type="text" id="entry-value" placeholder="1.25 + 2.3 * 5"
+                           pattern="^[0-9 \+\-\*\/\(\)\.]+$">
+                    <div id="entry-value-error" class="input-error"></div>
+                </div>
+            </div>
+
+            <!-- Submit and clear -->
+            <div class="row submit-row align-right">
+                <div class="button" onclick="clearNewEntryFields()">CLEAR</div>
+                <div class="button button-primary" id="submit-entry-button">ADD</div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

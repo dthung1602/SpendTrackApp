@@ -5,9 +5,35 @@ from spendtrackapp.forms import EntryForm, Entry, Category
 from spendtrackapp.views.utils import *
 
 
-@login_required
 def index_handler(request):
-    """Handle home page get request"""
+    """Handle website index page"""
+
+    context = {
+        'page_title': 'SpendTrackApp',
+        'user': None if request.user.is_anonymous else request.user
+    }
+    return render(request, 'spendtrackapp/index.html', context)
+
+
+def legal_notice_handler(request):
+    """
+    Handle term and condition, privacy page
+    """
+
+    return render(request, 'spendtrackapp/legal_notice.html', {"page_title": "Legal notice"})
+
+
+def about_handler(request):
+    """
+    Handle about page
+    """
+
+    return render(request, 'spendtrackapp/about.html', {"page_title": "About"})
+
+
+@login_required
+def home_handler(request):
+    """Handle user home page get request"""
 
     now = datetime.now()
     isoyear, week, week_day = now.isocalendar()
@@ -19,13 +45,13 @@ def index_handler(request):
     categories = Category.objects.all()
 
     context = {
-        'page_title': 'SpendTrackApp',
+        'page_title': 'Home',
         'entries_pages': entries_in_week,
         'total_in_week': total_in_week,
         'total_in_month': total_in_month,
         'categories': categories
     }
-    return render(request, 'spendtrackapp/index.html', context)
+    return render(request, 'spendtrackapp/home.html', context)
 
 
 @login_required
@@ -43,11 +69,3 @@ def add_handler(request):
     form.save()
 
     return JsonResponse({})
-
-
-def legal_notice_handler(request):
-    """
-    Handle term and condition, privacy page
-    """
-
-    return render(request, 'spendtrackapp/legal_notice.html', {"page_title": "Legal notice"})

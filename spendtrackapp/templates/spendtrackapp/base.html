@@ -20,7 +20,7 @@
     {% block header %}
         <div class="container">
             <a href="{% url "index" %}"><img src="{% static "spendtrackapp/img/logo.png" %}" alt="Logo SpendTrackApp"
-                                             class="logo"></a>
+                                            class="logo"></a>
             <span class="badge">VERSION {{ app_version }}</span>
         </div>
     {% endblock %}
@@ -30,7 +30,7 @@
     {% block nav %}
         <div class="container">
             <div class="navbar">
-                <a href="{% url "index" %}">HOME</a>
+                <a href="{% url "home" %}">HOME</a>
                 <div class="drop-down-menu">
                     <div class="drop-btn">SUMMARIZE</div>
                     <div class="drop-down-content">
@@ -127,7 +127,7 @@
 
             <!-- Navigation -->
             <div class="row nav-footer">
-                <a href="{% url "index" %}">HOME</a>
+                <a href="{% url "home" %}">HOME</a>
                 <a href="{% url "summarize:index" %}">SUMMARIZES</a>
                 <a href="{% url "plan:index" %}">PLANS</a>
                 <a href="{% url "account:index" %}">ACCOUNT</a>
@@ -143,7 +143,7 @@
                 </div>
                 <div>with images and fonts from <a href="https://iconmonstr.com/" target="_blank">iconmonstr</a>,
                     <a href="https://www.kisspng.com/" target="_blank">kisspng</a>,
-                    <a href="https://www.tailorbrands.com/lp-home" target="_blank">tailorbrands</a>
+                    <a href="https://logojoy.com/" target="_blank">logojoy</a>
                     and <a href="https://www.1001fonts.com">1001fonts</a>
                 </div>
                 <div>Legal notice were created with the help of

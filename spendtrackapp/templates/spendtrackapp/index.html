@@ -1,123 +1,228 @@
-{% extends "spendtrackapp/base.html" %}
-
-{% block script %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ page_title }}</title>
     {% load static %}
-    <script src="{% static "spendtrackapp/js/index.js" %}"></script>
-    <script src="{% static "spendtrackapp/js/category.js" %}"></script>
-{% endblock %}
+    <link rel="shortcut icon" type="image/png" href="{% static "spendtrackapp/img/favicon.png" %}"/>
+    <link rel="stylesheet" href="{% static "spendtrackapp/css/normalize.css" %}">
+    <link rel="stylesheet" href="{% static "spendtrackapp/css/skeleton.css" %}">
+    <link rel="stylesheet" href="{% static "spendtrackapp/css/index.css" %}">
+    <script src="{% static "spendtrackapp/js/utils.js" %}"></script>
+</head>
 
-{% block main %}
+<body>
+<nav>
 
+    <div class="navbar">
+        <img src="{% static "spendtrackapp/img/logo.png" %}" alt="SpendTrackApp" class="logo">
+        {% if user == None %}
+            <a href="{% url "account:login" %}">LOGIN</a>
+            <a href="{% url "home" %}">REGISTER</a>
+            <a href="{% url "legalnotice" %}">LEGAL NOTICE</a>
+            <a href="{% url "about" %}">ABOUT US</a>
+        {% else %}
+            <a href="{% url "account:logout" %}">LOGOUT</a>
+            <a href="{% url "account:index" %}">MY ACCOUNT</a>
+            <a href="{% url "home" %}">HOME</a>
+            <span>Welcome, {{ user.username }}</span>
+        {% endif %}
+    </div>
+
+</nav>
+
+<main>
+    <div style='background-image: url("{% static "spendtrackapp/img/cover-dark.jpg" %}")' class="cover">
+        <div class="container">
+            <h1>Something blah blah blah</h1>
+            <p>Nos mea requiratur lor quamprimum intellectu. Si et ordinem eo videmus ei tacitus. Dormio sui loquor
+                vix
+                cap aperte hoc. Conceptum dubitavit facultate ne si plerosque. Vere fert agi tam ille. Facultatem
+                imo
+                rum pla quaerantur affirmarem quaecunque expectabam vul ponderibus. Haud co quis sint bile de in
+                sese.
+                Atque satis habet imo nia tes mox ipsis fieri.</p>
+            <p>Nos mea requiratur lor quamprimum intellectu. Si et ordinem eo videmus ei tacitus. Dormio sui loquor
+                vix
+                cap aperte hoc. Conceptum dubitavit facultate ne si plerosque. Vere fert agi tam ille. Facultatem
+                imo
+                rum pla quaerantur affirmarem quaecunque expectabam vul ponderibus. Haud co quis sint bile de in
+                sese.
+                Atque satis habet imo nia tes mox ipsis fieri.</p>
+            <p>Nos mea requiratur lor quamprimum intellectu. Si et ordinem eo videmus ei tacitus. Dormio sui loquor
+                vix
+                cap aperte hoc. Conceptum dubitavit facultate ne si plerosque. Vere fert agi tam ille. Facultatem
+                imo
+                rum pla quaerantur affirmarem quaecunque expectabam vul ponderibus. Haud co quis sint bile de in
+                sese.
+                Atque satis habet imo nia tes mox ipsis fieri.</p>
+            <p>Nos mea requiratur lor quamprimum intellectu. Si et ordinem eo videmus ei tacitus. Dormio sui loquor
+                vix
+                cap aperte hoc. Conceptum dubitavit facultate ne si plerosque. Vere fert agi tam ille. Facultatem
+                imo
+                rum pla quaerantur affirmarem quaecunque expectabam vul ponderibus. Haud co quis sint bile de in
+                sese.
+                Atque satis habet imo nia tes mox ipsis fieri.</p>
+            <div class="img-ref"><a href="http://www.freepik.com">photo by snowing/Freepik</a></div>
+        </div>
+    </div>
     <div class="container">
-
-        <!-- Clock and Balance -->
-        <div class="row info">
-            <div class="seven columns box" id="clock"></div>
-            <div class="five columns box">
-                <div>This month</div>
-                <div id="total-in-month">{{ total_in_month | floatformat:2 }}</div>
+        <div class="row shadow-box">
+            <div class="six columns">
+                <h3>Brief</h3>
+                <p>Nos mea requiratur lor quamprimum intellectu. Si et ordinem eo videmus ei tacitus. Dormio sui loquor
+                    vix
+                    cap aperte hoc. Conceptum dubitavit facultate ne si plerosque. Vere fert agi tam ille. Facultatem
+                    imo
+                    rum pla quaerantur affirmarem quaecunque expectabam vul ponderibus. Haud co quis sint bile de in
+                    sese.
+                    Atque satis habet imo nia tes mox ipsis fieri.</p>
             </div>
-        </div>
-
-        <!-- Entries in this week -->
-        <div class="box">
-            <div class="row">
-                <table class="twelve columns">
-                    <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Content</th>
-                        <th class="align-right">Value</th>
-                        <th class="align-right">Category</th>
-                    </tr>
-                    </thead>
-                    <tbody id="entry-container">
-                    {% for entries_page in entries_pages %}
-                        {% for entry in entries_page %}
-                            <tr class="table-page-{{ forloop.parentloop.counter }}">
-                                <td>{{ entry.formatted_date }}</td>
-                                <td>{{ entry.content }}</td>
-                                <td class="align-right">{{ entry.value }}</td>
-                                <td class="align-right">{{ entry.leaf_category }}</td>
-                            </tr>
-                        {% endfor %}
-                    {% empty %}
-                        <tr>
-                            <td class="no-data">No data to display</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Total in week -->
-            <div class="row info">
-                <div class="one-third column">THIS WEEK</div>
-                <div id="total-in-week" class="two-thirds column">{{ total_in_week }}</div>
-            </div>
-
-            <!-- page control -->
-            {% if entries_pages|length > 1 %}
-                <div class="row">
-                    <div class="twelve columns group-btn page-control align-right">
-                        {% for ep in entries_pages %}
-                            <div class="button"
-                                 onclick="viewTablePage({{ forloop.counter }})">{{ forloop.counter }}</div>
-                        {% endfor %}
-                    </div>
-                </div>
-            {% endif %}
-
-        </div>
-
-        <div class="row success-panel" id="new-entry-success-panel" style="display: none">
-        </div>
-
-        <!-- Add new entry -->
-        <div class="box" id="new-entry">
-            {% csrf_token %}
-
-            <div class="row">
-                <!-- Date time -->
-                <div class="five columns">
-                    <label for="entry-date">Datetime</label>
-                    <input type="datetime-local" id="entry-date" placeholder="yyyy-mm-dd hh:mm"
-                           autocomplete="off">
-                    <div class="button" onclick="setNewEntryDatetimeNow()">Now</div>
-                    <div id="entry-date-error" class="input-error"></div>
-                </div>
-
-                <!-- Content -->
-                <div class="seven columns">
-                    <label for="entry-content">Content</label>
-                    <input type="text" id="entry-content" placeholder="A carrot and an apple" maxlength="200">
-                    <div id="entry-content-error" class="input-error"></div>
-                </div>
-            </div>
-
-            <div class="row">
-                <!-- Category -->
-                <div class="five columns">
-                    <label for="category">Category</label>
-                    <div id="category-dropdown-container"></div>
-                    <div id="entry-category-error" class="input-error"></div>
-                </div>
-
-                <!-- Value -->
-                <div class="seven columns">
-                    <label for="entry-value">Value</label>
-                    <input type="text" id="entry-value" placeholder="1.25 + 2.3 * 5"
-                           pattern="^[0-9 \+\-\*\/\(\)\.]+$">
-                    <div id="entry-value-error" class="input-error"></div>
-                </div>
-            </div>
-
-            <!-- Submit and clear -->
-            <div class="row submit-row align-right">
-                <div class="button" onclick="clearNewEntryFields()">CLEAR</div>
-                <div class="button button-primary" id="submit-entry-button">ADD</div>
+            <div class="six columns">
+                <img src="{% static "spendtrackapp/img/logo.png" %}" alt="img" style="width: 100%">
             </div>
         </div>
     </div>
 
-{% endblock %}
+    <div class="outer-container">
+        <div class="container">
+            <div class="row">
+                <div class="four columns">
+                    <div class="feature-header">Take note every time you spend money</div>
+                    <ul>
+                        <li>Record the purchase with just a few simple clicks!</li>
+                        <li>Can save datetime of the purchase</li>
+                        <li>Can select purchase's category</li>
+                        <li>Price field can support arithmetic with + - * / ( )</li>
+                    </ul>
+                </div>
+                <div class="eight columns">
+                    <img src="{% static "spendtrackapp/img/demo-add.png" %}" alt="demo add" class="demo-img">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="outer-container">
+        <div class="container">
+            <div class="row">
+                <div class="eight columns">
+                    <img src="{% static "spendtrackapp/img/demo-list.png" %}" alt="demo-list" class="demo-img">
+                </div>
+                <div class="four columns">
+                    <div class="feature-header">View saved records</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="outer-container">
+        <div class="container">
+            <div class="row">
+                <div class="four columns">
+                    <div class="feature-header">Get summarizes!</div>
+                    <ul>
+                        <li>Summarize by:
+                            <ul>
+                                <li>year</li>
+                                <li>month</li>
+                                <li>week</li>
+                                <li>custom date range</li>
+                            </ul>
+                        </li>
+                        <li>Compare with previous year/month/week</li>
+                        <li>View proportions of each category</li>
+                    </ul>
+                </div>
+                <div class="eight columns">
+                    <img src="{% static "spendtrackapp/img/demo-sum.png" %}" alt="demo add" class="demo-img">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="outer-container">
+        <div class="container">
+            <div class="row">
+                <div class="eight columns">
+                    <img src="{% static "spendtrackapp/img/demo-plan.png" %}" alt="demo-list" class="demo-img">
+                </div>
+                <div class="four columns">
+                    <div class="feature-header">Make plans</div>
+                    <p>With a few simple clicks, you can make new plans and Spend Track App will keep track of them
+                        for you</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br><br>
+    <div class="container align-center">
+        <a href="{% url "account:register" %}">
+            <div class="signup button">Sign up free</div>
+        </a>
+    </div>
+
+</main>
+
+<div class="align-right">
+    <div class="button button-scroll-up" onclick="scrollToTop()">top</div>
+</div>
+
+
+<footer>
+    {#    <hr>#}
+    <div class="footer">
+        <!-- Contact -->
+        <div class="contact">
+            <a href="{{ contact_github }}" target="_blank">
+                <img src="{% static "spendtrackapp/img/iconmonstr-github-1-48.png" %}" alt="github">
+            </a>
+            <a href="{{ contact_email }}" target="_blank">
+                <img src="{% static "spendtrackapp/img/iconmonstr-email-10-48.png" %}" alt="email">
+            </a>
+            <a href="{{ contact_facebook }}" target="_blank">
+                <img src="{% static "spendtrackapp/img/iconmonstr-facebook-4-48.png" %}" alt="facebook">
+            </a>
+        </div>
+
+        <!-- Navigation -->
+        <div class="row nav-footer">
+            {% if user == None %}
+                <a href="{% url "about" %}">ABOUT US</a>
+                <a href="{% url "legalnotice" %}">LEGAL NOTICE</a>
+                <a href="{% url "home" %}">REGISTER</a>
+                <a href="{% url "account:login" %}">LOGIN</a>
+            {% else %}
+                <a href="{% url "home" %}">HOME</a>
+                <a href="{% url "summarize:index" %}">SUMMARIZE</a>
+                <a href="{% url "plan:index" %}">PLAN</a>
+                <a href="{% url "account:index" %}">MY ACCOUNT</a>
+                <a href="{% url "account:logout" %}">LOGOUT</a>
+            {% endif %}
+        </div>
+
+        <!-- Other info -->
+        <div class="row last-footer">
+            <div>Built with <a href="https://www.djangoproject.com/" target="_blank">Django 2.1.7</a></div>
+            <div>using <a href="https://jquery.com/" target="_blank">jQuery 3.3.1</a>,
+                <a href="https://gionkunz.github.io/chartist-js/" target="_blank">Chartist</a> and
+                <a href="http://getskeleton.com/" target="_blank">Skeleton 2.0.4</a>
+            </div>
+            <div>with images and fonts from <a href="https://iconmonstr.com/" target="_blank">iconmonstr</a>,
+                <a href="https://www.kisspng.com/" target="_blank">kisspng</a>,
+                <a href="https://logojoy.com/" target="_blank">logojoy</a>
+                and <a href="https://www.1001fonts.com">1001fonts</a>
+            </div>
+            <div>Legal notice were created with the help of
+                <a href="https://termsfeed.com/blog/sample-terms-and-conditions-template/#Examples_of_Terms_and_Conditions">termsfeed</a>
+                and
+                <a href="https://www.freeprivacypolicy.com/free-privacy-policy-generator.php">freeprivacypolicy</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
