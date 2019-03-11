@@ -14,9 +14,10 @@
 
 <body>
 <nav>
-
     <div class="navbar">
-        <img src="{% static "spendtrackapp/img/logo.png" %}" alt="SpendTrackApp" class="logo">
+        <a href="{% url "index" %}">
+            <img src="{% static "spendtrackapp/img/logo.png" %}" alt="SpendTrackApp" class="logo">
+        </a>
         {% if user == None %}
             <a href="{% url "account:login" %}">LOGIN</a>
             <a href="{% url "home" %}">REGISTER</a>
@@ -25,11 +26,12 @@
         {% else %}
             <a href="{% url "account:logout" %}">LOGOUT</a>
             <a href="{% url "account:index" %}">MY ACCOUNT</a>
+            <a href="{% url "legalnotice" %}">LEGAL NOTICE</a>
+            <a href="{% url "about" %}">ABOUT US</a>
             <a href="{% url "home" %}">HOME</a>
             <span>Welcome, {{ user.username }}</span>
         {% endif %}
     </div>
-
 </nav>
 
 <main>
@@ -50,27 +52,13 @@
                 rum pla quaerantur affirmarem quaecunque expectabam vul ponderibus. Haud co quis sint bile de in
                 sese.
                 Atque satis habet imo nia tes mox ipsis fieri.</p>
-            <p>Nos mea requiratur lor quamprimum intellectu. Si et ordinem eo videmus ei tacitus. Dormio sui loquor
-                vix
-                cap aperte hoc. Conceptum dubitavit facultate ne si plerosque. Vere fert agi tam ille. Facultatem
-                imo
-                rum pla quaerantur affirmarem quaecunque expectabam vul ponderibus. Haud co quis sint bile de in
-                sese.
-                Atque satis habet imo nia tes mox ipsis fieri.</p>
-            <p>Nos mea requiratur lor quamprimum intellectu. Si et ordinem eo videmus ei tacitus. Dormio sui loquor
-                vix
-                cap aperte hoc. Conceptum dubitavit facultate ne si plerosque. Vere fert agi tam ille. Facultatem
-                imo
-                rum pla quaerantur affirmarem quaecunque expectabam vul ponderibus. Haud co quis sint bile de in
-                sese.
-                Atque satis habet imo nia tes mox ipsis fieri.</p>
             <div class="img-ref"><a href="http://www.freepik.com">photo by snowing/Freepik</a></div>
         </div>
     </div>
     <div class="container">
         <div class="row shadow-box">
             <div class="six columns">
-                <h3>Brief</h3>
+                <h3>Why us?</h3>
                 <p>Nos mea requiratur lor quamprimum intellectu. Si et ordinem eo videmus ei tacitus. Dormio sui loquor
                     vix
                     cap aperte hoc. Conceptum dubitavit facultate ne si plerosque. Vere fert agi tam ille. Facultatem
@@ -176,7 +164,7 @@
     <div class="footer">
         <!-- Contact -->
         <div class="contact">
-            <a href="{{ contact_github }}" target="_blank">
+            <a href="{{ contact_dev_github }}" target="_blank">
                 <img src="{% static "spendtrackapp/img/iconmonstr-github-1-48.png" %}" alt="github">
             </a>
             <a href="{{ contact_email }}" target="_blank">
@@ -196,6 +184,8 @@
                 <a href="{% url "account:login" %}">LOGIN</a>
             {% else %}
                 <a href="{% url "home" %}">HOME</a>
+                <a href="{% url "about" %}">ABOUT US</a>
+                <a href="{% url "legalnotice" %}">LEGAL NOTICE</a>
                 <a href="{% url "summarize:index" %}">SUMMARIZE</a>
                 <a href="{% url "plan:index" %}">PLAN</a>
                 <a href="{% url "account:index" %}">MY ACCOUNT</a>

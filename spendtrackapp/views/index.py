@@ -20,7 +20,7 @@ def legal_notice_handler(request):
     Handle term and condition, privacy page
     """
 
-    return render(request, 'spendtrackapp/legal_notice.html', {"page_title": "Legal notice"})
+    return render(request, 'spendtrackapp/legal_notice.html', {"page_title": "Legal notice | SpendTrackApp"})
 
 
 def about_handler(request):
@@ -28,7 +28,13 @@ def about_handler(request):
     Handle about page
     """
 
-    return render(request, 'spendtrackapp/about.html', {"page_title": "About"})
+    context = {
+        'page_title': 'About | SpendTrackApp',
+        'user': None if request.user.is_anonymous else request.user,
+        'contact_dev_email': settings.CONTACT_DEV_EMAIL,
+        'contact_dev_facebook': settings.CONTACT_DEV_FACEBOOK,
+    }
+    return render(request, 'spendtrackapp/about.html', context)
 
 
 @login_required
@@ -45,7 +51,7 @@ def home_handler(request):
     categories = Category.objects.all()
 
     context = {
-        'page_title': 'Home',
+        'page_title': 'Home | SpendTrackApp',
         'entries_pages': entries_in_week,
         'total_in_week': total_in_week,
         'total_in_month': total_in_month,

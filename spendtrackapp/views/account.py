@@ -14,7 +14,7 @@ from spendtrackapp.views.utils import *
 @login_required
 def index(request):
     context = {
-        'page_title': 'My account',
+        'page_title': 'My account | SpendTrackApp',
         'user': request.user
     }
     return render(request, 'spendtrackapp/account.html', context)
@@ -30,7 +30,7 @@ def register_handler(request):
             return HttpResponseRedirect(reverse('home'))
         else:
             context = {
-                'page_title': 'Register',
+                'page_title': 'Register | SpendTrackApp',
                 'errors': form.errors,
                 'old_data': request.POST
             }
@@ -42,7 +42,7 @@ def register_handler(request):
 def login_handler(request):
     if request.method == 'GET':
         context = {
-            'page_title': 'Login',
+            'page_title': 'Login | SpendTrackApp',
             'next': request.GET.get('next'),
             'user': request.user
         }
@@ -101,7 +101,7 @@ def password_change_handler(request):
 
 def password_reset_handler(request):
     if request.method == 'GET':
-        return render(request, "spendtrackapp/reset_password.html", {'page_title': 'Password reset'})
+        return render(request, "spendtrackapp/reset_password.html", {'page_title': 'Password reset | SpendTrackApp'})
 
     form = CustomPasswordResetForm(request.POST)
     if form.is_valid():
@@ -117,7 +117,7 @@ def password_reset_handler(request):
             return JsonResponse({})
 
         context = {
-            'page_title': 'Password reset',
+            'page_title': 'Password reset | SpendTrackApp',
             'email': form.cleaned_data['email']
         }
         return render(request, "spendtrackapp/reset_password_done.html", context)
@@ -126,7 +126,7 @@ def password_reset_handler(request):
         return JsonResponse(form.errors, status=400)
 
     context = {
-        'page_title': 'Password reset',
+        'page_title': 'Password reset | SpendTrackApp',
         'errors': form.errors['email']
     }
     return render(request, "spendtrackapp/reset_password.html", context)
@@ -148,7 +148,7 @@ def password_reset_confirm_handler(request, uidb64, token):
         # login and render form
         login(request, user)
         context = {
-            'page_title': 'Password reset',
+            'page_title': 'Password reset | SpendTrackApp',
             'old_password': password,
         }
         return render(request, "spendtrackapp/reset_password_confirm.html", context=context)

@@ -21,6 +21,7 @@ Optional environmental variables:
 """
 
 import os
+
 from django.core.cache import cache
 
 DEBUG = True
@@ -148,11 +149,15 @@ EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sentemails")
 
 APP_VERSION = "DEV"
 
-CONTACT_GITHUB = 'https://github.com/' + os.getenv('CONTACT_GITHUB', 'someone')
+CONTACT_EMAIL = 'mailto:' + os.environ.get('CONTACT_EMAIL')
 
-CONTACT_EMAIL = 'mailto:' + os.getenv('CONTACT_EMAIL', 'someone@somewhere')
+CONTACT_FACEBOOK = 'https://www.facebook.com/' + os.environ.get('CONTACT_FACEBOOK')
 
-CONTACT_FACEBOOK = 'https://www.facebook.com/' + os.getenv('CONTACT_FACEBOOK', 'somebody')
+CONTACT_DEV_GITHUB = 'https://github.com/' + os.environ.get('CONTACT_DEV_GITHUB')
+
+CONTACT_DEV_EMAIL = 'mailto:' + os.environ.get('CONTACT_DEV_EMAIL')
+
+CONTACT_DEV_FACEBOOK = 'https://www.facebook.com/' + os.environ.get('CONTACT_DEV_FACEBOOK')
 
 VIEW_SUMMARIZE_DATE_RANGE_DEFAULT_PAGE_SIZE = 10
 

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ page_title }}</title>
+    {% load static %}
+    <link rel="shortcut icon" type="image/png" href="{% static "spendtrackapp/img/favicon.png" %}"/>
+    <link rel="stylesheet" href="{% static "spendtrackapp/css/normalize.css" %}">
+    <link rel="stylesheet" href="{% static "spendtrackapp/css/skeleton.css" %}">
+    <link rel="stylesheet" href="{% static "spendtrackapp/css/index.css" %}">
+    <script src="{% static "spendtrackapp/js/utils.js" %}"></script>
+</head>
+
+<body>
+<nav>
+    <div class="navbar">
+        <a href="{% url "index" %}">
+            <img src="{% static "spendtrackapp/img/logo.png" %}" alt="SpendTrackApp" class="logo">
+        </a>
+        {% if user == None %}
+            <a href="{% url "account:login" %}">LOGIN</a>
+            <a href="{% url "home" %}">REGISTER</a>
+            <a href="{% url "legalnotice" %}">LEGAL NOTICE</a>
+            <a href="{% url "about" %}">ABOUT US</a>
+        {% else %}
+            <a href="{% url "account:logout" %}">LOGOUT</a>
+            <a href="{% url "account:index" %}">MY ACCOUNT</a>
+            <a href="{% url "legalnotice" %}">LEGAL NOTICE</a>
+            <a href="{% url "about" %}">ABOUT US</a>
+            <a href="{% url "home" %}">HOME</a>
+            <span>Welcome, {{ user.username }}</span>
+        {% endif %}
+    </div>
+</nav>
+
+<main>
+    <br><br><br>
+    <div class="container">
+        <div class="shadow-box">
+            <h2>About us</h2>
+            <div class="row">
+                <div class="seven columns">
+                    <p>Nos mea requiratur lor quamprimum intellectu. Si et ordinem eo videmus ei tacitus. Dormio sui
+                        loquor
+                        vix
+                        cap aperte hoc. Conceptum dubitavit facultate ne si plerosque. Vere fert agi tam ille.
+                        Facultatem
+                        imo
+                        rum pla quaerantur affirmarem quaecunque expectabam vul ponderibus. Haud co quis sint bile de in
+                        sese.
+                        Atque satis habet imo nia tes mox ipsis fieri.</p>
+                </div>
+                <div class="five columns">
+                    <img src="{% static "spendtrackapp/img/logo.png" %}" alt="img" style="width: 100%">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row shadow-box">
+            <h2>Contact</h2>
+            <div class="info">
+                <img src="{% static "spendtrackapp/img/iconmonstr-email-10-240-darkblue.png" %}" alt="EMAIL: ">
+                <a href="{{ contact_email }}" target="_blank">{{ contact_email }}</a>
+            </div>
+            <div class="info">
+                <img src="{% static "spendtrackapp/img/iconmonstr-facebook-4-240-darkblue.png" %}" alt="FACEBOOK: ">
+                <a href="{{ contact_facebook }}" target="_blank">{{ contact_facebook }}</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="shadow-box">
+            <h2>For developers</h2>
+            <div class="info">
+                <img src="{% static "spendtrackapp/img/iconmonstr-email-10-240-darkblue.png" %}" alt="EMAIL: ">
+                <a href="{{ contact_dev_email }}" target="_blank">{{ contact_dev_email }}</a>
+            </div>
+            <div class="info">
+                <img src="{% static "spendtrackapp/img/iconmonstr-facebook-4-240-darkblue.png" %}" alt="FACEBOOK: ">
+                <a href="{{ contact_dev_facebook }}" target="_blank">{{ contact_dev_facebook }}</a>
+            </div>
+            <div class="info">
+                <img src="{% static "spendtrackapp/img/iconmonstr-github-1-240-darkblue.png" %}" alt="GITHUB: ">
+                <a href="{{ contact_dev_github }}" target="_blank">{{ contact_dev_github }}</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="shadow-box">
+            <h2>Resources</h2>
+            <p>This app was built with the help of:</p>
+            <div class="row">
+                <div class="six columns">
+                    <ul>
+                        <li><a href="https://www.djangoproject.com/" target="_blank">Django 2.1.7</a></li>
+                        <li><a href="https://jquery.com/" target="_blank">jQuery 3.3.1</a></li>
+                        <li><a href="https://gionkunz.github.io/chartist-js/" target="_blank">Chartist</a></li>
+                        <li><a href="http://getskeleton.com/" target="_blank">Skeleton 2.0.4</a></li>
+                        <li><a href="https://iconmonstr.com/" target="_blank">iconmonstr</a></li>
+                    </ul>
+                </div>
+                <div class="six columns">
+                    <ul>
+                        <li><a href="https://www.kisspng.com/" target="_blank">kisspng</a></li>
+                        <li><a href="https://logojoy.com/" target="_blank">logojoy</a></li>
+                        <li><a href="https://www.1001fonts.com">1001fonts</a></li>
+                        <li>
+                            <a href="https://termsfeed.com/blog/sample-terms-and-conditions-template/#Examples_of_Terms_and_Conditions">termsfeed</a>
+                        </li>
+                        <li><a href="https://www.freeprivacypolicy.com/free-privacy-policy-generator.php">freeprivacypolicy</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <p>Please view our <a href="{% url "legalnotice" %}#1.3">Term and condition</a> for more details about the
+                licence.</p>
+        </div>
+        <br>
+
+</main>
+
+<div class="align-right">
+    <div class="button button-scroll-up" onclick="scrollToTop()">top</div>
+</div>
+
+
+<footer>
+    {#    <hr>#}
+    <div class="footer">
+        <!-- Contact -->
+        <div class="contact">
+            <a href="{{ contact_dev_github }}" target="_blank">
+                <img src="{% static "spendtrackapp/img/iconmonstr-github-1-48.png" %}" alt="github">
+            </a>
+            <a href="{{ contact_email }}" target="_blank">
+                <img src="{% static "spendtrackapp/img/iconmonstr-email-10-48.png" %}" alt="email">
+            </a>
+            <a href="{{ contact_facebook }}" target="_blank">
+                <img src="{% static "spendtrackapp/img/iconmonstr-facebook-4-48.png" %}" alt="facebook">
+            </a>
+        </div>
+
+        <!-- Navigation -->
+        <div class="row nav-footer">
+            {% if user == None %}
+                <a href="{% url "about" %}">ABOUT US</a>
+                <a href="{% url "legalnotice" %}">LEGAL NOTICE</a>
+                <a href="{% url "home" %}">REGISTER</a>
+                <a href="{% url "account:login" %}">LOGIN</a>
+            {% else %}
+                <a href="{% url "home" %}">HOME</a>
+                <a href="{% url "about" %}">ABOUT US</a>
+                <a href="{% url "legalnotice" %}">LEGAL NOTICE</a>
+                <a href="{% url "summarize:index" %}">SUMMARIZE</a>
+                <a href="{% url "plan:index" %}">PLAN</a>
+                <a href="{% url "account:index" %}">MY ACCOUNT</a>
+                <a href="{% url "account:logout" %}">LOGOUT</a>
+            {% endif %}
+        </div>
+
+        <!-- Other info -->
+        <div class="row last-footer">
+            <div>Built with <a href="https://www.djangoproject.com/" target="_blank">Django 2.1.7</a></div>
+            <div>using <a href="https://jquery.com/" target="_blank">jQuery 3.3.1</a>,
+                <a href="https://gionkunz.github.io/chartist-js/" target="_blank">Chartist</a> and
+                <a href="http://getskeleton.com/" target="_blank">Skeleton 2.0.4</a>
+            </div>
+            <div>with images and fonts from <a href="https://iconmonstr.com/" target="_blank">iconmonstr</a>,
+                <a href="https://www.kisspng.com/" target="_blank">kisspng</a>,
+                <a href="https://logojoy.com/" target="_blank">logojoy</a>
+                and <a href="https://www.1001fonts.com">1001fonts</a>
+            </div>
+            <div>Legal notice were created with the help of
+                <a href="https://termsfeed.com/blog/sample-terms-and-conditions-template/#Examples_of_Terms_and_Conditions">termsfeed</a>
+                and
+                <a href="https://www.freeprivacypolicy.com/free-privacy-policy-generator.php">freeprivacypolicy</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

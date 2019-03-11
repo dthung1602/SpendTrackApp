@@ -23,7 +23,7 @@ def index(request):
 
     # GET request => render page
     if request.method == 'GET':
-        return render(request, "spendtrackapp/summarize_index.html", {'page_title': 'Summarize'})
+        return render(request, "spendtrackapp/summarize_index.html", {'page_title': 'Summarize | SpendTrackApp'})
 
     # POST request => redirect
     form = SearchTimeForm(request.POST)

@@ -11,7 +11,7 @@ def index_handler(request):
     """Handle plan index page"""
 
     return render(request, 'spendtrackapp/plan_index.html', {
-        'page_title': 'Plan',
+        'page_title': 'Plan | SpendTrackApp',
         'categories': Category.objects.all(),
         'current_plans': Plan.get_current_plans(request.user),
     })

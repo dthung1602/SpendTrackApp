@@ -64,6 +64,12 @@ input[type='submit'].disable {
     text-decoration: underline;
 }
 
+.navbar a:first-child {
+    float: left;
+    padding: 0;
+    margin: 0;
+}
+
 .logo {
     width: 225px;
     margin: 10px 10px 15px 10px;
@@ -185,6 +191,20 @@ input[type='submit'].disable {
 .demo-img {
     width: 100%;
     margin: 20px 0 0 0;
+}
+
+.info {
+    padding: 3px 3px 20px 30px;
+}
+
+.info img {
+    margin-right: 10px;
+    width: 32px;
+    vertical-align: bottom;
+}
+
+.info a:hover {
+    color: black;
 }
 
 /*******************************
