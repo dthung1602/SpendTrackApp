@@ -4,7 +4,6 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
 from django.http.response import HttpResponseRedirect, JsonResponse, HttpResponseBadRequest
-from django.shortcuts import reverse
 from django.utils.http import urlsafe_base64_decode
 
 from spendtrackapp.forms import UserEditForm, CustomPasswordResetForm, RegisterForm
@@ -27,7 +26,7 @@ def register_handler(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return HttpResponseRedirect(reverse('home'))
+            return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
         else:
             context = {
                 'page_title': 'Register | SpendTrackApp',
@@ -36,14 +35,14 @@ def register_handler(request):
             }
             return render(request, 'spendtrackapp/register.html', context)
 
-    return render(request, 'spendtrackapp/register.html', {'page_title': 'Register'})
+    return render(request, 'spendtrackapp/register.html', {'page_title': 'Register | SpendTrackApp'})
 
 
 def login_handler(request):
     if request.method == 'GET':
         context = {
             'page_title': 'Login | SpendTrackApp',
-            'next': request.GET.get('next'),
+            'next': request.GET.get('next', settings.LOGIN_REDIRECT_URL),
             'user': request.user
         }
         return render(request, 'spendtrackapp/login.html', context)
@@ -51,17 +50,16 @@ def login_handler(request):
     username = request.POST.get('username')
     password = request.POST.get('password')
     user = authenticate(username=username, password=password)
-    next_page = request.POST.get('next')
+    next_page = request.POST.get('next', settings.LOGIN_REDIRECT_URL)
 
     if not user:
         context = {
-            'page_title': 'Login',
+            'page_title': 'Login | SpendTrackApp',
             'next': next_page,
             'errors': True
         }
         return render(request, 'spendtrackapp/login.html', context)
 
-    next_page = next_page if next_page is not None else settings.LOGIN_REDIRECT_URL
     login(request, user)
     return HttpResponseRedirect(next_page)
 
@@ -69,7 +67,7 @@ def login_handler(request):
 @login_required
 def logout_handler(request):
     logout(request)
-    return HttpResponseRedirect(reverse('home'))
+    return HttpResponseRedirect(settings.LOGOUT_REDIRECT_URL)
 
 
 @login_required

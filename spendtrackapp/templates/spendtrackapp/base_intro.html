@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ page_title }}</title>
+    {% load static %}
+    <link rel="shortcut icon" type="image/png" href="{% static "spendtrackapp/img/favicon.png" %}"/>
+    <link rel="stylesheet" href="{% static "spendtrackapp/css/normalize.css" %}">
+    <link rel="stylesheet" href="{% static "spendtrackapp/css/skeleton.css" %}">
+    <link rel="stylesheet" href="{% static "spendtrackapp/css/index.css" %}">
+    <script src="{% static "spendtrackapp/js/utils.js" %}"></script>
+</head>
+
+<body>
+<nav>
+    <div class="navbar">
+        <a href="{% url "index" %}">
+            <img src="{% static "spendtrackapp/img/logo.png" %}" alt="SpendTrackApp" class="logo">
+        </a>
+        <!-- For big screens -->
+        {% if user == None %}
+            <a class="navbar-link" href="{% url "account:login" %}">LOGIN</a>
+            <a class="navbar-link" href="{% url "home" %}">REGISTER</a>
+            <a class="navbar-link" href="{% url "legalnotice" %}">LEGAL NOTICE</a>
+            <a class="navbar-link" href="{% url "about" %}">ABOUT US</a>
+        {% else %}
+            <a class="navbar-link" href="{% url "account:logout" %}">LOGOUT</a>
+            <a class="navbar-link" href="{% url "account:index" %}">MY ACCOUNT</a>
+            <a class="navbar-link" href="{% url "legalnotice" %}">LEGAL NOTICE</a>
+            <a class="navbar-link" href="{% url "about" %}">ABOUT US</a>
+            <a class="navbar-link" href="{% url "home" %}">HOME</a>
+            <span class="navbar-link">Welcome, {{ user.username }}</span>
+        {% endif %}
+        <!-- For small screens -->
+        <div class="drop-down-menu">
+            <div class="drop-btn">
+                <img src="{% static "spendtrackapp/img/menu.png" %}" alt="SETTINGS">
+            </div>
+            <div class="drop-down-content">
+                {% if user == None %}
+                    <a href="{% url "about" %}">ABOUT US</a>
+                    <a href="{% url "legalnotice" %}">LEGAL NOTICE</a>
+                    <a href="{% url "home" %}">REGISTER</a>
+                    <a href="{% url "account:login" %}">LOGIN</a>
+                {% else %}
+                    <span>Welcome, {{ user.username }}</span>
+                    <a href="{% url "home" %}">HOME</a>
+                    <a href="{% url "about" %}">ABOUT US</a>
+                    <a href="{% url "legalnotice" %}">LEGAL NOTICE</a>
+                    <a href="{% url "account:index" %}">MY ACCOUNT</a>
+                    <a href="{% url "account:logout" %}">LOGOUT</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>
+
+<main>
+    {% block main %}
+    {% endblock %}
+</main>
+
+<div class="align-right">
+    <div class="button button-scroll-up" onclick="scrollToTop()">top</div>
+</div>
+
+<footer>
+    <div class="footer">
+        <!-- Contact -->
+        <div class="contact">
+            <a href="{{ contact_dev_github }}" target="_blank">
+                <img src="{% static "spendtrackapp/img/iconmonstr-github-1-48.png" %}" alt="github">
+            </a>
+            <a href="mailto:{{ contact_email }}" target="_blank">
+                <img src="{% static "spendtrackapp/img/iconmonstr-email-10-48.png" %}" alt="email">
+            </a>
+            <a href="{{ contact_facebook }}" target="_blank">
+                <img src="{% static "spendtrackapp/img/iconmonstr-facebook-4-48.png" %}" alt="facebook">
+            </a>
+        </div>
+
+        <!-- Navigation -->
+        <div class="row nav-footer">
+            {% if user == None %}
+                <a href="{% url "about" %}">ABOUT US</a>
+                <a href="{% url "legalnotice" %}">LEGAL NOTICE</a>
+                <a href="{% url "home" %}">REGISTER</a>
+                <a href="{% url "account:login" %}">LOGIN</a>
+            {% else %}
+                <a href="{% url "home" %}">HOME</a>
+                <a href="{% url "about" %}">ABOUT US</a>
+                <a href="{% url "legalnotice" %}">LEGAL NOTICE</a>
+                <a href="{% url "summarize:index" %}">SUMMARIZE</a>
+                <a href="{% url "plan:index" %}">PLAN</a>
+                <a href="{% url "account:index" %}">MY ACCOUNT</a>
+                <a href="{% url "account:logout" %}">LOGOUT</a>
+            {% endif %}
+        </div>
+
+        <!-- Other info -->
+        <div class="row last-footer">
+            <div>Built with <a href="https://www.djangoproject.com/" target="_blank">Django 2.1.7</a></div>
+            <div>using <a href="https://jquery.com/" target="_blank">jQuery 3.3.1</a>,
+                <a href="https://gionkunz.github.io/chartist-js/" target="_blank">Chartist</a> and
+                <a href="http://getskeleton.com/" target="_blank">Skeleton 2.0.4</a>
+            </div>
+            <div>with images and fonts from <a href="https://iconmonstr.com/" target="_blank">iconmonstr</a>,
+                <a href="https://www.kisspng.com/" target="_blank">kisspng</a>,
+                <a href="https://logojoy.com/" target="_blank">logojoy</a>
+                and <a href="https://www.1001fonts.com">1001fonts</a>
+            </div>
+            <div>Legal notice were created with the help of
+                <a href="https://termsfeed.com/blog/sample-terms-and-conditions-template/#Examples_of_Terms_and_Conditions">termsfeed</a>
+                and
+                <a href="https://www.freeprivacypolicy.com/free-privacy-policy-generator.php">freeprivacypolicy</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

@@ -20,7 +20,7 @@
     {% block header %}
         <div class="container">
             <a href="{% url "index" %}"><img src="{% static "spendtrackapp/img/logo.png" %}" alt="Logo SpendTrackApp"
-                                            class="logo"></a>
+                                             class="logo"></a>
             <span class="badge">VERSION {{ app_version }}</span>
         </div>
     {% endblock %}
@@ -50,7 +50,7 @@
                 </div>
                 <div class="drop-down-menu">
                     <div class="drop-btn">
-                        <img src="{% static "spendtrackapp/img/settings-logo.png" %}" alt="SETTINGS">
+                        <img src="{% static "spendtrackapp/img/menu-white.png" %}" alt="SETTINGS">
                     </div>
                     <div class="drop-down-content">
                         <a href="{% url "legalnotice" %}">Legal notice</a>
@@ -117,7 +117,7 @@
                 <a href="{{ contact_dev_github }}" target="_blank">
                     <img src="{% static "spendtrackapp/img/iconmonstr-github-1-48.png" %}" alt="github">
                 </a>
-                <a href="{{ contact_email }}" target="_blank">
+                <a href="mailto:{{ contact_email }}" target="_blank">
                     <img src="{% static "spendtrackapp/img/iconmonstr-email-10-48.png" %}" alt="email">
                 </a>
                 <a href="{{ contact_facebook }}" target="_blank">

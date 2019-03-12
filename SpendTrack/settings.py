@@ -139,15 +139,15 @@ EMAIL_HOST_PASSWORD = os.environ.get('MAILGUN_SMTP_PASSWORD')
 #             APP CONFIG             #
 ######################################
 
-APP_VERSION = "1.3.2"
+APP_VERSION = "1.4"
 
-CONTACT_EMAIL = 'mailto:' + os.environ.get('CONTACT_EMAIL')
+CONTACT_EMAIL = os.environ.get('CONTACT_EMAIL')
 
 CONTACT_FACEBOOK = 'https://www.facebook.com/' + os.environ.get('CONTACT_FACEBOOK')
 
 CONTACT_DEV_GITHUB = 'https://github.com/' + os.environ.get('CONTACT_DEV_GITHUB')
 
-CONTACT_DEV_EMAIL = 'mailto:' + os.environ.get('CONTACT_DEV_EMAIL')
+CONTACT_DEV_EMAIL = os.environ.get('CONTACT_DEV_EMAIL')
 
 CONTACT_DEV_FACEBOOK = 'https://www.facebook.com/' + os.environ.get('CONTACT_DEV_FACEBOOK')
 
@@ -163,7 +163,7 @@ MODEL_CATEGORY_HIERARCHY_MAX_DEPTH = os.getenv('MODEL_CATEGORY_HIERARCHY_MAX_DEP
 
 MODEL_PLAN_COMPARE_EQUAL_EPSILON = os.getenv('MODEL_PLAN_COMPARE_EQUAL_EPSILON', 0.1)
 
-EMAIL_DOMAIN_NAME = os.getenv('MAILGUN_DOMAIN', '')
+EMAIL_DOMAIN_NAME = os.getenv('MAILGUN_DOMAIN')
 
 EMAIL_RESET_PASSWORD_SENDER_NAME = 'service@' + EMAIL_DOMAIN_NAME
 

@@ -30,20 +30,20 @@ class Category {
     /**
      * Get html elements represent the category hierarchy with this node as root
      * @param catFieldId: ID of the hidden category input field
+     * @param allowNonLeaf: can non-leaf categories be selected
      * @returns {Array} an array of <div> objects
      */
-    toHtml(catFieldId) {
+    toHtml(catFieldId, allowNonLeaf = false) {
         let innerDiv = $('<div class="level-' + this.level + '" id="cat-' + this.id + '">')
             .text(this.name);
         let div = $('<div class="category">').append(innerDiv);
-        if (this.isLeaf()) {
+        if (this.isLeaf() || allowNonLeaf) {
             div.addClass('leaf');
             div.click(Category.generateSelectCategoryFunc(catFieldId, this));
-            return [div];
         }
         let divs = [div];
         for (let i = 0; i < this.children.length; i++)
-            divs = divs.concat(this.children[i].toHtml(catFieldId));
+            divs = divs.concat(this.children[i].toHtml(catFieldId, allowNonLeaf));
         return divs;
     }
 
@@ -118,16 +118,17 @@ class Category {
      * Create html elements represents category hierarchy
      * @param catFieldId: id of the hidden input field to store the selected category id value
      * @param enableAllCategoryOption: can user select all categories?
+     * @param allowNonLeaf: can non-leaf categories be selected
      * @returns {Array}
      */
-    static toHierarchyHtml(catFieldId, enableAllCategoryOption) {
+    static toHierarchyHtml(catFieldId, enableAllCategoryOption, allowNonLeaf = false) {
         let cats = this.getCategoryHiddenData();
         let roots = this.createHierarchy(cats);
         if (enableAllCategoryOption)
             roots.splice(0, 0, Category.allCategoryOption());
         let html = [];
         for (let i = 0; i < roots.length; i++)
-            html = html.concat(roots[i].toHtml(catFieldId));
+            html = html.concat(roots[i].toHtml(catFieldId, allowNonLeaf));
         return html;
     }
 
@@ -135,9 +136,10 @@ class Category {
      * Create a category select box
      * @param catFieldId
      * @param enableAllCategoryOption
+     * @param allowNonLeaf: can non-leaf categories be selected
      * @returns {*|jQuery|*|*}
      */
-    static toDropdownMenu(catFieldId, enableAllCategoryOption = true) {
+    static toDropdownMenu(catFieldId, enableAllCategoryOption = true, allowNonLeaf = false) {
         return $('<div class="select">')
             .append('<input type="hidden" id="' + catFieldId + '" autocomplete="off">')
             .append($('<div class="select-btn clickable">')
@@ -145,7 +147,7 @@ class Category {
                 .append('<span class="clickable" id="display-' + catFieldId + '">')
                 .append('<span class="clickable">&#x25BC</span>'))
             .append($('<div  class="select-content" id="select-' + catFieldId + '">')
-                .append(Category.toHierarchyHtml(catFieldId, enableAllCategoryOption)));
+                .append(Category.toHierarchyHtml(catFieldId, enableAllCategoryOption, allowNonLeaf)));
     }
 
     /**

@@ -27,7 +27,7 @@ def search_handler(request):
             request,
             'spendtrackapp/plan_search.html',
             {
-                'page_title': 'Plan search',
+                'page_title': 'Plan search | SpendTrackApp',
                 'categories': Category.objects.all()
             }
         )

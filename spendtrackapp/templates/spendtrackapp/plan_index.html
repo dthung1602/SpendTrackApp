@@ -1,4 +1,4 @@
-{% extends "spendtrackapp/base.html" %}
+{% extends "spendtrackapp/base_app.html" %}
 
 {% block script %}
     {% load static %}
@@ -128,7 +128,7 @@
                         // name of the hidden input to store category id
                         const planCatFieldId = 'plan-category';
                         // insert drop down button to the above div
-                        $('#category-dropdown-container').html(Category.toDropdownMenu(planCatFieldId, true));
+                        $('#category-dropdown-container').html(Category.toDropdownMenu(planCatFieldId, true, true));
                         // set category value to null
                         Category.clearSelectCategoryField(planCatFieldId);
                     </script>

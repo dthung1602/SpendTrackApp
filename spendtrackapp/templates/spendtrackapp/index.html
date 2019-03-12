@@ -1,40 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ page_title }}</title>
-    {% load static %}
-    <link rel="shortcut icon" type="image/png" href="{% static "spendtrackapp/img/favicon.png" %}"/>
-    <link rel="stylesheet" href="{% static "spendtrackapp/css/normalize.css" %}">
-    <link rel="stylesheet" href="{% static "spendtrackapp/css/skeleton.css" %}">
-    <link rel="stylesheet" href="{% static "spendtrackapp/css/index.css" %}">
-    <script src="{% static "spendtrackapp/js/utils.js" %}"></script>
-</head>
+{% extends "spendtrackapp/base_intro.html" %}
+{% load static %}
 
-<body>
-<nav>
-    <div class="navbar">
-        <a href="{% url "index" %}">
-            <img src="{% static "spendtrackapp/img/logo.png" %}" alt="SpendTrackApp" class="logo">
-        </a>
-        {% if user == None %}
-            <a href="{% url "account:login" %}">LOGIN</a>
-            <a href="{% url "home" %}">REGISTER</a>
-            <a href="{% url "legalnotice" %}">LEGAL NOTICE</a>
-            <a href="{% url "about" %}">ABOUT US</a>
-        {% else %}
-            <a href="{% url "account:logout" %}">LOGOUT</a>
-            <a href="{% url "account:index" %}">MY ACCOUNT</a>
-            <a href="{% url "legalnotice" %}">LEGAL NOTICE</a>
-            <a href="{% url "about" %}">ABOUT US</a>
-            <a href="{% url "home" %}">HOME</a>
-            <span>Welcome, {{ user.username }}</span>
-        {% endif %}
-    </div>
-</nav>
-
-<main>
+{% block main %}
     <div style='background-image: url("{% static "spendtrackapp/img/cover-dark.jpg" %}")' class="cover">
         <div class="container">
             <h1>Something blah blah blah</h1>
@@ -145,74 +112,9 @@
         </div>
     </div>
 
-    <br><br>
     <div class="container align-center">
         <a href="{% url "account:register" %}">
             <div class="signup button">Sign up free</div>
         </a>
     </div>
-
-</main>
-
-<div class="align-right">
-    <div class="button button-scroll-up" onclick="scrollToTop()">top</div>
-</div>
-
-
-<footer>
-    {#    <hr>#}
-    <div class="footer">
-        <!-- Contact -->
-        <div class="contact">
-            <a href="{{ contact_dev_github }}" target="_blank">
-                <img src="{% static "spendtrackapp/img/iconmonstr-github-1-48.png" %}" alt="github">
-            </a>
-            <a href="{{ contact_email }}" target="_blank">
-                <img src="{% static "spendtrackapp/img/iconmonstr-email-10-48.png" %}" alt="email">
-            </a>
-            <a href="{{ contact_facebook }}" target="_blank">
-                <img src="{% static "spendtrackapp/img/iconmonstr-facebook-4-48.png" %}" alt="facebook">
-            </a>
-        </div>
-
-        <!-- Navigation -->
-        <div class="row nav-footer">
-            {% if user == None %}
-                <a href="{% url "about" %}">ABOUT US</a>
-                <a href="{% url "legalnotice" %}">LEGAL NOTICE</a>
-                <a href="{% url "home" %}">REGISTER</a>
-                <a href="{% url "account:login" %}">LOGIN</a>
-            {% else %}
-                <a href="{% url "home" %}">HOME</a>
-                <a href="{% url "about" %}">ABOUT US</a>
-                <a href="{% url "legalnotice" %}">LEGAL NOTICE</a>
-                <a href="{% url "summarize:index" %}">SUMMARIZE</a>
-                <a href="{% url "plan:index" %}">PLAN</a>
-                <a href="{% url "account:index" %}">MY ACCOUNT</a>
-                <a href="{% url "account:logout" %}">LOGOUT</a>
-            {% endif %}
-        </div>
-
-        <!-- Other info -->
-        <div class="row last-footer">
-            <div>Built with <a href="https://www.djangoproject.com/" target="_blank">Django 2.1.7</a></div>
-            <div>using <a href="https://jquery.com/" target="_blank">jQuery 3.3.1</a>,
-                <a href="https://gionkunz.github.io/chartist-js/" target="_blank">Chartist</a> and
-                <a href="http://getskeleton.com/" target="_blank">Skeleton 2.0.4</a>
-            </div>
-            <div>with images and fonts from <a href="https://iconmonstr.com/" target="_blank">iconmonstr</a>,
-                <a href="https://www.kisspng.com/" target="_blank">kisspng</a>,
-                <a href="https://logojoy.com/" target="_blank">logojoy</a>
-                and <a href="https://www.1001fonts.com">1001fonts</a>
-            </div>
-            <div>Legal notice were created with the help of
-                <a href="https://termsfeed.com/blog/sample-terms-and-conditions-template/#Examples_of_Terms_and_Conditions">termsfeed</a>
-                and
-                <a href="https://www.freeprivacypolicy.com/free-privacy-policy-generator.php">freeprivacypolicy</a>
-            </div>
-        </div>
-    </div>
-</footer>
-
-</body>
-</html>
+{% endblock %}

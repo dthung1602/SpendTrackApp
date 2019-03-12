@@ -20,7 +20,11 @@ def legal_notice_handler(request):
     Handle term and condition, privacy page
     """
 
-    return render(request, 'spendtrackapp/legal_notice.html', {"page_title": "Legal notice | SpendTrackApp"})
+    context = {
+        'page_title': 'Legal notice | SpendTrackApp',
+        'user': None if request.user.is_anonymous else request.user
+    }
+    return render(request, 'spendtrackapp/legal_notice.html', context)
 
 
 def about_handler(request):
