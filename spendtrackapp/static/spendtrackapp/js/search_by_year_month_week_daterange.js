@@ -39,15 +39,6 @@ function clearSearchFields() {
 /**
  * Set now to end_date field
  */
-function setSearchStartDateNow() {
-    let d = new Date();
-    let dd = [d.getFullYear(), (d.getMonth() + 1).fillZero(), d.getDate().fillZero()].join('-');
-    $('#search-by-dr-start-date').val(dd);
-}
-
-/**
- * Set now to end_date field
- */
 function setSearchEndDateNow() {
     let d = new Date();
     let dd = [d.getFullYear(), (d.getMonth() + 1).fillZero(), d.getDate().fillZero()].join('-');

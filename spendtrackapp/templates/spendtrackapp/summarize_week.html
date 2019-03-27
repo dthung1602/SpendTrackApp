@@ -4,7 +4,9 @@
     <script>
         // bar chart
         Chartist.Bar('#bar-chart', {
-            labels: daysInWeekNamesM,
+            labels: [
+                "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
+            ],
             series: [
                 lastPeriodFirstChartSeries,
                 thisPeriodFirstChartSeries

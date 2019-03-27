@@ -29,16 +29,21 @@
                         <th>Content</th>
                         <th class="align-right">Value</th>
                         <th class="align-right">Category</th>
+                        <th class="entry-edit"></th>
                     </tr>
                     </thead>
                     <tbody id="entry-container">
                     {% for entries_page in entries_pages %}
                         {% for entry in entries_page %}
-                            <tr class="table-page-{{ forloop.parentloop.counter }}">
-                                <td>{{ entry.formatted_date }}</td>
-                                <td>{{ entry.content }}</td>
-                                <td class="align-right">{{ entry.value }}</td>
-                                <td class="align-right">{{ entry.leaf_category }}</td>
+                            <tr class="table-page-{{ forloop.parentloop.counter }}" id="entry-row-{{ entry.id }}">
+                                <td id="entry-{{ entry.id }}-date">{{ entry.formatted_date }}</td>
+                                <td id="entry-{{ entry.id }}-content">{{ entry.content }}</td>
+                                <td id="entry-{{ entry.id }}-value" class="align-right">{{ entry.value }}</td>
+                                <td id="entry-{{ entry.id }}-category" class="align-right">{{ entry.leaf_category }}</td>
+                                <td class="entry-edit">
+                                    <img src="{% static "spendtrackapp/img/edit-icon.png" %}"
+                                         alt="edit" onclick="editEntry({{ entry.id }})">
+                                </td>
                             </tr>
                         {% endfor %}
                     {% empty %}
@@ -83,7 +88,7 @@
                     <label for="entry-date">Datetime</label>
                     <input type="datetime-local" id="entry-date" placeholder="yyyy-mm-dd hh:mm"
                            autocomplete="off">
-                    <div class="button" onclick="setNewEntryDatetimeNow()">Now</div>
+                    <div class="button" onclick="setDateTimeNow('#entry-date')">Now</div>
                     <div id="entry-date-error" class="input-error"></div>
                 </div>
 
@@ -100,7 +105,7 @@
                 <div class="five columns">
                     <label for="category">Category</label>
                     <div id="category-dropdown-container"></div>
-                    <div id="entry-category-error" class="input-error"></div>
+                    <div id="entry-leaf-category-error" class="input-error"></div>
                 </div>
 
                 <!-- Value -->

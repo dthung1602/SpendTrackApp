@@ -65,11 +65,8 @@ class Plan {
             this.addError('end_date', 'Invalid date format');
 
         if (this.isValid()) {
-            let today = (new Date()).toISODateString();
             if (this.start_date > this.end_date)
                 this.addError('end_date', 'End date must come after start date');
-            // if (this.start_date < today)
-            //     this.addError('start_date', 'Start date must not in the past');
         }
 
         // content must not be empty
@@ -86,8 +83,9 @@ class Plan {
 
         // evaluate arithmetic expression in planned total field
         try {
-            if (!this.planned_total.match(/^[0-9 +\-*/().]+$/))
+            if (!this.planned_total.match(/^[0-9 +\-*/().]+$/)) { // noinspection ExceptionCaughtLocallyJS
                 throw "";
+            }
             this.planned_total = eval(this.planned_total).toFixed(2);
         } catch (err) {
             this.addError('planned_total', 'Invalid arithmetic expression');
@@ -142,8 +140,8 @@ class Plan {
         let startDate = new Date(this.start_date);
         let endDate = new Date(this.end_date);
         let today = new Date();
-        let totalDaysInPlan = daysBetween(startDate, endDate);
-        let daysElapsed = daysBetween(startDate, today);
+        let totalDaysInPlan = Date.daysBetween(startDate, endDate);
+        let daysElapsed = Date.daysBetween(startDate, today);
         let timeRatio = Math.min(daysElapsed / totalDaysInPlan * 100, 100);
         let planRatio = this.total / this.planned_total * 100;
         let completed = today < endDate;
@@ -232,8 +230,8 @@ class Plan {
         let rightPane = $('<div class="seven columns">').appendTo(bodyPane);
 
         // plan hidden inputs fields
-        for (let i = 0; i < this.fields.length; i++) {
-            let f = this.fields[i];
+        for (let i = 0; i < Plan.fields.length; i++) {
+            let f = Plan.fields[i];
             $('<input type="hidden" id="plan-data-' + this.id + '-' + f.replace('_', '-') + '">')
                 .appendTo(rightPane).val(this[f]);
         }
@@ -248,15 +246,15 @@ class Plan {
         let object = {
             csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val()
         };
-        for (let i = 0; i < this.fields.length; i++) {
-            let field = this.fields[i];
+        for (let i = 0; i < Plan.fields.length; i++) {
+            let field = Plan.fields[i];
             object[field] = this[field];
         }
         return object;
     }
 }
 
-Plan.prototype.fields = [
+Plan.fields = [
     'id', 'name', 'start_date', 'end_date', 'category', 'category_name',
     'compare', 'planned_total', 'total'
 ];
@@ -269,7 +267,7 @@ Plan.prototype.fields = [
 function getPlanDataFromHiddenInput(planId) {
     let rootNode = $('#plan-row-' + planId);
     let prefix = '#plan-data-' + planId + '-';
-    let fields = Plan.prototype.fields;
+    let fields = Plan.fields;
     let data = {};
     for (let i = 0; i < fields.length; i++) {
         let fieldId = prefix + fields[i].replace('_', '-');
@@ -294,16 +292,6 @@ function createAllProgressBars(n) {
 }
 
 // ------------- NEW PLAN FORM ----------------
-
-/**
- * Set today to start date field in new plan form
- */
-function setNewPlanStartDateToday() {
-    let d = new Date();
-    let today = [d.getFullYear(), (d.getMonth() + 1).fillZero(), d.getDate().fillZero()].join('-');
-    $('#plan-start-date').val(today);
-}
-
 /**
  * Clear all input fields in new plan form
  */
@@ -416,8 +404,8 @@ function submitNewPlanForm() {
 
     } else {
         // invalid -> display error
-        for (let i = 1; i < plan.fields.length; i++) { // skip id -> i = 1
-            let field = plan.fields[i];
+        for (let i = 1; i < Plan.fields.length; i++) { // skip id -> i = 1
+            let field = Plan.fields[i];
             if (plan.errors.hasOwnProperty(field)) {
                 let errorHTML = plan.errors[field].join('<br>');
                 $('#plan-' + field.replace('_', '-') + '-error').show().html(errorHTML);
@@ -529,10 +517,7 @@ function editPlan(planId) {
     let rightPane = rootNode.find('.seven');
 
     // --- store old data ---
-    $('<div id="plan-' + planId + '-old-data">')
-        .append(rootNode.clone())
-        .appendTo($('body'))
-        .hide();
+    storeData('plan', planId, rootNode.html());
 
     // --- get plan info specified in #plan-list ---
     let prefix = '#plan-data-' + planId + '-';
@@ -608,7 +593,7 @@ function editPlan(planId) {
  */
 function getEditPlanData(planId) {
     let rootNode = $('#plan-row-' + planId);
-    let fields = Plan.prototype.fields;
+    let fields = Plan.fields;
     let data = {};
     for (let i = 0; i < fields.length; i++) {
         let f = fields[i].replace('_', '-');
@@ -704,11 +689,9 @@ function enableSavePlanButton(planId) {
 // ------------- CANCEL EDIT PLAN ----------------
 
 function cancelPlanEdit(planId) {
-    let oldData = $('#plan-' + planId + '-old-data>');
     $('#plan-row-' + planId)
         .removeClass('editing')
-        .html(oldData.html());
-    oldData.remove();
+        .html(retrieveData('plan', planId));
 }
 
 // ------------- DELETE PLAN ----------------

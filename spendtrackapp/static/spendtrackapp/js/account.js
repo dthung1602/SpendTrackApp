@@ -81,10 +81,7 @@ function editAccount() {
     let rootNode = $('.account table');
 
     // backup old data
-    $('<div id="account-old-data">')
-        .append(rootNode.clone())
-        .appendTo($('body'))
-        .hide();
+    storeData('account', 0, rootNode.html());
 
     // add input fields
     let tds = ['username', 'email', 'first_name', 'last_name'];
@@ -104,10 +101,7 @@ function editAccount() {
 }
 
 function cancelEditAccount() {
-    let oldData = $('#account-old-data');
-    $('.account table')
-        .html(oldData.html());
-    oldData.remove();
+    $('.account table').html(retrieveData('account', 0));
 
     $('#edit-account-button').show();
     $('#delete-account-button').show();

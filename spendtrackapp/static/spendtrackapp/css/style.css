@@ -152,7 +152,7 @@ input[type='submit'].disable {
 /* Info box */
 @font-face {
     font-family: 'digital-clock-font';
-    src: url('/static/spendtrackapp/font/digital-7/digital-7-mono.ttf');
+    src: url('../font/digital-7/digital-7-mono.ttf');
 }
 
 .info {
@@ -364,6 +364,26 @@ input[type='submit'].disable {
     border-top-right-radius: 3px;
     padding-right: 5px;
     margin-right: 3px;
+}
+
+.entry-edit {
+    padding: 0;
+}
+
+.entry-edit img {
+    width: 15px;
+    position: relative;
+    top: 3px;
+    cursor: pointer;
+    visibility: hidden;
+}
+
+tbody tr:hover {
+    background: #f6f6f6;
+}
+
+tr:hover .entry-edit img {
+    visibility: visible;
 }
 
 /*******************************

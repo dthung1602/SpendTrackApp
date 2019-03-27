@@ -76,6 +76,6 @@ def add_handler(request):
     form = EntryForm(get_post(request))
     if not form.is_valid():
         return JsonResponse(form.errors, status=400)
-    form.save()
+    entry_id = form.save().id
 
-    return JsonResponse({})
+    return JsonResponse({'id': entry_id})
