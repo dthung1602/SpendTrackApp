@@ -206,6 +206,7 @@ def render(request, template_name, context=None, content_type=None, status=None,
 
     if context is None:
         context = {}
+    context['debug'] = settings.DEBUG
     context['now'] = datetime.now()
     context['app_version'] = settings.APP_VERSION
     context['contact_email'] = settings.CONTACT_EMAIL

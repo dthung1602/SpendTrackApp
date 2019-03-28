@@ -2,7 +2,11 @@
 
 {% block script %}
     {% load static %}
-    <script src="{% static "spendtrackapp/js/search_by_year_month_week_daterange.js" %}"></script>
+    {% if debug %}
+        <script src="{% static "spendtrackapp/js/search_by_year_month_week_daterange.js" %}"></script>
+    {% else %}
+        <script src="{% static "spendtrackapp/js/search_by_year_month_week_daterange.min.js" %}"></script>
+    {% endif %}
 {% endblock %}
 
 {% block main %}
@@ -107,7 +111,9 @@
 
             <!-- Submit and clear -->
             <div class="row submit-row">
-                <div class="button button-primary" onclick="submitSearchFormRedirect('{% url 'summarize:index' %}')">SEARCH</div>
+                <div class="button button-primary" onclick="submitSearchFormRedirect('{% url 'summarize:index' %}')">
+                    SEARCH
+                </div>
                 <div class="button" onclick="clearSearchFields()">CLEAR</div>
             </div>
         </form>

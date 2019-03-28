@@ -2,10 +2,17 @@
 
 {% block script %}
     {% load static %}
-    <link rel="stylesheet" href="{% static "spendtrackapp/css/chartist.min.css" %}">
-    <link rel="stylesheet" href="{% static "spendtrackapp/css/chart_style.css" %}">
-    <script src="{% static "spendtrackapp/js/chartist.min.js" %}"></script>
-    <script src="{% static "spendtrackapp/js/summarize_chart_options.js" %}"></script>
+    {% if debug %}
+        <link rel="stylesheet" href="{% static "spendtrackapp/css/chartist.css" %}">
+        <link rel="stylesheet" href="{% static "spendtrackapp/css/chart_style.css" %}">
+        <script src="{% static "spendtrackapp/js/chartist.js" %}"></script>
+        <script src="{% static "spendtrackapp/js/summarize_chart_options.js" %}"></script>
+    {% else %}
+        <link rel="stylesheet" href="{% static "spendtrackapp/css/chartist.min.css" %}">
+        <link rel="stylesheet" href="{% static "spendtrackapp/css/chart_style.min.css" %}">
+        <script src="{% static "spendtrackapp/js/chartist.min.js" %}"></script>
+        <script src="{% static "spendtrackapp/js/summarize_chart_options.min.js" %}"></script>
+    {% endif %}
 {% endblock %}
 
 {% block main %}

@@ -6,9 +6,15 @@
     <title>{{ page_title }}</title>
     {% load static %}
     <link rel="shortcut icon" type="image/png" href="{% static "spendtrackapp/img/favicon.png" %}"/>
-    <link rel="stylesheet" href="{% static "spendtrackapp/css/normalize.css" %}">
-    <link rel="stylesheet" href="{% static "spendtrackapp/css/skeleton.css" %}">
-    <link rel="stylesheet" href="{% static "spendtrackapp/css/index.css" %}">
+    {% if debug %}
+        <link rel="stylesheet" href="{% static "spendtrackapp/css/normalize.css" %}">
+        <link rel="stylesheet" href="{% static "spendtrackapp/css/skeleton.css" %}">
+        <link rel="stylesheet" href="{% static "spendtrackapp/css/index.css" %}">
+    {% else %}
+        <link rel="stylesheet" href="{% static "spendtrackapp/css/normalize.min.css" %}">
+        <link rel="stylesheet" href="{% static "spendtrackapp/css/skeleton.min.css" %}">
+        <link rel="stylesheet" href="{% static "spendtrackapp/css/index.min.css" %}">
+    {% endif %}
     <script src="{% static "spendtrackapp/js/utils.js" %}"></script>
 </head>
 

@@ -6,11 +6,19 @@
     <title>{{ page_title }}</title>
     {% load static %}
     <link rel="shortcut icon" type="image/png" href="{% static "spendtrackapp/img/favicon.png" %}"/>
-    <link rel="stylesheet" href="{% static "spendtrackapp/css/normalize.css" %}">
-    <link rel="stylesheet" href="{% static "spendtrackapp/css/skeleton.css" %}">
-    <link rel="stylesheet" href="{% static "spendtrackapp/css/style.css" %}">
-    <script src="{% static "spendtrackapp/js/jquery-3.3.1.min.js" %}"></script>
-    <script src="{% static "spendtrackapp/js/utils.js" %}"></script>
+    {% if debug %}
+        <link rel="stylesheet" href="{% static "spendtrackapp/css/normalize.css" %}">
+        <link rel="stylesheet" href="{% static "spendtrackapp/css/skeleton.css" %}">
+        <link rel="stylesheet" href="{% static "spendtrackapp/css/style.css" %}">
+        <script src="{% static "spendtrackapp/js/jquery-3.3.1.js" %}"></script>
+        <script src="{% static "spendtrackapp/js/utils.js" %}"></script>
+    {% else %}
+        <link rel="stylesheet" href="{% static "spendtrackapp/css/normalize.min.css" %}">
+        <link rel="stylesheet" href="{% static "spendtrackapp/css/skeleton.min.css" %}">
+        <link rel="stylesheet" href="{% static "spendtrackapp/css/style.min.css" %}">
+        <script src="{% static "spendtrackapp/js/jquery-3.3.1.min.js" %}"></script>
+        <script src="{% static "spendtrackapp/js/utils.min.js" %}"></script>
+    {% endif %}
     {% block script %}
     {% endblock %}
 </head>
@@ -72,7 +80,8 @@
             <script>
                 const categoryHiddenData = {
                     id: [{% for cat in categories %}"{{ cat.id }}",{% endfor %} "", "empty"],
-                    name: [{% for cat in categories %}"{{ cat.name | safe }}",{% endfor %} "All categories", "Select a category"],
+                    name: [{% for cat in categories %}"{{ cat.name | safe }}",{% endfor %}
+                        "All categories", "Select a category"],
                     pid: [{% for cat in categories %}"{{ cat.parent_id }}",{% endfor %} null, null],
                 };
             </script>

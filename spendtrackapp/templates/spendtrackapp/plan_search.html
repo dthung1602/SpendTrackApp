@@ -2,11 +2,19 @@
 
 {% block script %}
     {% load static %}
-    <link rel="stylesheet" href="{% static "spendtrackapp/css/progress_bar.css" %}">
-    <script src="{% static "spendtrackapp/js/category.js" %}"></script>
-    <script src="{% static "spendtrackapp/js/plan.js" %}"></script>
-    <script src="{% static "spendtrackapp/js/progress_bar.js" %}"></script>
-    <script src="{% static "spendtrackapp/js/search_by_year_month_week_daterange.js" %}"></script>
+    {% if debug %}
+        <link rel="stylesheet" href="{% static "spendtrackapp/css/progress_bar.css" %}">
+        <script src="{% static "spendtrackapp/js/category.js" %}"></script>
+        <script src="{% static "spendtrackapp/js/plan.js" %}"></script>
+        <script src="{% static "spendtrackapp/js/progress_bar.js" %}"></script>
+        <script src="{% static "spendtrackapp/js/search_by_year_month_week_daterange.js" %}"></script>
+    {% else %}
+        <link rel="stylesheet" href="{% static "spendtrackapp/css/progress_bar.min.css" %}">
+        <script src="{% static "spendtrackapp/js/category.min.js" %}"></script>
+        <script src="{% static "spendtrackapp/js/plan.min.js" %}"></script>
+        <script src="{% static "spendtrackapp/js/progress_bar.min.js" %}"></script>
+        <script src="{% static "spendtrackapp/js/search_by_year_month_week_daterange.min.js" %}"></script>
+    {% endif %}
 {% endblock %}
 
 {% block main %}

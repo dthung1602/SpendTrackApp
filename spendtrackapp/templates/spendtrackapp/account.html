@@ -2,8 +2,13 @@
 
 {% block script %}
     {% load static %}
-    <script src="{% static "spendtrackapp/js/account.js" %}"></script>
-    <script src="{% static "spendtrackapp/js/change_password.js" %}"></script>
+    {% if debug %}
+        <script src="{% static "spendtrackapp/js/account.js" %}"></script>
+        <script src="{% static "spendtrackapp/js/change_password.js" %}"></script>
+    {% else %}
+        <script src="{% static "spendtrackapp/js/account.min.js" %}"></script>
+        <script src="{% static "spendtrackapp/js/change_password.min.js" %}"></script>
+    {% endif %}
 {% endblock %}
 
 {% block main %}

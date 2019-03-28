@@ -105,11 +105,13 @@ class Category {
         let cats = [];
         let n = categoryHiddenData.id.length;
         for (let i = 0; i < n; i++) {
-            cats.push(new Category(
-                categoryHiddenData.id[i],
-                categoryHiddenData.name[i],
-                categoryHiddenData.pid[i],
-            ))
+            cats.push(
+                new Category(
+                    categoryHiddenData.id[i],
+                    categoryHiddenData.name[i],
+                    categoryHiddenData.pid[i]
+                )
+            );
         }
         return cats;
     }

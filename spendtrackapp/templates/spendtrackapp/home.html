@@ -2,8 +2,13 @@
 
 {% block script %}
     {% load static %}
-    <script src="{% static "spendtrackapp/js/home.js" %}"></script>
-    <script src="{% static "spendtrackapp/js/category.js" %}"></script>
+    {% if debug %}
+        <script src="{% static "spendtrackapp/js/home.js" %}"></script>
+        <script src="{% static "spendtrackapp/js/category.js" %}"></script>
+    {% else %}
+        <script src="{% static "spendtrackapp/js/home.min.js" %}"></script>
+        <script src="{% static "spendtrackapp/js/category.min.js" %}"></script>
+    {% endif %}
 {% endblock %}
 
 {% block main %}
@@ -39,7 +44,8 @@
                                 <td id="entry-{{ entry.id }}-date">{{ entry.formatted_date }}</td>
                                 <td id="entry-{{ entry.id }}-content">{{ entry.content }}</td>
                                 <td id="entry-{{ entry.id }}-value" class="align-right">{{ entry.value }}</td>
-                                <td id="entry-{{ entry.id }}-category" class="align-right">{{ entry.leaf_category }}</td>
+                                <td id="entry-{{ entry.id }}-category"
+                                    class="align-right">{{ entry.leaf_category }}</td>
                                 <td class="entry-edit">
                                     <img src="{% static "spendtrackapp/img/edit-icon.png" %}"
                                          alt="edit" onclick="editEntry({{ entry.id }})">
