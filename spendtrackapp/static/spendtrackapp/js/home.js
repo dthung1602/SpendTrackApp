@@ -89,7 +89,7 @@ class Entry {
             if (!this.value.match(/^[0-9 +\-*/().]+$/)) { // noinspection ExceptionCaughtLocallyJS
                 throw "";
             }
-            this.value = eval(this.value);
+            this.value = parseFloat(eval(this.value).toFixed(2));
         } catch (err) {
             this.addError('value', 'Invalid arithmetic expression');
         }
@@ -97,7 +97,8 @@ class Entry {
 
     getSubmitData() {
         let object = {
-            csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val()
+            csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
+            id: this.id
         };
         for (let i = 0; i < Entry.fields.length; i++) {
             let field = Entry.fields[i];
@@ -122,7 +123,7 @@ class Entry {
             .attr('id', 'entry-row-' + this.id)
             .addClass('table-page-' + pageCount);
 
-        $('<td id="' + prefix + 'date">').text(this.date.format('E NNN d, h a')).appendTo(row);
+        $('<td id="' + prefix + 'date">').text(this.date.format('E NNN d, hh a')).appendTo(row);
         $('<td id="' + prefix + 'content">').text(this.content).appendTo(row);
         $('<td id="' + prefix + 'value" class="align-right">').text(this.value.toFixed(2)).appendTo(row);
         $('<td id="' + prefix + 'category" class="align-right">').text(this.getCategoryName()).appendTo(row);
@@ -290,18 +291,35 @@ function getEditEntryData(entryId) {
     const prefix = '#edit-entry-' + entryId + '-';
     return {
         'id': entryId,
-        'date': $(prefix + 'date'),
-        'content': $(prefix + 'content'),
-        'value': $(prefix + 'value'),
-        'leaf_category': $(prefix + 'category'),
+        'date': $(prefix + 'date').val(),
+        'content': $(prefix + 'content').val(),
+        'value': $(prefix + 'value').val(),
+        'leaf_category': $(prefix + 'category').val(),
     }
 }
 
+function addToElement(selector, value) {
+    let element = $(selector);
+    element.text((parseFloat(element.text()) + value).toFixed(2));
+}
+
+function getEntryOldValue(entryId) {
+    return parseFloat(
+        $('<div>')
+            .html(retrieveData('entry', entryId))
+            .find('#entry-' + entryId + '-value')
+            .text())
+}
+
 function editEntrySuccessFunc(entry) {
-    return function (response) {
+    return function () {
         $('#entry-row-' + entry.id)
             .removeClass('editing')
             .html(entry.toRow().html());
+
+        const diff = entry.value - getEntryOldValue(entry.id);
+        addToElement('#total-in-week', diff);
+        addToElement('#total-in-month', diff);
     }
 }
 
@@ -314,7 +332,7 @@ function saveEntryFuncGenerator(entryId) {
                 url: '/entry/edit/',
                 type: 'POST',
                 dataType: 'json',
-                data: entry,
+                data: entry.getSubmitData(),
                 success: editEntrySuccessFunc(entry),
                 error: displayError,
             })
@@ -324,7 +342,7 @@ function saveEntryFuncGenerator(entryId) {
                 if (entry.errors.hasOwnProperty(f)) {
                     $('#edit-entry-' + entryId + '-' + f)
                         .parent().find('.input-error')
-                        .html(entry.errors[f].join('<br>'))
+                        .html(entry.errors[f].join('<br>')).show();
                 }
             }
         }
@@ -339,6 +357,7 @@ function deleteEntryFuncGenerator(entryId) {
             csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val(),
             id: entryId
         };
+
         $.ajax({
             url: '/entry/delete/',
             type: 'POST',
@@ -346,7 +365,12 @@ function deleteEntryFuncGenerator(entryId) {
             data: data,
             success: () => {
                 $('#entry-row-' + entryId).remove();
-                alert("Entry deleted successfully!");
+                let diff = -getEntryOldValue(entryId);
+                addToElement('#total-in-week', diff);
+                addToElement('#total-in-month', diff);
+                setTimeout(() => {
+                    alert("Entry deleted successfully!");
+                }, 750)
             },
             error: displayError,
         })
@@ -383,22 +407,22 @@ function editEntry(entryId) {
     row.html(
         '<td colspan="5">' +
         '    <div class="row">' +
-        '        <div class="five columns">' +
+        '        <div class="six columns">' +
         '            <input type="datetime-local" id="' + dateFieldId + '" placeholder="yyyy-mm-dd hh:mm" autocomplete="off">' +
         '            <button>NOW</button>' +
         '            <div class="input-error"></div>' +
         '        </div>' +
-        '        <div class="seven columns">' +
+        '        <div class="six columns">' +
         '            <input type="text" id="' + contentFieldId + '" placeholder="A carrot and an apple" maxlength="200">' +
         '            <div class="input-error"></div>' +
         '        </div>' +
         '    </div>' +
         '    <div class="row">' +
-        '        <div class="five columns">' +
+        '        <div class="six columns">' +
         '            <div id="' + categoryFieldId + '"></div>' +
         '            <div class="input-error"></div>' +
         '        </div>' +
-        '        <div class="seven columns">' +
+        '        <div class="six columns">' +
         '            <input type="text" id="' + valueFieldId + '" placeholder="1.25 + 2.3 * 5" ' +
         '                   pattern="^[0-9 \\+\\-\\*\\/\\(\\)\\.]+$">' +
         '            <div class="input-error"></div>' +
@@ -412,6 +436,7 @@ function editEntry(entryId) {
         '</td>'
     );
 
+    row.find('.input-error').hide();
     $('#' + dateFieldId).val(dateValue);
     $('#' + contentFieldId).val(content);
     $('#' + valueFieldId).val(value);

@@ -546,7 +546,7 @@ function editPlan(planId) {
     // category
     let editCatId = 'edit-category-' + planId;
     let categoryField = $('<div id="' + editCatId + '">')
-        .html(Category.toDropdownMenu(editCatId, true));
+        .html(Category.toDropdownMenu(editCatId, true, true));
 
     // compare
     let compareField = $('<select name="compare">')

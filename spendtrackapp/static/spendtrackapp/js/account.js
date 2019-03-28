@@ -6,6 +6,7 @@ $(document).ready(function () {
     $('#change-password-button').click(submitChangePasswordForm);
     $('.input-error').hide();
     $('#password-change-success').hide();
+    $('#account-change-success').hide();
 });
 
 class Account {
@@ -129,6 +130,9 @@ function editAccountSuccessFunc(account) {
         for (let i = 0; i < fields.length; i++) {
             $('#td_' + fields[i]).html(account[fields[i]])
         }
+
+        $('#account-change-success').show()
+            .text('Account updated successfully at ' + new Date());
     }
 }
 
