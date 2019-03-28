@@ -9,7 +9,7 @@ from .provide_data_test_plan import *
 from .test_view import TestView
 
 
-class TestPlan(TestView):
+class TestPlanView(TestView):
     fixtures = ['test/auth_user.json', 'test/category.json',
                 'test/plan.json', 'test/plan_entry.json']
 

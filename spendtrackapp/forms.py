@@ -52,6 +52,7 @@ class EntryForm(ModelForm):
         return self.cleaned_data
 
     def save(self, commit=True):
+        # TODO test this in add/edit entry
         super().save(commit)
 
         # set the list of categories after saving entry to database

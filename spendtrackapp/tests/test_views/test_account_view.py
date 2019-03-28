@@ -13,7 +13,7 @@ from spendtrackapp.tests.test_views.test_view import TestView
 from spendtrackapp.tests.utils import *
 
 
-class TestAccountNoLogin(TestCase):
+class TestAccountNoLoginView(TestCase):
     fixtures = ['test/auth_user.json']
 
     @data_provider(provide_data_test_register_success)
@@ -68,7 +68,7 @@ class TestAccountNoLogin(TestCase):
         self.assertIsNotNone(user)
 
 
-class TestAccountWithLogin(TestView):
+class TestAccountWithLoginView(TestView):
     fixtures = ['test/auth_user.json']
 
     @data_provider(provide_data_test_edit_account_success)

@@ -9,7 +9,7 @@ from .provide_data_test_summarize import *
 from .test_view import *
 
 
-class TestSummarize(TestView):
+class TestSummarizeView(TestView):
     fixtures = ['test/auth_user.json', 'test/entry_categories.json', 'test/category.json', 'test/entry.json']
 
     @data_provider(summarize_index_success)

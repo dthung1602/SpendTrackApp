@@ -101,7 +101,6 @@ def edit_handler(request):
     if isinstance(plan, dict):
         return JsonResponse(plan, status=400)
 
-    # noinspection PyUnboundLocalVariable
     form = PlanForm(get_post(request), instance=plan)
     if not form.is_valid():
         return JsonResponse(form.errors, status=400)

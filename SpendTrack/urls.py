@@ -23,13 +23,12 @@ urlpatterns = [
     path('', index.index_handler, name='index'),
     path('about/', index.about_handler, name='about'),
     path('legalnotice/', index.legal_notice_handler, name='legalnotice'),
-
     path('home/', index.home_handler, name='home'),
-    path('add/', index.add_handler, name='add'),
 
-    path('admin/', admin.site.urls, name='admin'),
+    path('entry/', include('spendtrackapp.urls.entry')),
     path('account/', include('spendtrackapp.urls.account')),
-
     path('summarize/', include('spendtrackapp.urls.summarize')),
     path('plan/', include('spendtrackapp.urls.plan')),
+
+    path('admin/', admin.site.urls, name='admin'),
 ]

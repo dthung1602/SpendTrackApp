@@ -252,7 +252,7 @@ function submitNewEntryForm() {
 
         // send ajax request
         $.ajax({
-            url: '/add/',
+            url: '/entry/add/',
             type: 'POST',
             dataType: 'json',
             data: entry.getSubmitData(),
