@@ -1,4 +1,5 @@
-const entryCatFieldId = 'entry-category';
+const ENTRY_CAT_FIELD_ID = 'entry-category';
+const ENTRY_DATE_FORMAT = 'E NNN dd, hh a';
 
 $(document).ready(function () {
     $('#submit-entry-button').click(submitNewEntryForm);
@@ -7,9 +8,9 @@ $(document).ready(function () {
         viewTablePage(1);
 
     // insert drop down button to the above div
-    $('#category-dropdown-container').html(Category.toDropdownMenu(entryCatFieldId, false));
+    $('#category-dropdown-container').html(Category.toDropdownMenu(ENTRY_CAT_FIELD_ID, false));
     // set category value to null
-    Category.clearSelectCategoryField(entryCatFieldId);
+    Category.clearSelectCategoryField(ENTRY_CAT_FIELD_ID);
 });
 
 // ------------------- CLOCK --------------------
@@ -123,7 +124,7 @@ class Entry {
             .attr('id', 'entry-row-' + this.id)
             .addClass('table-page-' + pageCount);
 
-        $('<td id="' + prefix + 'date">').text(this.date.format('E NNN d, hh a')).appendTo(row);
+        $('<td id="' + prefix + 'date">').text(this.date.format(ENTRY_DATE_FORMAT)).appendTo(row);
         $('<td id="' + prefix + 'content">').text(this.content).appendTo(row);
         $('<td id="' + prefix + 'value" class="align-right">').text(this.value.toFixed(2)).appendTo(row);
         $('<td id="' + prefix + 'category" class="align-right">').text(this.getCategoryName()).appendTo(row);
@@ -147,7 +148,7 @@ Entry.fields = ['date', 'content', 'leaf_category', 'value'];
  */
 function clearNewEntryFields() {
     $('#new-entry [id^=entry]').val('');
-    Category.clearSelectCategoryField(entryCatFieldId);
+    Category.clearSelectCategoryField(ENTRY_CAT_FIELD_ID);
     $('#new-entry .input-error').hide();
 }
 
@@ -392,7 +393,7 @@ function editEntry(entryId) {
     storeData('entry', entryId, row.html());
 
     // ---- get old data ----
-    let dateValue = Date.parseString($(selectorPrefix + 'date').text(), 'E NNN dd, H a').toDatetimeLocal();
+    let dateValue = Date.parseString($(selectorPrefix + 'date').text(), ENTRY_DATE_FORMAT).toDatetimeLocal();
     let content = $(selectorPrefix + 'content').text();
     let value = $(selectorPrefix + 'value').text();
     let categoryName = $(selectorPrefix + 'category').text();

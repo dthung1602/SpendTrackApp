@@ -570,10 +570,9 @@ function setDateNow(element) {
 
 function setDateTimeNow(element) {
     let now = new Date().format('yyyy-MM-ddTHH:mm');
-    let e = $(element);
-    e.val(now);
-    if (e.val() !== now)
-        e.val(now.replace('T', ' '))
+    if (checkBrowser() === "Firefox")
+        now = now.replace('T', ' ');
+    $(element).val(now);
 }
 
 function storeData(name, key, value) {
@@ -593,4 +592,24 @@ function retrieveData(name, key, deleteOldData = false) {
     if (deleteOldData)
         delete window[name][key];
     return result;
+}
+
+function checkBrowser() {
+    const c = navigator.userAgent.search("Chrome");
+    const f = navigator.userAgent.search("Firefox");
+    const m8 = navigator.userAgent.search("MSIE 8.0");
+    const m9 = navigator.userAgent.search("MSIE 9.0");
+    let browser;
+    if (c > -1) {
+        browser = "Chrome";
+    } else if (f > -1) {
+        browser = "Firefox";
+    } else if (m9 > -1) {
+        browser = "IE9";
+    } else if (m8 > -1) {
+        browser = "IE8";
+    } else {
+        browser = "Unknown"
+    }
+    return browser;
 }
