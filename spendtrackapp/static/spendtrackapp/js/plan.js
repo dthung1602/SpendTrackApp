@@ -625,8 +625,8 @@ function savePlan(planId) {
     } else {
         // display errors
         let errors = [];
-        for (let i = 0; i < plan.fields.length; i++) {
-            let f = plan.fields[i];
+        for (let i = 0; i < Plan.fields.length; i++) {
+            let f = Plan.fields[i];
             if (plan.errors.hasOwnProperty(f))
                 errors = errors.concat(plan.errors[f]);
         }

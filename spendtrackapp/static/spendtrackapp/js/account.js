@@ -74,7 +74,7 @@ class Account {
     }
 }
 
-Account.prototype.fields = ['username', 'email', 'first_name', 'last_name'];
+Account.fields = ['username', 'email', 'first_name', 'last_name'];
 
 // ---------- ENABLE EDITING ---------------
 
@@ -112,7 +112,7 @@ function cancelEditAccount() {
 
 function getAccountInfo() {
     let data = {};
-    let fields = Account.prototype.fields;
+    let fields = Account.fields;
     for (let i = 0; i < fields.length; i++) {
         data[fields[i]] = $('#account_' + fields[i]).val();
     }
@@ -163,8 +163,8 @@ function submitEditAccountForm() {
 
     } else {
         // display errors
-        for (let i = 0; i < Account.prototype.fields.length; i++) {
-            let f = Account.prototype.fields[i];
+        for (let i = 0; i < Account.fields.length; i++) {
+            let f = Account.fields[i];
             if (account.errors.hasOwnProperty(f))
                 $('#error_' + f)
                     .show()

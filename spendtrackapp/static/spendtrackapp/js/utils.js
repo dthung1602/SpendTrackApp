@@ -568,11 +568,14 @@ function setDateNow(element) {
     $(element).val(new Date().format('yyyy-MM-dd'));
 }
 
-function setDateTimeNow(element) {
-    let now = new Date().format('yyyy-MM-ddTHH:mm');
+function setDateTime(element, datetime = null) {
+    if (datetime === null)
+        datetime = new Date();
+    if (datetime instanceof Date)
+        datetime = datetime.format('yyyy-MM-ddTHH:mm');
     if (checkBrowser() === "Firefox")
-        now = now.replace('T', ' ');
-    $(element).val(now);
+        datetime = datetime.replace('T', ' ');
+    $(element).val(datetime);
 }
 
 function storeData(name, key, value) {

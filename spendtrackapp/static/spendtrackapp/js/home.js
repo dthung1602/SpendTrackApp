@@ -393,7 +393,7 @@ function editEntry(entryId) {
     storeData('entry', entryId, row.html());
 
     // ---- get old data ----
-    let dateValue = Date.parseString($(selectorPrefix + 'date').text(), ENTRY_DATE_FORMAT).toDatetimeLocal();
+    let dateValue = Date.parseString($(selectorPrefix + 'date').text(), ENTRY_DATE_FORMAT);
     let content = $(selectorPrefix + 'content').text();
     let value = $(selectorPrefix + 'value').text();
     let categoryName = $(selectorPrefix + 'category').text();
@@ -438,7 +438,7 @@ function editEntry(entryId) {
     );
 
     row.find('.input-error').hide();
-    $('#' + dateFieldId).val(dateValue);
+    setDateTime('#' + dateFieldId, dateValue);
     $('#' + contentFieldId).val(content);
     $('#' + valueFieldId).val(value);
     $('#' + categoryFieldId).html(Category.toDropdownMenu(categoryFieldId, false));
@@ -447,7 +447,7 @@ function editEntry(entryId) {
     row.find('button:contains("SAVE")').click(saveEntryFuncGenerator(entryId));
     row.find('button:contains("DELETE")').click(deleteEntryFuncGenerator(entryId));
     row.find('button:contains("NOW")').click(() => {
-        setDateTimeNow("#" + dateFieldId)
+        setDateTime("#" + dateFieldId)
     });
     row.find('button:contains("CANCEL")').click(() => {
         cancelEditEntry(entryId)
