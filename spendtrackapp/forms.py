@@ -198,6 +198,12 @@ class UserEditForm(UserChangeForm):
         model = User
         fields = ['username', 'first_name', 'last_name', 'email']
 
+    def __init__(self, *args, **kwargs):
+        super(UserChangeForm, self).__init__(*args, **kwargs)
+
+        if 'password' in self.fields:
+            del self.fields['password']
+
     def clean(self):
         super().clean()
 

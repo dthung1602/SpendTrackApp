@@ -94,8 +94,8 @@ class Plan {
 
     /**
      * Evaluate plan as good, warning or fail
-     * @param timeRatio: time elapsed since start date / time of plan
-     * @param planRatio: total spent / planned
+     * @param timeRatio: time elapsed since start date / time of plan * 100
+     * @param planRatio: total spent / planned * 100
      * @param compare: <, > or =
      * @param completed: whether the plan'end date has passed
      * @returns {string} "good", "warning" or "fail"
@@ -107,25 +107,25 @@ class Plan {
                 if (planRatio >= timeRatio)
                     planEvaluate = 'good';
                 else
-                    planEvaluate = (completed) ? 'fail' : 'warning';
+                    planEvaluate = (completed ? 'fail' : 'warning');
                 break;
             case '<':
                 if (planRatio <= timeRatio)
                     planEvaluate = 'good';
-                else if (planRatio <= 1)
-                    planEvaluate = (completed) ? 'fail' : 'warning';
+                else if (planRatio <= 100)
+                    planEvaluate = (completed ? 'fail' : 'warning');
                 else
                     planEvaluate = 'fail';
                 break;
             default:
                 let ratio = planRatio / timeRatio;
                 if (ratio < 0.9)
-                    planEvaluate = (completed) ? 'fail' : 'warning';
+                    planEvaluate = (completed ? 'fail' : 'warning');
                 else if (ratio > 1.1) {
                     if (planRatio > 1.1)
                         planEvaluate = 'fail';
                     else
-                        planEvaluate = (completed) ? 'fail' : 'warning'
+                        planEvaluate = (completed ? 'fail' : 'warning');
                 } else
                     planEvaluate = 'good';
         }
@@ -144,7 +144,7 @@ class Plan {
         let daysElapsed = Date.daysBetween(startDate, today);
         let timeRatio = Math.min(daysElapsed / totalDaysInPlan * 100, 100);
         let planRatio = this.total / this.planned_total * 100;
-        let completed = today < endDate;
+        let completed = today > endDate;
 
         // choose color for plan bar
         let planEvaluation = Plan.evaluatePlan(timeRatio, planRatio, this.compare, completed);

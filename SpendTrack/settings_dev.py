@@ -150,13 +150,13 @@ APP_VERSION = "DEV"
 
 CONTACT_EMAIL = os.environ.get('CONTACT_EMAIL')
 
-CONTACT_FACEBOOK = 'https://www.facebook.com/' + os.environ.get('CONTACT_FACEBOOK')
+CONTACT_FACEBOOK = 'https://www.facebook.com/' + os.environ.get('CONTACT_FACEBOOK', '')
 
-CONTACT_DEV_GITHUB = 'https://github.com/' + os.environ.get('CONTACT_DEV_GITHUB')
+CONTACT_DEV_GITHUB = 'https://github.com/' + os.environ.get('CONTACT_DEV_GITHUB', '')
 
-CONTACT_DEV_EMAIL = os.environ.get('CONTACT_DEV_EMAIL')
+CONTACT_DEV_EMAIL = os.environ.get('CONTACT_DEV_EMAIL', 'somebody@example.com')
 
-CONTACT_DEV_FACEBOOK = 'https://www.facebook.com/' + os.environ.get('CONTACT_DEV_FACEBOOK')
+CONTACT_DEV_FACEBOOK = 'https://www.facebook.com/' + os.environ.get('CONTACT_DEV_FACEBOOK', '')
 
 VIEW_SUMMARIZE_DATE_RANGE_DEFAULT_PAGE_SIZE = 10
 
